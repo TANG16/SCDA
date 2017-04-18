@@ -1,0 +1,153 @@
+<!--?php include 'header.php'; ?--><!doctype html><html><head>
+        <meta http-equiv="Content-Type" content="text/html, charset=UTF-8">
+        <title>Ecological Archives E093-220-S1</title>
+        
+        <script type="text/javascript" src="http://www.esapubs.org/templates/scripts/analytics.js"></script>
+    <style type="text/css">
+body {background-color: #FFF; font-family: Times New Roman, Times, serif;}
+
+hr {
+	height: .15em;
+	color: gray;
+	background-color: gray;
+	border-width: 0;
+}
+hr.divider {
+	width: 50em;
+	margin-top: 1.7em;
+	margin-bottom: 2em;
+	margin-left: 0;
+}
+
+p {max-width: 50em;}
+
+li {max-width: 48em;}
+
+sub, sup {font-size: .7em;}
+
+table, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	text-align: center;
+    vertical-align: top;
+}
+td {max-width: 70em; padding: .1em;}
+table, tr {
+	padding: .1em;}
+tr:first-child {font-weight: bold;}
+
+table.equation {border: none; width: 48em;}
+.equation td {border: none; text-align: left; vertical-align: middle;}
+.equation tr:first-child {font-weight: normal;}
+.equation td:last-child {text-align: right; width: 3em;}
+
+table.noFormat {border: none; text-align: inherit;}
+.noFormat td {border: none; text-align: inherit;}
+.noFormat tr:first-child {font-weight: normal;}
+
+/* Position modifiers.  Use these to alter placement of elements on the page. */
+
+.center {margin-left: auto; margin-right: auto; text-align: center;}
+.textCenter {text-align: center;}
+.textLeft  {text-align:left;}
+
+.indent {margin-left: 2em;}
+p.indent {max-width: 48em;}
+p.heading.indent {max-width: 40em;}
+.halfIndent {margin-left: 1em;}
+
+/* Font modifiers.  Use these to alter font style and type. */
+
+.courier {font-family: Courier new, Courier, mono;}
+.heading {max-width: 45em; margin-top: .7em; font-size: 1.2em; font-weight: bold;}
+.overline {text-decoration: overline;}
+.over {text-decoration: overline;}
+.roman{font-style: normal; text-decoration: none; font-weight: normal;}
+.smallcaps {font-variant: small-caps;}
+
+#links {font-size: .7em; font-family: Arial, Helvetica, sans-serif;}
+</style></head>
+    <body bgcolor="#FFFFFF">
+        <p class="heading">Roland Langrock, Ruth King, Jason Matthiopoulos, Len Thomas, Daniel Fortin, Juan M. Morales. 2012. Flexible and practical modeling of animal telemetry data: hidden Markov models and extensions. <i>Ecology</i> 93:2336–2342. <a href="http://dx.doi.org/10.1890/11-2241.1">http://dx.doi.org/10.1890/11-2241.1</a></p>
+        <hr>
+        <p class="heading">Supplement</p>
+        <p class="heading indent">
+            R code for fitting the individual-specific HMMs and HSMMs, for computing the HSMM residuals, for fitting the hierarchical HSMM, and observations for one of the bison.
+            <br><i>Ecological Archives</i> E093-220-S1.
+        </p>
+        <p style="font-weight: bold;"><a href="../../../copyright.htm">Copyright</a></p>
+        <hr>
+        <p class="heading indent">
+            <a href="#authors">Authors</a><br>
+            <a href="#filelist">File list (downloads)</a><br>
+            <a href="#desc">Description</a>
+        </p>
+        <hr>
+        <!-- Content starts here!  Don't delete anything before this! -->
+        <p id="authors" class="heading">Author(s)</p>
+        <div class="indent">
+            <p><font face="Times New Roman, Times, serif">Roland Langrock<br clear="ALL">
+School of Mathematics and Statistics<br clear="ALL">
+Centre for Research into Ecological and Environmental Modelling<br clear="ALL">
+The Observatory, Buchanan Gardens, University of St Andrews<br clear="ALL">
+St Andrews, Fife, KY16 PLZ, Scotland, UK<br clear="all">
+E-mail: <a href="mailto:roland@mcs.st-and.ac.uk">roland@mcs.st-and.ac.uk</a></font></p>
+            <p><font face="Times New Roman, Times, serif">Ruth King<br clear="ALL">
+              School of Mathematics and Statistics<br clear="ALL">
+              Centre for Research into Ecological and Environmental Modelling<br clear="ALL">
+              The Observatory, Buchanan Gardens, University of St Andrews<br clear="ALL">
+              St Andrews, Fife, KY16 PLZ, Scotland, UK<br clear="all">
+              E-mail: ruth@mcs.st-and.ac.uk</font></p>
+            <p><font face="Times New Roman, Times, serif">Jason Matthiopoulos<br clear="ALL">
+              Scottish Oceans Institute<br clear="ALL">
+              School of Biology <br clear="ALL">
+              University of St Andrews<br clear="ALL">
+              St Andrews, Fife, KY16 8LB, Scotland, UK<br clear="all">
+              E-mail: jm37@st-andrews.ac.uk</font></p>
+            <p><font face="Times New Roman, Times, serif">Len Thomas</font><font face="Times New Roman, Times, serif"><br clear="ALL">
+              School of Mathematics and Statistics<br clear="ALL">
+              Centre for Research into Ecological and Environmental Modelling<br clear="ALL">
+              The Observatory, Buchanan Gardens, University of St Andrews<br clear="ALL">
+              St Andrews, Fife, KY16 PLZ, Scotland, UK<br clear="all">
+              E-mail: len@mcs.st-and.ac.uk</font></p>
+            <p><font face="Times New Roman, Times, serif">Daniel Fortin<br clear="ALL">
+              Centre d'Etude de la Foret<br clear="ALL">
+              Departement de Biologie<br clear="ALL">
+              Universite Laval<br clear="ALL">
+              Quebec City, Quebec, G1V 0A6, Canada<br clear="all">
+              E-mail: Daniel.Fortin@bio.ulaval.ca</font></p>
+            <p><font face="Times New Roman, Times, serif">Juan M. Morales<br clear="ALL">
+              Ecotono <br clear="ALL">
+              INIBIOMA-CONICET<br clear="ALL">
+              Universidad Nacional del Comahue<br clear="ALL">
+              Quintral 1250, 8400 Bariloche, Argentina<br clear="all">
+              E-mail: jm.morales@conicet.gov.ar</font></p>
+    </div>
+        <hr>
+        <p id="filelist" class="heading">File list</p>
+        <div class="indent">
+            <p><font face="Courier New, Courier, monospace">(Older version)&nbsp;&nbsp;<a href="1_individual_specific_HMMs_and_HSMMs.r">1_individual_specific_HMMs_and_HSMMs.r</a>  (md5:   480705d7fbaa10185b499a13c72dff91)</font></p>
+            <p><font face="Courier New, Courier, monospace"><a href="2_residuals_for_HSMMs.r">2_residuals_for_HSMMs.r</a>  (md5:   f49e03aedde8c09cad8325ce72b87a8b)</font></p>
+            <p><font face="Courier New, Courier, monospace">(Older version)&nbsp;&nbsp;<a href="3_hierarchical_HSMM.r">3_hierarchical_HSMM.r</a>  (md5:   c5e3234dcbc9a81079411c26e85892d2)</font></p>
+            <p><font face="Courier New, Courier, monospace"><a href="4_obs.txt">4_obs.txt</a>  (md5:   b5eea7bba207da7711801939d10da124)</font></p>
+            <p>&nbsp;</p>
+            <p><b>Revised, more efficient code. Received and published 5 February 2015:</b></p>
+            <p><font face="Courier New, Courier, monospace"><a href="1_individual_specific_HMMs_and_HSMMs_revised.r.R">1_individual_specific_HMMs_and_HSMMs_revised.r.R</a>  (MD5:  c4ec48927645e403ed9e3c6b7df22f9f)</font></p>
+            <p><font face="Courier New, Courier, monospace"><a href="3_hierarchical_HSMM_revised.r.R">3_hierarchical_HSMM_revised.r.R</a>  (MD5:  5f11bc3831bd8c7a93f7560d304e6f56)</font></p>
+            
+    </div>
+        <p id="desc" class="heading">Description</p>
+        <div class="indent">
+    <font face="Times New Roman, Times, serif">The supplements give R implementations of the methods described in the paper. The first supplement gives R code for fitting individual-specific HMMs and HSMMs. The second supplement gives R code for computing residuals for fitted HSMMs. The third supplement gives R code for fitting the hierarchical HSMM described in Section 5 of the main manuscript. The fourth supplement gives an example bivariate time series, the step lengths  and turning angles for one of the bison considered in the main manuscript, that can be analyzed using the first supplement.</font></div>
+        <!-- Content stops here!  Don't delete anything after this! -->
+        <hr>
+        <p id="links" class="center">
+            <a href="../../../../default.htm" target="_top">ESA Publications</a> |
+            <a href="../../../default.htm" target="_top">Ecological Archives</a> |
+            <a href="../../../copyright.htm" target="_top">Permissions</a> |
+            <a href="../../../citation.htm" target="_top">Citation</a> |
+            <a href="../../../contacts.htm" target="_top">Contacts</a>
+        </p>
+    
+
+<!--?php mysql_close($con); ?--></body></html>
