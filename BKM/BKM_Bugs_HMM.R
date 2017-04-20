@@ -1,5 +1,7 @@
 #  MODEL DESCRIPTION
 #***********************************************************************
+### var G[N_max,N_max,T], P[N_max,N_max,T];
+var Na[T], G[N_max,(T+1)], P[N_max,(T+1)]; # time verying vectors enought in our case
 
 # Model
 
@@ -20,8 +22,9 @@ model{
 	tauy ~ dgamma(0.001,0.001)
 
 	# Define the logistic regression equations
-	for(t in 1:(T-1)){
-		logit(phi1[t]) <- alpha1 + beta1*f[t] # corresponds to the year 1963
+	# for(t in 1:(T-1)){
+	for(t in 1:T){
+	  logit(phi1[t]) <- alpha1 + beta1*f[t] # corresponds to the year 1963
 		logit(phia[t]) <- alphaa + betaa*f[t]
 		
 		# log(rho[t]) <- alphar + betar*t # We assume here that t=1
@@ -33,19 +36,21 @@ model{
 
 	# THE STATE SPACE MODEL ####
 	# 0-1 trick for the states process, the obervation process can stay the same
+	
 	# Define r[t]
 	# for (t in 3:(T-1)){
 	# 	r[t-2] <- (Na[t+1]+N1[t+1])/(Na[t]+N1[t])
 	# }
 
 	# Define the initial population priors
-	for(t in 1:2){
+	 for(t in 1:2){
 	# 	# N1[t] ~ dnorm(200,0.000001)
-	# 	# Na[t] ~ dnorm(1000,0.000001)
+	# 	# Na[t] ~ dnorm(1000,0.000001) --> 1000+-1000
 	#   N1[t] ~ dpois(200)
-	  Na[t] ~ dbin(0.5,2000)
+	  Na[t] ~ dbin(0.5,2000) # --> 1000+-500
 	}
 
+	#####
 	# Define the system process for the census/index data using the Normal approximation
 	# for(t in 3:T){
 	# 	mean1[t] <- rho[t-1]*phi1[t-1]*Na[t-1]
@@ -71,46 +76,49 @@ model{
 	#   Na[t] ~ dbin(bin2[t],bin1[t])
 	# }
 	
-	# Define the system process for the imputed data Na
-	# With regard to updating N_a - this could be done for example using a single update MH step
-	for (t in 3:T){
-	  Na[i] 
-	}
-	
-	# Zero trick for loglik of HMM
+	# Zero trick for loglik of HMM ####
 	# an observation x[i] contributes a likelihood L[i] 
 	# the "zeros trick": a Poisson(phi) observation of zero has likelihood exp(-phi), 
 	# if the observed data is a set of 0's, and phi[i] is set to - log(L[i]), 
 	# we will obtain the correct likelihood contribution for x[i] i.e. L[i]
-	C <- 1000000
-	for(t in 3:T){ 
-	  z[t] ~ dpois(phi[i])
-	  phi[t] <- -loglik[t] + C
-	  loglik[t] = 0
-	  lambda1[t] <- Na[t-1]*rho[t-1]*phi1[t-1]
-	  gam[t] <- exp(-lambda1 + 0*log(lamda1) - log(1))
-	  for (i in 1:N_max-1){
-      gam <- 
-	  } 
-	  i <- N_max
-	  
+	# defining:
+	# spy[i] ~ pdf(y[i],params)/C # scaled probability of y[i] with pdf the required formula 
+	# 1 ~ dben(spy[i])
+	# together yield the same thing as
+	# y[i] ~ pdf(params) 
+	# which essentially is the value of the pdf when y[i] has its particular value and when the params have their particular randomly generated MCMC values 
+	
+	for (t in 3:T){
+	  # Use a discrete Uniform prior so the only influence on the posterior distr is the Upper limit
+	  Na[t] ~ dcat(Na_prior[]) # Na_prior = rep(1/(Up+1), Up+1); entered as data
 	}
-
-	# # Latent Volatility Copula
-	# for (t in 1:n){
-	#   
-	#   pseudo_x[t] <- x[t]*pow(xisigma2[t],0.5)
-	#   pseudo_y[t] <- y[t]*pow(yisigma2[t],0.5)
-	#   NZD_AUD_t_cop[t] <- log( (1/(2*3.14159*sqrt((1-pow(rho,2)))))*(1/(dt(pseudo_x[t],0,1,nu)*dt(pseudo_y[t],0,1,nu)))*pow(1 + (pow(pseudo_x[t],2) + pow(pseudo_y[t],2) + (2*rho*pseudo_x[t]*pseudo_y[t])/(nu*(1-pow(rho,2)))),-(nu + 2)/2) )
-	#   loglik[t] <- NZD_AUD_t_cop[t]
-	#   copulat[t] <- -loglik[t] + C
-	#   zeros[t] ~ dpois(copulat[t])
-	# }
+	
+	C <- 1000000
+	for(t in 3:(T+1)){ 
+	  zeros[t] ~ dpois(phi[t])
+	  phi[t] <- -loglik[t] + C
+	  
+ 	  lam[t] <- Na[t-1]*rho[t-1]*phi1[t-1]
+ 	  
+	  for (i in 1:(N_max-1)){  
+      # logfact is the log of the factorial: log(x!)
+      G[i,t] <- exp(-lam[t] + i*log(lam[t]) - logfact(i))
+#       lf[t] <- logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1])
+# 	    P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + lf[t])
+      P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1]))      
+	  } 
+ 	  
+	  G[N_max,t] <- 1- sum(G[1:(N_max-1),t])
+	  P[N_max,t] <- 1- sum(P[1:(N_max-1),t])
+	  # loglik[t] <- sum(sum(G[,,t] %*% P[,,t] ))
+	  loglik[t] <- log(sum(G[,t] * P[,t])) # piecewise multiplication enough here
+	  # loglik[t] <- sum(sum(G[,,t] %*% P[,,t] %*% Q[,,t])) <--- FOR OWLS
+  }
+	
 	# Define the observation process for the census/index data
 	for(t in 3:T){
 	    y[t] ~ dnorm(Na[t],tauy)
-	  y[t] ~ dnorm(Na[t],tauy)
-	}
+ 	}
 
 	# THE RECOVERY MODEL ####
 	# Calculate the no. of birds released each year
