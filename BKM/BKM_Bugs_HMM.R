@@ -1,7 +1,7 @@
 #  MODEL DESCRIPTION
 #***********************************************************************
 ### var G[N_max,N_max,T], P[N_max,N_max,T];
-var Na[T], G[N_max,(T+1)], P[N_max,(T+1)]; # time verying vectors enought in our case
+var Na[T], G[(N_max+1),(T+1)], P[(N_max+1),(T+1)]; # time verying vectors enought in our case
 
 # Model
 
@@ -47,7 +47,9 @@ model{
 	# 	# N1[t] ~ dnorm(200,0.000001)
 	# 	# Na[t] ~ dnorm(1000,0.000001) --> 1000+-1000
 	#   N1[t] ~ dpois(200)
-	  Na[t] ~ dbin(0.5,2000) # --> 1000+-500
+    # Na[t] ~ dbin(0.5,2000) # --> 1000+-500
+    Na[t] ~ dbin(0.5,100) # --> 100+-50
+	   
 	}
 
 	#####
@@ -98,23 +100,29 @@ model{
 	  zeros[t] ~ dpois(phi[t])
 	  phi[t] <- -loglik[t] + C
 	  
- 	  lam[t] <- Na[t-1]*rho[t-1]*phi1[t-1]
+ 	  # lam[t] <- Na[t-1]*rho[t-1]*phi1[t-1]
+ 	  loglam[t] <- (log(Na[t-1]) + log(rho[t-1]) + log(phi1[t-1])) 
  	  
-	  for (i in 1:(N_max-1)){  
+ 	  # for (i in 1:(N_max-1)){  
+ 	  for (i in 0:(N_max-1)){  # from 0!!!
       # logfact is the log of the factorial: log(x!)
-      G[i,t] <- exp(-lam[t] + i*log(lam[t]) - logfact(i))
-#       lf[t] <- logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1])
-# 	    P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + lf[t])
-      P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1]))      
+      # G[i+1,t] <- exp(-lam[t] + i*log(lam[t]) - logfact(i))
+      
+      G[i+1,t] <- exp(-exp(loglam[t]) + i*loglam[t] - logfact(i))
+      
+      P[i+1,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1]))      
 	  } 
  	  
-	  G[N_max,t] <- 1- sum(G[1:(N_max-1),t])
-	  P[N_max,t] <- 1- sum(P[1:(N_max-1),t])
+	  # G[N_max,t] <- 1- sum(G[1:(N_max-1),t])
+	  # P[N_max,t] <- 1- sum(P[1:(N_max-1),t])
+	  G[(N_max+1),t] <- max(0,1- sum(G[1:(N_max),t]))
+	  P[(N_max+1),t] <- exp(Na[t-1]*log(phia[t-1]) + N_max*log(1-phia[t-1]) + logfact(N_max + Na[t-1]) - logfact(N_max) - logfact(Na[t-1])) 
+	    
 	  # loglik[t] <- sum(sum(G[,,t] %*% P[,,t] ))
 	  loglik[t] <- log(sum(G[,t] * P[,t])) # piecewise multiplication enough here
 	  # loglik[t] <- sum(sum(G[,,t] %*% P[,,t] %*% Q[,,t])) <--- FOR OWLS
   }
-	
+
 	# Define the observation process for the census/index data
 	for(t in 3:T){
 	    y[t] ~ dnorm(Na[t],tauy)

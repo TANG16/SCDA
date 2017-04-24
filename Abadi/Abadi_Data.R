@@ -2,7 +2,6 @@
 # READ DATA ####
 #***********************************************************************
 # Number of years (Number of sample occasion in year)  (1978-2003)
-
 ti <- 26
 
 #  Capture recapture data for females and males ####
@@ -113,17 +112,13 @@ mmal<-matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,13,
 # No. of released individuals (2 age classes) ####
 
 # Females:
-
 rfem <- array(0,2*(ti-1))
-
 for(i in 1:(2*(ti-1))){
   rfem[i] <- sum(mfem[i,])  
 } 
 
 # Males:
-
 rmal <- array(0,2*(ti-1))
-
 for(i in 1:(2*(ti-1))){
   rmal[i] <- sum(mmal[i,])  
 } 
@@ -140,17 +135,14 @@ sample.size <- c(15,9,8,17,18,16,13,9,8,9,9,11,13,11,11,
                  11,10,7,5,5,8,12,14,15,20,24)            # number of breeding females counted
 
 # Vole abundance
-
 voleH <- c(1,0,0,1,1,0,0,1,0,0,0,1,0,0,1,0,0,0,1,0,1,1,0,0,1,0)
 
 # Time 
-
 time <- seq(1,25,1)   
 mean_time = mean(time)
 # standardize the variable
 stdT <- (time-mean_time)/sd(time)
 
 # Place all data into list: ####
-
 data <-list(ti=ti,m=mfem,mM=mmal,r=rfem,rM=rmal,popcount=popcount,nestlings=nestlings[1:(ti-1)], 
             sample.size=sample.size[1:(ti-1)],mean_time=mean_time,stdT=stdT,voleH=voleH[2:ti])

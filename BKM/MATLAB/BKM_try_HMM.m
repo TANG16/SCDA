@@ -27,25 +27,25 @@ rho = exp(index);
 Up = 2000;
 Na_prior = ones(1,Up+1)/(Up+1) ;
 dummy = zeros(1,T);
-N_max= 100;
+N_max= 100-1;
 C = 1000000;
-G = zeros(N_max, T);
-P = zeros(N_max, T);
+G = zeros(N_max+1, T);
+P = zeros(N_max+1, T);
 lam = zeros(T);
 loglik = zeros(T);
 for t = 3:(T+1)
     lam(t) = Na(t-1)*rho(t-1)*phi1(t-1);
 
-    for ii = 1:(N_max-1)
+    for ii = 0:(N_max-1)
         % logfact is the log of the factorial: log(x!)
-        G(ii,t) = exp(-lam(t) + ii*log(lam(t)) - sum(log(1:1:ii)));
+        G(ii+1,t) = exp(-lam(t) + ii*log(lam(t)) - sum(log(1:1:ii)));
         %       lf[t] <- logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1])
         % 	    P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + lf[t])
-        P(ii,t) = exp(Na(t-1)*log(phia(t-1)) + ii*log(1-phia(t-1)) + ...
+        P(ii+1,t) = exp(Na(t-1)*log(phia(t-1)) + ii*log(1-phia(t-1)) + ...
             sum(log(1:1:(ii + Na(t-1)))) - sum(log(1:1:ii)) - sum(log(1:1:Na(t-1))));      
     end
-    G(N_max,t) = 1- sum(G(1:(N_max-1),t));
-    P(N_max,t) = 1- sum(P(1:(N_max-1),t));
+    G(N_max+1,t) = 1- sum(G(1:(N_max),t));
+    P(N_max+1,t) = 1- sum(P(1:(N_max),t));
     % loglik[t] <- sum(sum(G[,,t] .*Q[,t] ))
     loglik(t) = log(sum(G(:,t) .* P(:,t))); % piecewise multiplication enough here
 end

@@ -1,16 +1,10 @@
 T=36
 T1=35
 T2=35
-
-# Nstar FOR HMM INTERGRATION
-N_max = 99 # was 100 but we need 0 so to have 100 in total set it to 99
+ 
 # SCALE TO PRACTICE HMM
 sc <- 10 
-# ZEROS TRICK
-zeros <- rep(0,(T+1))
-Up <- 2000
-Na_prior <- rep(1/(Up+1), Up+1) 
-
+ 
 time <- seq(1,T,1)                
 # standardize the variable
 stdT <- (time-mean(time))/sd(time)
@@ -74,6 +68,4 @@ for(t in 1:T1){
    rel[t] <- sum(m[t,])
 }
 
-
-data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, N_max = N_max, zeros= zeros, Na_prior = Na_prior)
-# data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m,, stdT=stdT)
+data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT)
