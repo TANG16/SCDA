@@ -8,7 +8,7 @@ sigy = 1;
 Na = round( [1000, 1000, 1092.23, 1100.01, 1234.32, 1460.85, 1570.38, 1819.79,...
     1391.27, 1507.60, 1541.44, 1631.21, 1628.60, 1609.33, 1801.68, 1809.08, 1754.74,...
     1779.48, 1699.13, 1681.39, 1610.46, 1918.45, 1717.07, 1415.69, 1229.02, 1082.02,...
-    1096.61, 1045.84, 1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64]')/sc;
+    1096.61, 1045.84, 1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64]'/sc);
 % N1 = 400*ones(T,1);
 alpha1 = 1;
 alphaa = 2;
@@ -31,27 +31,42 @@ N_max= 100-1;
 C = 1000000;
 G = zeros(N_max+1, T);
 P = zeros(N_max+1, T);
-lam = zeros(T);
+loglam = zeros(T-1);
 loglik = zeros(T);
-for t = 3:(T+1)
-    lam(t) = Na(t-1)*rho(t-1)*phi1(t-1);
+
+for t = 3:(T)
+    loglam(t-1) = log(Na(t-1-1)) + log(rho(t-1-1)) + log(phi1(t-1-1));
 
     for ii = 0:(N_max-1)
         % logfact is the log of the factorial: log(x!)
-        G(ii+1,t) = exp(-lam(t) + ii*log(lam(t)) - sum(log(1:1:ii)));
-        %       lf[t] <- logfact(i + Na[t-1]) - logfact(i) - logfact(Na[t-1])
-        % 	    P[i,t] <- exp(Na[t-1]*log(phia[t-1]) + i*log(1-phia[t-1]) + lf[t])
-        P(ii+1,t) = exp(Na(t-1)*log(phia(t-1)) + ii*log(1-phia(t-1)) + ...
-            sum(log(1:1:(ii + Na(t-1)))) - sum(log(1:1:ii)) - sum(log(1:1:Na(t-1))));      
+        G(ii+1,t) = exp(-exp(loglam(t)) + ii*loglam(t) - sum(log(1:1:ii))); 
+        if ((ii + Na(t-1) - Na(t)) > 0)
+            P(ii+1,t) = exp(Na(t)*log(phia(t-1)) + (ii + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
+                sum(log(1:1:(ii + Na(t-1)))) - sum(log(1:1:(ii + Na(t-1) - Na(t)))) - sum(log(1:1:Na(t-1)))); 
+        else
+            P(ii+1,t) = 0;
+        end
     end
-    G(N_max+1,t) = 1- sum(G(1:(N_max),t));
-    P(N_max+1,t) = 1- sum(P(1:(N_max),t));
-    % loglik[t] <- sum(sum(G[,,t] .*Q[,t] ))
+    G(N_max+1,t) = max(0,1- sum(G(1:(N_max),t)));
+    if ((N_max + Na(t-1) - Na(t)) > 0)
+        P(N_max+1,t) = exp(Na(t)*log(phia(t-1)) + (N_max + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
+            sum(log(1:1:(N_max + Na(t-1)))) - sum(log(1:1:(N_max + Na(t-1) - Na(t)))) - sum(log(1:1:Na(t-1)))); 
+    else
+        P(ii+1,t) = 0;
+    end    
     loglik(t) = log(sum(G(:,t) .* P(:,t))); % piecewise multiplication enough here
 end
 
-
-
+figure(1)
+hold all
+for ii=3:T
+    plot(G(:,ii))
+end
+figure(2)
+hold all
+for ii=3:T
+    plot(P(:,ii))
+end
 %% Recovery Data
 loglik_BKM_recovery = @(xx) -BKM_Bugs_recovery(xx, m, f_r, stdT_r)/numel(m);
 theta_init = [1, 2, -4, -2, 0.1, -0.3];

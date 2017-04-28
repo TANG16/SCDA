@@ -7,8 +7,8 @@
 # G and P only for some initial runs to check whether they make sese...
 params <- c('sigy','Na',
             'alpha1','alphaa','alphar','alphal',
-            'beta1', 'betaa','betar', 'betal',
-            'G','P')
+            'beta1', 'betaa','betar', 'betal')
+            # 'G','P')
 
 # inits <- function(){list(tauy = 1, 
 #                           Na = c(1000, 1000, 1092.23, 1100.01, 1234.32, 1460.85, 1570.38, 1819.79,

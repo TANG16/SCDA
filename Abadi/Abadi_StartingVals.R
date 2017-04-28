@@ -38,6 +38,9 @@ inits <- function(){list(v=rnorm(7),bp=rnorm((ti-1)),fec=runif((ti-1),0,5),
 #                'MEPHADF','MEFE','MEIM_H','MEIM_L','MEPHJUM',
 #                'MEPHADM','v','bp')
 
-params <- c('N1','Ntot','MEPHJUF',
-            'MEPHADF','MEFE','MEIM_H','MEIM_L','MEPHJUM',
-            'MEPHADM','v','bp','fec')
+# params <- c('N1','Ntot','MEPHJUF',
+#             'MEPHADF','MEFE','MEIM_H','MEIM_L','MEPHJUM',
+#             'MEPHADM','v','bp','fec')
+
+
+params <- c('N1',"NadSurv","Nadimm",'Ntot','v','bp','fec')

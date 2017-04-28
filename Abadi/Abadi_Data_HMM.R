@@ -2,16 +2,16 @@
 # READ DATA ####
 #***********************************************************************
 
-# Nstar FOR HMM INTERGRATION
-N_max = 99 # was 100 but we need 0 so to have 100 in total set it to 99
-
-# ZEROS TRICK
-zeros <- rep(0,(ti+1))
-Up <- 200
-Nad_prior <- rep(1/(Up+1), Up+1) 
-
 # Number of years (Number of sample occasion in year)  (1978-2003)
 ti <- 26
+
+# Nstar FOR HMM INTERGRATION
+N_max = 29 # 99 #was 100 but we need 0 so to have 100 in total set it to 99
+
+# ZEROS TRICK
+zeros <- rep(0,(ti))
+Up <- 100
+Nad_prior <- rep(1/(Up+1), Up+1) 
 
 #  Capture recapture data for females and males ####
 
@@ -154,4 +154,5 @@ stdT <- (time-mean_time)/sd(time)
 
 # Place all data into list: ####
 data <-list(ti=ti,m=mfem,mM=mmal,r=rfem,rM=rmal,popcount=popcount,nestlings=nestlings[1:(ti-1)], 
-            sample.size=sample.size[1:(ti-1)],mean_time=mean_time,stdT=stdT,voleH=voleH[2:ti])
+            sample.size=sample.size[1:(ti-1)],mean_time=mean_time,stdT=stdT,voleH=voleH[2:ti],
+            N_max = N_max, zeros = zeros, Nad_prior = Nad_prior)
