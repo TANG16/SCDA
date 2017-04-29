@@ -6,7 +6,7 @@
 ti <- 26
 
 # Nstar FOR HMM INTERGRATION
-N_max = 29 # 99 #was 100 but we need 0 so to have 100 in total set it to 99
+N_max = 19 # 99 #was 100 but we need 0 so to have 100 in total set it to 99
 
 # ZEROS TRICK
 zeros <- rep(0,(ti))

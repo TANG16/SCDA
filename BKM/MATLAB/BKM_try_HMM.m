@@ -34,23 +34,26 @@ P = zeros(N_max+1, T);
 loglam = zeros(T-1);
 loglik = zeros(T);
 
+logfact = @(xx) sum(log(1:1:xx));
+
+
 for t = 3:(T)
     loglam(t-1) = log(Na(t-1-1)) + log(rho(t-1-1)) + log(phi1(t-1-1));
 
     for ii = 0:(N_max-1)
         % logfact is the log of the factorial: log(x!)
-        G(ii+1,t) = exp(-exp(loglam(t)) + ii*loglam(t) - sum(log(1:1:ii))); 
+        G(ii+1,t) = exp(-exp(loglam(t)) + ii*loglam(t) - logfact(ii)); 
         if ((ii + Na(t-1) - Na(t)) > 0)
             P(ii+1,t) = exp(Na(t)*log(phia(t-1)) + (ii + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
-                sum(log(1:1:(ii + Na(t-1)))) - sum(log(1:1:(ii + Na(t-1) - Na(t)))) - sum(log(1:1:Na(t-1)))); 
+                logfact(1:1:(ii + Na(t-1))) - logfact(1:1:(ii + Na(t-1) - Na(t))) - logfact(Na(t-1))); 
         else
             P(ii+1,t) = 0;
         end
     end
-    G(N_max+1,t) = max(0,1- sum(G(1:(N_max),t)));
+    G(N_max+1,t) = max(0,1 - sum(G(1:(N_max),t)));
     if ((N_max + Na(t-1) - Na(t)) > 0)
         P(N_max+1,t) = exp(Na(t)*log(phia(t-1)) + (N_max + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
-            sum(log(1:1:(N_max + Na(t-1)))) - sum(log(1:1:(N_max + Na(t-1) - Na(t)))) - sum(log(1:1:Na(t-1)))); 
+            logfact(1:1:(N_max + Na(t-1))) - logfact(N_max + Na(t-1) - Na(t)) - logfact(Na(t-1))); 
     else
         P(ii+1,t) = 0;
     end    

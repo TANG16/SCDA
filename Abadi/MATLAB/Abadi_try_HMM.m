@@ -16,7 +16,8 @@ loglik_Abadi_capture  = @(xx) -Abadi_Bugs_capture(xx, mfem, mmal, bp, stdT)/(2*n
 theta_init = randn(1,5);
  
 [theta_mle_cr, ~, ~, ~, ~, Sigma_mle_cr] = fminunc(loglik_Abadi_capture, theta_init);
-Sigma_mle_cr = inv(2*numel(mfem)*Sigma_mle_cr);    
+Sigma_mle_cr = inv(2*numel(mfem)*Sigma_mle_cr);   
+std_mle = sqrt(diag(Sigma_mle_cr));
 % theta_mle_cr = [-2.6526    2.8457    0.3981    0.4366   -1.4739];
 
 
@@ -33,15 +34,6 @@ NadImmprior = 5;
 N_max= 20-1;
 % C = 1000000;
 
-%  MODEL DESCRIPTION
-%  Age structured model ( 2 age classes: 1-year and 2 years or older)
-%  Age at first breeding =1 year
-%  Pre-breeding census
-%  Little owl data (1978-2003)
-%***********************************************************************
-
-% var G[(N_max+1),(N_max+1),(ti)], P[(N_max+1),(N_max+1),(ti), Q[(N_max+1),(N_max+1),(ti)]; 
-  
 %% Define the regression equations: best model structure (phi(a2+sex+T),p(sex+t),b(t)) for little owl
 % Juvenile survival rate
 index = v(1) + v(3) + v(4)*stdT;  % Male
@@ -72,17 +64,8 @@ pdf_v = normpdf(v, 0, sqrt(1/0.01));%I(-10,10)
 % truncated
 pdf_bp = normpdf(bp.*double((bp>-10) & (bp<10)), 0, sqrt(1/0.0001))/(normcdf(10,0, sqrt(1/0.0001))-normcdf(-10,0, sqrt(1/0.0001))); %I(-10,10)
 prf_fec =  0.1 + 0*fec;% dunif(0,10)
-  
-% prob1 = rep(1/101,101)
-% N1prior ~ dcat(prob1)     		% 1-year
-% N1[1] = N1prior-1
-% NadSurvprior ~ dcat(prob1)  	 % Adults 
-% NadSurv(1) = NadSurvprior-1
-% Nadimmprior ~ dcat(prob1) 	% Immigrants
-% Nadimm[1] = Nadimmprior-1
-  
 
-%% %%%% The Integrated population model %%%5
+%% %%%% The Integrated population model %%
 
 %% Likelihood for reproductive data
 rho = sample_size(1,1:ti-1).*fec;
@@ -119,31 +102,13 @@ for t = 1:ti
     end
 end
 
-figure(1)
-hold all
-for ii = 1:ti
-    plot(Q(:,ii))
-end
-hold off
-
-
 for jj = 0:N_max
     for ii = 0:N_max
       G(jj+1,ii+1,1) = 1/(N_max+1);
       G(jj+1,ii+1,2) = 1/(N_max+1);
     end 
-    P(jj+1,1) = Nad_prior(1); % prior for Na(1)
-end
- % NadSurvprior ~ dcat(prob1)  	 # Adults 
- % NadSurv[1] <- NadSurvprior-1
-  
- % Nadimmprior ~ dcat(prob1) 	# Immigrants
- % Nadimm[1] <- Nadimmprior-1
-
- NadSurv(1) = NadSurvprior-1; % = 20
- NadImm(1) = NadImmprior-1; % = 5
-
- for jj = 0:N_max
+    P(jj+1,1) = Nad_prior(1); % prior for Na(1)  observation probabilities
+    
     if ((Ntot(jj+1,1) - NadSurv(2))>0)
         P(jj+1,2) = exp(NadSurv(2)*log(phia(1)) + (Ntot(jj+1,1) - NadSurv(2))*log(1-phia(1))... % part for survivors
         + logfact(Ntot(jj+1,1)) - logfact(Ntot(jj+1,1) - NadSurv(2)) - logfact(NadSurv(2))...
@@ -151,7 +116,11 @@ end
     else
         P(jj+1,2) = 0;
     end
- end
+end
+
+ NadSurv(1) = NadSurvprior-1; % = 20
+ NadImm(1) = NadImmprior-1; % = 5
+
  
 for t = 3:ti
     % from 0 !!!
@@ -177,24 +146,27 @@ end
 figure(10)
 plot(loglik)
 
+
+
+figure(1)
+hold all
+for ii = 1:ti
+    plot(Q(:,ii))
+end
+hold off
+
 figure(2)
 hold all
 for ii = 1:ti
     plot(P(:,ii))
 end
 hold off
-
-figure(3)
-hold all
-for ii = 1:ti
-    plot(R(:,ii))
-end
-hold off
+ 
 
 
 figure(4)
 hold all
 for ii = 1:N_max
-    plot(G3(ii,:))
+    plot(G(ii,:,26))
 end
 hold off

@@ -43,4 +43,5 @@ inits <- function(){list(v=rnorm(7),bp=rnorm((ti-1)),fec=runif((ti-1),0,5),
 #             'MEPHADM','v','bp','fec')
 
 
-params <- c('N1',"NadSurv","Nadimm",'Ntot','v','bp','fec')
+# params <- c('N1',"NadSurv","Nadimm",'Ntot','v','bp','fec')
+params <- c('N1',"NadSurv","Nadimm",'v')

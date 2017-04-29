@@ -11,7 +11,7 @@ set.seed(134522)
 # MCMC details: ####
 
 ada=100
-iter=1000
+iter=2000
 th=1
 cha=2
 
@@ -33,7 +33,7 @@ temp = proc.time()-tstart
 time_sample <- temp
 
 if (save_on) {
-  save(mod, output1, time_init, time_sample, file = "Abadi_iter10000.RData")
+  save(mod, output1, time_init, time_sample, file = paste("Results/Abadi_iter",toString(iter),".RData",sep=""))
 }
 
 
@@ -84,38 +84,17 @@ mat1_names[1:ti] # 1st years
 mat1_names[(ti+(1:ti))] # survivors 
 mat1_names[(2*ti+(1:ti))] # immigrants
 
-CCF_1_SURV = rep(0,ti)
-CCF_SURV_IMM = rep(0,ti)
-CCF_1_IMM = rep(0,ti)
-for (ii in (1:ti)){
-  CCF_1_SURV[ii] = sum(ccf(mat1[,ii], mat1[,ti+ii], lag.max = 40, plot = FALSE)$acf)
-  CCF_SURV_IMM[ii] = sum(ccf(mat1[,ti+ii], mat1[,2*ti+ii],lag.max = 40, plot = FALSE)$acf)
-  CCF_1_IMM[ii] = sum(ccf(mat1[,ii], mat1[,2*ti+ii], lag.max = 40, plot = FALSE)$acf)
-}
-
-par(mfrow=c(3,1),oma=c(0,0,1.5,0))
-barplot(CCF_1_SURV,xlab ="", ylab="", sub="N1 vs NadSurv")
-barplot(CCF_SURV_IMM,xlab ="", ylab="", sub="NadSurv vs Nadimm")
-barplot(CCF_1_IMM,xlab ="", ylab="", sub="N1 vs Nadimm")
-mtext("Sum of CCF (cross-correl of two univar series)", outer=TRUE, cex=1)
-
-
-
-par(mfrow=c(3,1),oma=c(0,0,1.5,0))
-plot(colMeans(mat1[,1:ti]), type='l', xlab ="", ylab="", sub="N1")
-plot(colMeans(mat1[,(ti+(1:ti))]), type='l', xlab ="", ylab="", sub="NadSurv")
-plot(colMeans(mat1[,(2*ti+(1:ti))]), type='l', xlab ="", ylab="", sub="Nadimm")
-mtext("Posterior means)", outer=TRUE, cex=1)
-
-
-
-
-
-
-plot(output1[,2])
-output1[j] [,"par_name"]
-# it returns the j-th chain for the parameter of interest
-acf(mat1[,2])
-plot(output1[2][,2])
-plot(output1[1][,2])
-
+# CCF_1_SURV = rep(0,ti)
+# CCF_SURV_IMM = rep(0,ti)
+# CCF_1_IMM = rep(0,ti)
+# for (ii in (1:ti)){
+#   CCF_1_SURV[ii] = sum(ccf(mat1[,ii], mat1[,ti+ii], lag.max = 40, plot = FALSE)$acf)
+#   CCF_SURV_IMM[ii] = sum(ccf(mat1[,ti+ii], mat1[,2*ti+ii],lag.max = 40, plot = FALSE)$acf)
+#   CCF_1_IMM[ii] = sum(ccf(mat1[,ii], mat1[,2*ti+ii], lag.max = 40, plot = FALSE)$acf)
+# }
+# 
+# par(mfrow=c(3,1),oma=c(0,0,1.5,0))
+# barplot(CCF_1_SURV,xlab ="", ylab="", sub="N1 vs NadSurv")
+# barplot(CCF_SURV_IMM,xlab ="", ylab="", sub="NadSurv vs Nadimm")
+# barplot(CCF_1_IMM,xlab ="", ylab="", sub="N1 vs Nadimm")
+# mtext("Sum of CCF (cross-correl of two univar series)", outer=TRUE, cex=1)

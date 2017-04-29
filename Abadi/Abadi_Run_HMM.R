@@ -52,6 +52,21 @@ if (0==1){
   prM <- matrix(0,dim(mmal)[1],dim(mmal)[2])
   q <- rep(0,ti-1)
   qM <- rep(0,ti-1)
+  
+  G = array(NaN,dim=c(N_max+1,N_max+1,ti))
+  P = array(NaN,dim=c(N_max+1,ti))
+  Q = array(NaN,dim=c(N_max+1,ti))
+  Ntot = array(NaN,dim=c(N_max+1,ti))
+  loglam = array(NaN,dim=c(N_max+1,ti-1))
+  logmu = array(NaN,dim=c(N_max+1,ti-1))
+  loglik = array(NaN,dim=c(ti))
+
+  NadSurv=c(NA,round(runif(ti-1,5,10),0))
+  NadImm=c(NA,round(runif(ti-1,5,10),0))
+  NadSurvprior=20
+  NadImmprior=5
+
+  logfact <- function(x){sum(log(seq_len(x)))}
 }
 
 
@@ -68,23 +83,16 @@ temp = proc.time()-tstart
 time_sample <- temp
 
 if (save_on) {
-  save(mod, output1, time_init, time_sample, file = "Abadi_HMM_iter10000.RData")
+  save(mod, output1, time_init, time_sample, file = paste("Results/Abadi_HMM_iter",toString(iter),".RData",sep=""))
 }
 
 summary(output1)
 
-mat1 = as.matrix(output1[1])
-mat2 = as.matrix(output1[2])
+mat1 = as.matrix(output1[[1]])
+mat2 = as.matrix(output1[[2]])
 
 # Retrieve the names ####
 mat1_names <- colnames(mat1)
-
-
-frame1 <- do.call(rbind.data.frame, output1)
-frame2 <- do.call(rbind.data.frame, output2)
-
-str(output1) # List of 2
-str(output2) # List of 12
 
 
 plot(output1[,2])
@@ -94,6 +102,4 @@ plot(output1[1][,2])
 plot(output1[2][,2])
 plot(output1[1][,2])
 
-summary(output1)
-
-mat1 <- as.matrix(output1)
+ 

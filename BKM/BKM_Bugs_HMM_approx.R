@@ -26,44 +26,24 @@ model{
   for(t in 1:T){
     logit(phi1[t]) <- alpha1 + beta1*f[t] # corresponds to the year 1963
     logit(phia[t]) <- alphaa + betaa*f[t]
-    
-    # log(rho[t]) <- alphar + betar*t # We assume here that t=1
     log(rho[t]) <- alphar + betar*stdT[t] # We assume here that t=1
-    
-    # logit(lambda[t]) <- alphal + betal*(t+1)
     logit(lambda[t]) <- alphal + betal*stdT[t]
   }
   
   # THE STATE SPACE MODEL ####
   # 0-1 trick for the states process, the obervation process can stay the same
-  
-  # Define r[t]
-  # for (t in 3:(T-1)){
-  # 	r[t-2] <- (Na[t+1]+N1[t+1])/(Na[t]+N1[t])
-  # }
-  
+
   # Define the initial population priors
   for(t in 1:2){
     # 	# N1[t] ~ dnorm(200,0.000001)
     # 	# Na[t] ~ dnorm(1000,0.000001) --> 1000+-1000
     #   N1[t] ~ dpois(200)
-    # Na[t] ~ dbin(0.5,2000) # --> 1000+-500
-    Na[t] ~ dbin(0.5,200) # --> 100+-50
+    Na[t] ~ dbin(0.5,2000) # --> 1000+-500
   }
   
   #####
   # Zero trick for loglik of HMM ####
-  # an observation x[i] contributes a likelihood L[i] 
-  # the "zeros trick": a Poisson(phi) observation of zero has likelihood exp(-phi), 
-  # if the observed data is a set of 0's, and phi[i] is set to - log(L[i]), 
-  # we will obtain the correct likelihood contribution for x[i] i.e. L[i]
-  # defining:
-  # spy[i] ~ pdf(y[i],params)/C # scaled probability of y[i] with pdf the required formula 
-  # 1 ~ dben(spy[i])
-  # together yield the same thing as
-  # y[i] ~ pdf(params) 
-  # which essentially is the value of the pdf when y[i] has its particular value and when the params have their particular randomly generated MCMC values 
-  #####
+  
   for (t in 3:T){
     # Use a discrete Uniform prior so the only influence on the posterior distr is the Upper limit
     Na[t] ~ dcat(Na_prior[]) # Na_prior = rep(1/(Up+1), Up+1); entered as data
@@ -92,14 +72,7 @@ model{
     P[(N_max+1),t] <- ifelse((N_max + Na[t-1] - Na[t])>0, 
                              exp(Na[t]*log(phia[t-1]) + (N_max + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(N_max + Na[t-1]) - logfact(abs(N_max + Na[t-1] - Na[t])) - logfact(Na[t])),
                              0)
-    #ifelse function is evaluated during sampling and not at compile time
-    
-    # LOL. The ifelse function works just like the one in R. 
-    # Note that it is not a control flow statement: 
-    # if you have ifelse(x,a,b) then both a and b need to be evaluated.  
-    # So for example, you can't have  y < - ifelse(x==0, 0, log(x)) because log(0) is not finite.
-    # Different:  Also, note that an if/else statement in the BUGS language can only be allowed if the predicate is fixed at compile tim
-    
+  
     loglik[t] <- log(sum(G[,t] * P[,t])) # piecewise multiplication enough here
   }
   
@@ -109,11 +82,6 @@ model{
   }
   
   # THE RECOVERY MODEL ####
-  # Calculate the no. of birds released each year
-  # for(t in 1:T1){
-  #  	rel[t] <- sum(m[t,])
-  # }
-  
   # Define the recovery likelihood 
   for(t in 1:T1){
     m[t, 1:(T2+1)] ~ dmulti(p[t,], rel[t])

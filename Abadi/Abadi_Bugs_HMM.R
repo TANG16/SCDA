@@ -5,15 +5,13 @@
 #  Little owl data (1978-2003)
 #***********************************************************************
 
-# var G[(N_max+1),(N_max+1),(ti)], P[(N_max+1),(ti), Q[(N_max+1),(ti)]; 
+var G[(N_max+1),(N_max+1),ti], P[(N_max+1),ti], Q[(N_max+1),ti], logmu[(N_max+1),(ti-1)], loglam[(N_max+1),(ti-1)]; 
                                      
 # Model
 model{ 
-  
   #*******************************************
   # Define the regression equations ####
   #*****************************************
-  
   for (i in 1:(ti-1))
   {
     # Best model structure (phi(a2+sex+T),p(sex+t),b(t)) for little owl
@@ -76,8 +74,8 @@ model{
   # Nad_prior = rep(1/(Up+1), Up+1); entered as data
   NadSurvprior ~ dcat(Nad_prior)  	 # Adults
   NadSurv[1] <- NadSurvprior-1 # 20-1
-  Nadimmprior ~ dcat(Nad_prior) 	# Immigrants
-  NadImm[1] <- Nadimmprior-1 # 5-1
+  NadImmprior ~ dcat(Nad_prior) 	# Immigrants
+  NadImm[1] <- NadImmprior-1 # 5-1
   
   # Due to the zeros trick: use a discrete uniform prior so the only influence on the posterior distr is the upper limit
   for (t in 2:ti){
@@ -107,9 +105,6 @@ model{
     }
     # prior for first augmented observation probabilities
     P[j+1,1] <- Nad_prior[1]
-  }  
-  
-  for (j in 0:N_max){
     P[j+1,2] <- ifelse((Ntot[j+1,1] - NadSurv[2])>0,
                 exp(NadSurv[2]*log(phia[1]) + (Ntot[j+1,1] - NadSurv[2])*log(1-phia[1]) # part for survivors
                 + logfact(Ntot[j+1,1]) - logfact(abs(Ntot[j+1,1] - NadSurv[2])) - logfact(NadSurv[2])
@@ -132,7 +127,7 @@ model{
     for (j in 0:(N_max)){  # old state N1_{t-2} = j  
       # Transition  probabilities - from 0 !!!
       for (i in 0:(N_max-1)){  # new state N1_{t-1} = i <- t-1 due to the unconditional probability formula for Na_{t}
-        G[j+1,i+1,t] <- exp(-exp(loglam[j+1,t-2]) + i*loglam[j+1,t-2] - logfact(i)) # t here as we want to match it with the observation probability for Na at t
+        G[j+1,i+1,t] <- exp(-exp(loglam[j+1,t-2]) + i*loglam[j+1,t-2] - logfact(i)) # t: to match with the observation probability for Na at t
       }
       G[j+1,(N_max+1),t] <- max(0,1- sum(G[j+1,1:N_max,t]))
       P[j+1,t] <- ifelse((Ntot[j+1,t-1] - NadSurv[t])>0,
@@ -141,7 +136,7 @@ model{
                       - exp(logmu[j+1,t-1]) + NadImm[t]*logmu[j+1,t-1] - logfact(NadImm[t])), # part for immigrants
                       0)  
       }
-    loglik[t] <- sum(sum(G[,,t] %*% (P[,t] * Q[,t]))) 
+    loglik[t] <- log(sum(sum(G[,,t] %*% (P[,t] * Q[,t])))) 
   }
   
 
