@@ -6,6 +6,14 @@ T2=35
 N_max = 69 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
 # SCALE TO PRACTICE HMM
 sc <- 10 
+
+# logfact <- function(x){sum(log(seq_len(x)))}
+# logfact_m = rep(NaN, 5000)
+# for (i in 0:(5000-1)){  
+#   logfact_m[i+1] <- logfact(i)
+# }
+
+
 # ZEROS TRICK
 zeros <- rep(0,(T))
 Up <-  2000
@@ -75,5 +83,5 @@ for(t in 1:T1){
 }
 
 
-data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, N_max = N_max, zeros= zeros, Na_prior = Na_prior)
+data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, N_max = N_max, zeros= zeros, Na_prior = Na_prior) #, logfact_m = logfact_m)
 # data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m,, stdT=stdT)

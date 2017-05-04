@@ -1,11 +1,20 @@
 #  MODEL DESCRIPTION
 #***********************************************************************
-### var G[N_max,N_max,T], P[N_max,N_max,T];
-var loglam[T-1], Na[T], G[(N_max+1),T], P[(N_max+1),T]; # time verying vectors enought in our case
+var bin[N_bin+1], Na_prior[Up+1], loglam[T-1], Na[T], G[(N_bin+1),T], P[(N_bin+1),T]; # time verying vectors enought in our case
+# var loglam[T-1], Na[T], G[(N_bin+1),T], P[(N_bin+1),T]; # time verying vectors enought in our case
 
 # Model
 
 model{ 
+  
+  # Bins' midpoints
+  for (i in 0:(N_bin)){
+    bin[i+1] <- 0.5*(bin_size*(2*i+1)-1) # ith bin's midpoint
+  }
+  for (i in 0:(Up)){
+    Na_prior[i+1] <- 1/(Up+1)
+  }
+  
   # THE COVARIATES ####
   # Define the priors for the logistic regression parameters
   alpha1 ~ dnorm(0,0.01)
@@ -34,11 +43,12 @@ model{
   # 0-1 trick for the states process, the obervation process can stay the same
 
   # Define the initial population priors
+  Na_init <- round(2000/sc)
   for(t in 1:2){
     # 	# N1[t] ~ dnorm(200,0.000001)
     # 	# Na[t] ~ dnorm(1000,0.000001) --> 1000+-1000
     #   N1[t] ~ dpois(200)
-    Na[t] ~ dbin(0.5,2000) # --> 1000+-500
+    Na[t] ~ dbin(0.5,Na_init) # --> 1000+-500
   }
   
   #####
@@ -59,21 +69,28 @@ model{
     
     # lam[t] <- Na[t-1]*rho[t-1]*phi1[t-1]
     loglam[t-1] <- (log(Na[t-1-1]) + log(rho[t-1-1]) + log(phi1[t-1-1])) 
-
-    for (i in 0:(N_max-1)){  # from 0!!! 
-      G[i+1,t] <- exp(-exp(loglam[t-1]) + i*loglam[t-1] - logfact(i))
-    
-      P[i+1,t] <- ifelse((i + Na[t-1] - Na[t])>0,
-                         exp(Na[t]*log(phia[t-1]) + (i + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(i + Na[t-1]) - logfact(abs(i + Na[t-1] - Na[t])) - logfact(Na[t])),
-                         0)   
+   
+    for (i in 0:(N_bin)){ 
+    # for (i in 0:(N_bin-1)){ # LOOP OVER BINS (ENTERED AS DATA) # from 0!!! 
+      # bin[i] <- 0.5*(bin_size*(2*i+1)-1)  # ith bin's midpoint
+      # i = 0 --> b[0] =  0.5*(bin_size-1) e.g. 4 when bin_size=9 (mind counting from 0!)
+      G[i+1,t] <- exp(-exp(loglam[t-1]) + bin[i+1]*loglam[t-1] - logfact(bin[i+1]))
+      # G[i+1,t] <- exp(-exp(loglam[t-1]) + bin[i+1]*loglam[t-1] - logfact_m[(bin[i+1]+1)])
+      
+      P[i+1,t] <- ifelse((bin[i+1] + Na[t-1] - Na[t])>0,
+                         exp(Na[t]*log(phia[t-1]) + (bin[i+1] + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(bin[i+1] + Na[t-1]) - logfact(abs(bin[i+1] + Na[t-1] - Na[t])) - logfact(Na[t])),
+                         0)
+      # P[i+1,t] <- ifelse((bin[i+1] + Na[t-1] - Na[t])>0,
+      #                    exp(Na[t]*log(phia[t-1]) + (bin[i+1] + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact_m[(bin[i+1] + Na[t-1]+1)] - logfact_m[(abs(bin[i+1] + Na[t-1] - Na[t])+1)] - logfact_m[(Na[t]+1)]),
+      #                    0) 
     } 
-    
-    G[(N_max+1),t] <- max(0,1- sum(G[1:(N_max),t]))
-    P[(N_max+1),t] <- ifelse((N_max + Na[t-1] - Na[t])>0, 
-                             exp(Na[t]*log(phia[t-1]) + (N_max + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(N_max + Na[t-1]) - logfact(abs(N_max + Na[t-1] - Na[t])) - logfact(Na[t])),
-                             0)
-  
-    loglik[t] <- log(sum(G[,t] * P[,t])) # piecewise multiplication enough here
+    sumG[t] <- sum(G[,t])
+    # G[(N_bin+1),t] <- max(0,1- sum(G[1:(N_bin),t]))
+    # P[(N_bin+1),t] <- ifelse((N_bin + Na[t-1] - Na[t])>0, 
+                             # exp(Na[t]*log(phia[t-1]) + (N_bin + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(N_bin + Na[t-1]) - logfact(abs(N_bin + Na[t-1] - Na[t])) - logfact(Na[t])),
+                             # 0)
+                              
+    loglik[t] <- log(sum((G[,t]/sumG[t]) * P[,t])) # piecewise multiplication enough here
   }
   
   # Define the observation process for the census/index data

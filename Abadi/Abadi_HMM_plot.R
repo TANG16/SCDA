@@ -1,6 +1,6 @@
 par(mfrow=c(2,1),oma=c(0,0,1.5,0))
-plot(colMeans(mat1[,(ti+(2:ti))]), type='l', xlab ="", ylab="", sub="NadSurv")
-plot(colMeans(mat1[,(2:ti)]), type='l', xlab ="", ylab="", sub="Nadimm")
+plot(colMeans(mat1[,(ti+(1:ti))]), type='l', xlab ="", ylab="", sub="NadSurv")
+plot(colMeans(mat1[,(1:ti)]), type='l', xlab ="", ylab="", sub="Nadimm")
 mtext("Posterior means", outer=TRUE, cex=1)
 
 

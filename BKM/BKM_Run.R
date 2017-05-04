@@ -7,7 +7,7 @@ library(coda)
 library(lattice)
 set.seed(134522)
 
-save_on = TRUE
+save_on = FALSE
 scaled_on = FALSE
 
 # MCMC details: ####
@@ -122,6 +122,14 @@ if (scaled_on){
                                                                    c("Mean DA", "SD DA")))
     save(DA_Resultsparams, file="BKM_DA_Resultsparams.RData")
 }
+
+
+
+par(mfrow=c(2,1),oma=c(0,0,1.5,0))
+plot(colMeans(mat1[,(1:T)]), type='l', xlab ="", ylab="", sub="N1")
+plot(colMeans(mat1[,(T+1)+(T+T))]), type='l', xlab ="", ylab="", sub="Na")
+mtext("Posterior means", outer=TRUE, cex=1)
+
 
 # Trace plots ####
 par(mfrow=c(2,3), oma = c(0, 0, 1.5, 0))

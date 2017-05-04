@@ -46,6 +46,7 @@ model{
 	for(t in 1:2){
 	  N1[t] ~ dpois(200)
 	  Na[t] ~ dbin(0.5,2000)
+	  N_tot[t] <- N1[t] + Na[t]
 	}
 	
 	# Define the system process for the census/index data using the Normal approximation
@@ -76,7 +77,8 @@ model{
 
 	# Define the observation process for the census/index data
 	for(t in 3:T){
-	    y[t] ~ dnorm(Na[t],tauy)
+	  N_tot[t] <- N1[t] + Na[t]
+	  y[t] ~ dnorm(Na[t],tauy)
 	}
 
 	# THE RECOVERY MODEL ####

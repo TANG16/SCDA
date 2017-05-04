@@ -66,7 +66,7 @@ time_HMM_sample <- temp # PC:   1843.02 ~31 min
 # ada = 1000 --> 1741.71
 # ada = 100 --> laptop: 6449 ~ 108 min
 if (save_on) {
-  save(output1, time_HMM_sample, file =  paste("Results/BKM_HMM_try_iter",toString(iter),"_ada",toString(ada),"_laptop.RData",sep=""))
+  save(output1, time_HMM_sample, file =  paste("Results/BKM_HMM_iter",toString(iter),"_ada",toString(ada),"_laptop.RData",sep=""))
 }
 
 

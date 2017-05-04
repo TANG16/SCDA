@@ -2,14 +2,30 @@ T=36
 T1=35
 T2=35
 
+# SCALE TO PRACTICE HMM
+sc <- 1 
+
 # BINS for approximative HMM INTERGRATION
-N_bin = 69 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
-bin_size = 9 # odd so the midpoints are integer
+N_bin = 19#59 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
+bin_size = 27#9 # odd so the midpoints are integer
+
+# bin = rep(0,N_bin+1)
+# # Bins' midpoints
+# for (i in 0:(N_bin)){
+#   bin[i+1] <- 0.5*(bin_size*(2*i+1)-1) # ith bin's midpoint
+# }
+
+# logfact <- function(x){sum(log(seq_len(x)))}
+# logfact_m = rep(NaN, 7000)
+# for (i in 0:(7000-1)){  
+#   logfact_m[i+1] <- logfact(i)
+# }
+
 
 # ZEROS TRICK
 zeros <- rep(0,(T))
 Up <-  20000
-Na_prior <- rep(1/(Up+1), Up+1) 
+Na_prior <- rep(1/(Up+1), Up+1)
 
 time <- seq(1,T,1)                
 # standardize the variable
@@ -19,7 +35,7 @@ stdT <- (time-mean(time))/sd(time)
 y=c(0, 0, 1092.23, 1100.01, 1234.32, 1460.85, 1570.38, 1819.79, 1391.27, 1507.60,
     1541.44, 1631.21, 1628.60, 1609.33, 1801.68, 1809.08, 1754.74, 1779.48, 1699.13,
     1681.39, 1610.46, 1918.45, 1717.07, 1415.69, 1229.02, 1082.02, 1096.61, 1045.84,
-    1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64)
+    1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64)/sc
 
 # frost days 
 f=c(0.1922, 0.3082, 0.3082, -0.9676, 0.5401, 0.3082, 1.1995, 0.1921, -0.8526,
@@ -65,10 +81,13 @@ m=matrix(c(
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,4334),
     nrow=35,ncol=36,byrow=T)
 
+m[,36] = round(m[,36]/sc)
+
 # Calculate the no. of birds released each year
 rel <- array(0,T1)
 for(t in 1:T1){
    rel[t] <- sum(m[t,])
 }
 
-data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, N_bin = N_bin, bin_size_bin_size, zeros= zeros, Na_prior = Na_prior)
+data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, N_bin=N_bin, bin_size=bin_size, Up=Up, zeros= zeros, sc=sc)#,logfact_m=logfact_m)
+# data <-list(T=T, T1=T1, T2=T2, y=y, f=f, m=m, rel=rel, stdT=stdT, bin=bin, N_bin=N_bin, zeros= zeros, Na_prior = Na_prior, sc=sc)#,logfact_m=logfact_m)

@@ -63,9 +63,9 @@ time_sample <- temp # PC org:   5.23
 
 if (save_on) {
   if (scaled_on){
-    save(output1, time_sample, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),"_scaled_linux.RData",sep=""))
+    save(output1, time_sample, mod, time_init, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),"_scaled_linux.RData",sep=""))
 }else {
-    save(output1, time_sample, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),"_linux.RData",sep=""))
+    save(output1, time_sample, mod, time_init, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),"_linux.RData",sep=""))
   } 
 }
 quit()

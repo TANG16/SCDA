@@ -8,6 +8,20 @@ ti <- 26
 # Nstar FOR HMM INTERGRATION
 N_max = 19 # 99 #was 100 but we need 0 so to have 100 in total set it to 99
 
+logfact <- function(x){sum(log(seq_len(x)))}
+logfact_m = rep(NaN, 1000)
+for (i in 0:(1000-1)){  
+  logfact_m[i+1] <- logfact(i)
+}
+
+# 5000 --> Observed stochastic nodes: 151
+# Unobserved stochastic nodes: 109
+# Total graph size: 125279
+
+# 1000 -->    Observed stochastic nodes: 151
+# Unobserved stochastic nodes: 109
+# Total graph size: 121399
+
 # ZEROS TRICK
 zeros <- rep(0,(ti))
 Up <- 100
@@ -155,4 +169,4 @@ stdT <- (time-mean_time)/sd(time)
 # Place all data into list: ####
 data <-list(ti=ti,m=mfem,mM=mmal,r=rfem,rM=rmal,popcount=popcount,nestlings=nestlings[1:(ti-1)], 
             sample.size=sample.size[1:(ti-1)],mean_time=mean_time,stdT=stdT,voleH=voleH[2:ti],
-            N_max = N_max, zeros = zeros, Nad_prior = Nad_prior)
+            N_max = N_max, zeros = zeros, Nad_prior = Nad_prior,  logfact_m =  logfact_m)

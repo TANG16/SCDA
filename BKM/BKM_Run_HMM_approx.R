@@ -13,12 +13,12 @@ save_on = FALSE
 ada=100
 iter=1000
 th=1
-cha=3
+cha=1
 
 # Read data ###
-source("BKM_Data_HMM.R")
+source("BKM_Data_HMM_approx.R")
 # Set parameters and inital values
-source("BKM_StartingVals_HMM.R")
+source("BKM_StartingVals_HMM_approx.R")
 
 if (1==0){
   alpha1 = 1
@@ -47,7 +47,7 @@ if (1==0){
 
 # Compile the model: ####
 tstart=proc.time()
-mod <- jags.model('BKM_Bugs_HMM.R',data,inits,n.chains=cha,n.adapt=ada)
+mod <- jags.model('BKM_Bugs_HMM_approx.R',data,inits,n.chains=cha,n.adapt=ada)
 temp=proc.time()-tstart
 time_HMM_init <- temp # ada=100 PC: 357.39 ~ 6min --> 188.28 ~3 min with 0!
 # ada = 1000 --> PC: 1798.68 
@@ -66,7 +66,7 @@ time_HMM_sample <- temp # PC:   1843.02 ~31 min
 # ada = 1000 --> 1741.71
 # ada = 100 --> laptop: 6449 ~ 108 min
 if (save_on) {
-  save(output1, time_HMM_sample, file =  paste("Results/BKM_HMM_try_iter",toString(iter),"_ada",toString(ada),"_laptop.RData",sep=""))
+  save(output1, time_HMM_sample, file =  paste("Results/BKM_HMM_approx_iter",toString(iter),"_ada",toString(ada),"_laptop.RData",sep=""))
 }
 
 
@@ -80,17 +80,21 @@ mat3 = as.matrix(output1[3])
 mat1_names <- colnames(mat1) 
 
 mat1_names[1] # "G[1,3]"
-mat1_names[34*100]      # "G[100,36]"
-mat1_names[34*100+1]    # "Na[1]"
-mat1_names[34*100+1+35] # "Na[36]"
-mat1_names[34*100+1+35+1] # "P[1,3]"
-mat1_names[34*100+1+35+34*100] #"P[100,36]"
+mat1_names[34*60]      # "G[60,36]"
+mat1_names[34*60+1]    # "Na[1]"
+mat1_names[34*60+1+35] # "Na[36]"
+mat1_names[34*60+1+35+1] # "P[1,3]"
+mat1_names[34*60+1+35+34*60] #"P[100,36]"
 mat1_names[7036]
-(34*100+1+35+1):(34*100+1+35+34*100)
+(34*60+1+35+1):(34*100+1+35+34*60)
 
 
 # PLOTS ####
-source("BKM_HMM_plots.R")
+
+# Posterior means ######
+plot(colMeans(mat1[,(34*60+1):(34*60+1+35)]), type='l', xlab ="", ylab="", sub="Na")
+
+mtext("Posterior means", outer=TRUE, cex=1)
 
 # Check the transition probabilities ####
 Gamma_last = matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)

@@ -495,3 +495,4 @@ acf(output1[[3]][501:2000,"alphaa"], main="alphaa, Chain 3")
 acf(output1[[1]][501:2000,"betaa"], main="betaa, Chain 1")
 acf(output1[[2]][501:2000,"betaa"], main="betaa, Chain 2")
 acf(output1[[3]][501:2000,"betaa"], main="betaa, Chain 3")
+

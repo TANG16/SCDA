@@ -82,16 +82,23 @@ model{
 
     for (i in 0:(N_max-1)){  # from 0!!! 
       G[i+1,t] <- exp(-exp(loglam[t-1]) + i*loglam[t-1] - logfact(i))
-    
+      # G[i+1,t] <- exp(-exp(loglam[t-1]) + i*loglam[t-1] - logfact_m[(i+1)])
+      
+      # P[i+1,t] <- ifelse((i + Na[t-1] - Na[t])>0,
+      #                    exp(Na[t]*log(phia[t-1]) + (i + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact_m[(i + Na[t-1]+1)] - logfact_m[(abs(i + Na[t-1] - Na[t])+1)] - logfact_m[(Na[t]+1)]),
+      #                    0) 
       P[i+1,t] <- ifelse((i + Na[t-1] - Na[t])>0,
                          exp(Na[t]*log(phia[t-1]) + (i + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(i + Na[t-1]) - logfact(abs(i + Na[t-1] - Na[t])) - logfact(Na[t])),
-                         0)   
+                         0)
     } 
     
     G[(N_max+1),t] <- max(0,1- sum(G[1:(N_max),t]))
-    P[(N_max+1),t] <- ifelse((N_max + Na[t-1] - Na[t])>0, 
+    P[(N_max+1),t] <- ifelse((N_max + Na[t-1] - Na[t])>0,
                              exp(Na[t]*log(phia[t-1]) + (N_max + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact(N_max + Na[t-1]) - logfact(abs(N_max + Na[t-1] - Na[t])) - logfact(Na[t])),
                              0)
+    # P[(N_max+1),t] <- ifelse((N_max + Na[t-1] - Na[t])>0, 
+    #                          exp(Na[t]*log(phia[t-1]) + (N_max + Na[t-1] - Na[t])*log(1-phia[t-1]) + logfact_m[(N_max + Na[t-1]+1)] - logfact_m[(abs(N_max + Na[t-1] - Na[t])+1)] - logfact_m[(Na[t]+1)]),
+    #                          0)    
     #ifelse function is evaluated during sampling and not at compile time
     
     # LOL. The ifelse function works just like the one in R. 
