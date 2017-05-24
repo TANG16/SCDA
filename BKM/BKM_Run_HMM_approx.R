@@ -92,7 +92,7 @@ mat1_names[7036]
 # PLOTS ####
 
 # Posterior means ######
-plot(colMeans(mat1[,(34*60+1):(34*60+1+35)]), type='l', xlab ="", ylab="", sub="Na")
+plot(colMeans(mat1[,(34*(N_bin+1)+1):(34*(N_bin+1)+1+35)]), type='l', xlab ="", ylab="", sub="Na")
 
 mtext("Posterior means", outer=TRUE, cex=1)
 
@@ -162,7 +162,6 @@ sd(output1[[1]][,"sigy"])
 # DA WITH HMM MEANS STD #####
 # sigy #### 
 sigy <- round(c(30755.8259, 8700, 
-                157.7786,60.7126,
                 mean(mat1[501:2000,"sigy"]),sd(mat1[501:2000,"sigy"]),
                 mean(mat2[501:2000,"sigy"]),sd(mat2[501:2000,"sigy"]),
                 mean(mat3[501:2000,"sigy"]),sd(mat3[501:2000,"sigy"])),4)
@@ -172,80 +171,68 @@ sigy <- round(c(30755.8259, 8700,
 
 #  DA scaled for ada=100, iter=2000
 alphar <- round(c(-1.1723, 0.06579, 
-                  -1.1429, 0.1013, 
                 mean(mat1[501:2000,"alphar"]),sd(mat1[501:2000,"alphar"]),
                 mean(mat2[501:2000,"alphar"]),sd(mat2[501:2000,"alphar"]),
                 mean(mat3[501:2000,"alphar"]),sd(mat3[501:2000,"alphar"])),4)
 betar <- round(c(-0.3360, 0.03254, 
-                 -0.3069, 0.0729,
                   mean(mat1[501:2000,"betar"]),sd(mat1[501:2000,"betar"]),
                   mean(mat2[501:2000,"betar"]),sd(mat2[501:2000,"betar"]),
                   mean(mat3[501:2000,"betar"]),sd(mat3[501:2000,"betar"])),4) 
 
 alphal <- round(c(-4.5760, 0.3534, 
-                  -2.2751, 0.0368,
                   mean(mat1[501:2000,"alphal"]),sd(mat1[501:2000,"alphal"]),
                   mean(mat2[501:2000,"alphal"]),sd(mat2[501:2000,"alphal"]),
                   mean(mat3[501:2000,"alphal"]),sd(mat3[501:2000,"alphal"])),4)
 betal <- round(c(-0.3650, 0.03981,
-                 -0.3589, 0.0435,                 
                  mean(mat1[501:2000,"betal"]),sd(mat1[501:2000,"betal"]),
                  mean(mat2[501:2000,"betal"]),sd(mat2[501:2000,"betal"]),
                  mean(mat3[501:2000,"betal"]),sd(mat3[501:2000,"betal"])),4) 
 
 alpha1 <- round(c(0.5540, 0.06888,
-                  0.5262, 0.0689,                  
                   mean(mat1[501:2000,"alpha1"]),sd(mat1[501:2000,"alpha1"]),
                   mean(mat2[501:2000,"alpha1"]),sd(mat2[501:2000,"alpha1"]),
                   mean(mat3[501:2000,"alpha1"]),sd(mat3[501:2000,"alpha1"])),4)
 beta1 <- round(c(-0.1913, 0.05668, 
-                 -0.2078, 0.0601,
                  mean(mat1[501:2000,"beta1"]),sd(mat1[501:2000,"beta1"]),
                  mean(mat2[501:2000,"beta1"]),sd(mat2[501:2000,"beta1"]),
                  mean(mat3[501:2000,"beta1"]),sd(mat3[501:2000,"beta1"])),4) 
        
 alphaa <- round(c(1.5678, 0.06338, 
-                  1.5409, 0.0720,                  
                   mean(mat1[501:2000,"alphaa"]),sd(mat1[501:2000,"alphaa"]),
                   mean(mat2[501:2000,"alphaa"]),sd(mat2[501:2000,"alphaa"]),
                   mean(mat3[501:2000,"alphaa"]),sd(mat3[501:2000,"alphaa"])),4)
 betaa <- round(c(-0.2465, 0.03786, 
-                 -0.2468, 0.0417,
                  mean(mat1[501:2000,"betaa"]),sd(mat1[501:2000,"betaa"]),
                  mean(mat2[501:2000,"betaa"]),sd(mat2[501:2000,"betaa"]),
                  mean(mat3[501:2000,"betaa"]),sd(mat3[501:2000,"betaa"])),4) 
 # Nas ####
 Na3 <- round(c(993.9475, 26.52, 
-               104.7687, 6.0909,
                   mean(mat1[501:2000,"Na[3]"]),sd(mat1[501:2000,"Na[3]"]),
                   mean(mat2[501:2000,"Na[3]"]),sd(mat2[501:2000,"Na[3]"]),
                   mean(mat3[501:2000,"Na[3]"]),sd(mat3[501:2000,"Na[3]"])),4)
 
 Na13 <- round(c(1789.2550, 52.95, 
-                170.5947, 6.6869,
                   mean(mat1[501:2000,"Na[13]"]),sd(mat1[501:2000,"Na[13]"]),
                   mean(mat2[501:2000,"Na[13]"]),sd(mat2[501:2000,"Na[13]"]),
                   mean(mat3[501:2000,"Na[13]"]),sd(mat3[501:2000,"Na[13]"])),4)
 
 Na23 <- round(c(1469.4150, 49.46, 
-                158.5800, 7.2918,
                   mean(mat1[501:2000,"Na[23]"]),sd(mat1[501:2000,"Na[23]"]),
                   mean(mat2[501:2000,"Na[23]"]),sd(mat2[501:2000,"Na[23]"]),
                   mean(mat3[501:2000,"Na[23]"]),sd(mat3[501:2000,"Na[23]"])),4)
 
 Na33 <- round(c(975.9720, 59.51, 
-                94.9613, 5.6326,
                 mean(mat1[501:2000,"Na[33]"]),sd(mat1[501:2000,"Na[33]"]),
                 mean(mat2[501:2000,"Na[33]"]),sd(mat2[501:2000,"Na[33]"]),
                 mean(mat3[501:2000,"Na[33]"]),sd(mat3[501:2000,"Na[33]"])),4)
 
 
-HMM_Resultsparams <- matrix(c(sigy,alphar,betar,alphal,betal,alpha1,beta1,alphaa,betaa,Na3,Na13,Na23,Na33),
-                            ncol=10,byrow=T,
+HMM_approx_Resultsparams <- matrix(c(sigy,alphar,betar,alphal,betal,alpha1,beta1,alphaa,betaa,Na3,Na13,Na23,Na33),
+                            ncol=8,byrow=T,
                             dimnames=list(c("sigy","alphar","betar","alphal","betal","alpha1","beta1","alphaa","betaa", "Na3","Na13","Na23","Na33"),
-                                    c("Mean Full DA", "SD Full DA","Mean Scaled DA", "SD Scaled DA", "Mean Chain1","SD Chain1","Mean Chain2","SD Chain2","Mean Chain3","SD Chain3")))
+                                    c("Mean Full DA", "SD Full DA", "Mean Chain1","SD Chain1","Mean Chain2","SD Chain2","Mean Chain3","SD Chain3")))
 
-save(HMM_Resultsparams, file = "BKM_HMM_Resultsparams.RData")
+save(HMM_approx_Resultsparams, file = "BKM_HMM_approx_bin27_Resultsparams.RData")
        
 
 # ESS and IF ####

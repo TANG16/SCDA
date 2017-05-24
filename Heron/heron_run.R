@@ -71,7 +71,7 @@ for (i in c(1:4,7:10,5,6,11,12)){
 
 par(mfrow=c(4,1),oma=c(0,0,1.5,0))
 for (i in 0:3){
-  plot(colMeans(mat2[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
+  plot(colMeans(mat1[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
 }
 mtext("Posterior means", outer=TRUE, cex=1)
 

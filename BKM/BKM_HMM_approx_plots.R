@@ -15,7 +15,7 @@ mat3 = as.matrix(output1[3])
 plot(colMeans(mat1[,(36+1+36):(36+36)]), type='l', xlab ="", ylab="", sub="Na")
 
 # Check the transition probabilities ####
-Gamma_last = matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)
+Gamma_last = matrix(mat1[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)
 Gamma_last_10 = diag(Gamma_last[,12])
 sum(Gamma_last_10) #1
 sum_Gamma_last = colSums(Gamma_last)
@@ -23,47 +23,47 @@ sum_Gamma_last = colSums(Gamma_last)
 # 1000 iter ####
 # Chain 1 with 1000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat1[100,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 100')
+plot(matrix(mat1[100,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 100')
 for (t in 4:34){
-  lines(matrix(mat1[100,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[100,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 500')
+plot(matrix(mat1[500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat1[500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[900,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 900')
+plot(matrix(mat1[900,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 900')
 for (t in 4:34){
-  lines(matrix(mat1[900,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[900,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1000')
+plot(matrix(mat1[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 1", outer=TRUE, cex=1)
 
 # Chain 2 with 1000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat2[100,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 100')
+plot(matrix(mat2[100,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 100')
 for (t in 4:34){
-  lines(matrix(mat2[100,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[100,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 500')
+plot(matrix(mat2[500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat2[500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[900,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 900')
+plot(matrix(mat2[900,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 900')
 for (t in 4:34){
-  lines(matrix(mat2[900,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[900,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1000')
+plot(matrix(mat2[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat2[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 2", outer=TRUE, cex=1)
 
@@ -71,72 +71,72 @@ mtext("Chain 2", outer=TRUE, cex=1)
 # 2000 iter ####
 # Chain 1 with 2000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat1[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
+plot(matrix(mat1[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat1[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
+plot(matrix(mat1[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
 for (t in 4:34){
-  lines(matrix(mat1[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
+plot(matrix(mat1[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
 for (t in 4:34){
-  lines(matrix(mat1[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat1[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat1[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 1", outer=TRUE, cex=1)
 
 
 # Chain 2 with 2000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat2[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
+plot(matrix(mat2[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat2[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
+plot(matrix(mat2[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
 for (t in 4:34){
-  lines(matrix(mat2[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
+plot(matrix(mat2[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
 for (t in 4:34){
-  lines(matrix(mat2[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat2[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat2[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 2", outer=TRUE, cex=1)
 
 
 # Chain 3 with 2000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat3[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
+plot(matrix(mat3[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat3[500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
+plot(matrix(mat3[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 600')
 for (t in 4:34){
-  lines(matrix(mat3[600,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[600,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
+plot(matrix(mat3[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 1500')
 for (t in 4:34){
-  lines(matrix(mat3[1500,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[1500,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat3[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat3[2000,1:(34*60)], nrow = 60, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[2000,1:(34*(N_bin+1))], nrow = (N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 3", outer=TRUE, cex=1)
 
@@ -145,72 +145,72 @@ mtext("Chain 3", outer=TRUE, cex=1)
 # 3000 iter ####
 # Chain 1 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
+plot(matrix(mat1[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat1[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat1[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
+plot(matrix(mat1[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat1[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
+plot(matrix(mat1[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat1[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 1", outer=TRUE, cex=1)
 
 
 # Chain 2 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat2[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
+plot(matrix(mat2[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat2[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat2[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat2[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
+plot(matrix(mat2[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat2[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
+plot(matrix(mat2[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat2[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 2", outer=TRUE, cex=1)
 
 
 # Chain 3 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat3[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
+plot(matrix(mat3[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(Gamma)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat3[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[1000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
+plot(matrix(mat3[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2000')
 for (t in 4:34){
-  lines(matrix(mat3[2000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[2000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
+plot(matrix(mat3[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat3[2500,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[2500,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
+plot(matrix(mat3[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(Gamma)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat3[3000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[3000,1:(34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 3", outer=TRUE, cex=1)
 
@@ -219,120 +219,145 @@ mtext("Chain 3", outer=TRUE, cex=1)
 ##### 1000 iter
 # Chain 1 with 1000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat1[100,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 100')
+plot(matrix(mat1[100,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 100')
 for (t in 4:34){
-  lines(matrix(mat1[100,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[100,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 500')
+plot(matrix(mat1[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat1[500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[900,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 900')
+plot(matrix(mat1[900,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 900')
 for (t in 4:34){
-  lines(matrix(mat1[900,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[900,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 1000')
+plot(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat1[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 1", outer=TRUE, cex=1)
 
 
 # Chain 2 with 1000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat2[100,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 100')
+plot(matrix(mat2[100,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 100')
 for (t in 4:34){
-  lines(matrix(mat2[100,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[100,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 500')
+plot(matrix(mat2[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 500')
 for (t in 4:34){
-  lines(matrix(mat2[500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[900,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 900')
+plot(matrix(mat2[900,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 900')
 for (t in 4:34){
-  lines(matrix(mat2[900,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[900,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 1000')
+plot(matrix(mat2[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat2[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 2", outer=TRUE, cex=1)
+
+
+##### 2000 iter
+# Chain 1 with 2000 iter
+par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
+plot(matrix(mat1[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 500')
+for (t in 4:34){
+  lines(matrix(mat1[500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
+}
+
+plot(matrix(mat1[600,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 600')
+for (t in 4:34){
+  lines(matrix(mat1[600,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
+}
+
+plot(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 1000')
+for (t in 4:34){
+  lines(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
+}
+
+plot(matrix(mat1[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2000')
+for (t in 4:34){
+  lines(matrix(mat1[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
+}
+mtext("Chain 1", outer=TRUE, cex=1)
 
 
 ##### 3000 iter
 # Chain 1 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat1[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
+plot(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat1[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
+plot(matrix(mat1[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
 for (t in 4:34){
-  lines(matrix(mat1[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
+plot(matrix(mat1[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat1[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat1[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
+plot(matrix(mat1[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat1[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat1[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 1", outer=TRUE, cex=1)
 
 # Chain 2 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat2[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
+plot(matrix(mat2[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat2[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
+plot(matrix(mat2[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
 for (t in 4:34){
-  lines(matrix(mat2[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
+plot(matrix(mat2[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat2[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat2[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
+plot(matrix(mat2[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat2[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat2[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 2", outer=TRUE, cex=1)
 
 
 # Chain 3 with 3000 iter
 par(mfrow=c(2,2), oma = c(0, 0, 1.5, 0))
-plot(matrix(mat3[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
+plot(matrix(mat3[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="", ylab="diag(P)", sub='MCMC iter: 1000')
 for (t in 4:34){
-  lines(matrix(mat3[1000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[1000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
+plot(matrix(mat3[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 200')
 for (t in 4:34){
-  lines(matrix(mat3[2000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[2000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
+plot(matrix(mat3[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 2500')
 for (t in 4:34){
-  lines(matrix(mat3[2500,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[2500,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 
-plot(matrix(mat3[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
+plot(matrix(mat3[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,3],type='l', xlab ="",ylab="diag(P)", sub='MCMC iter: 3000')
 for (t in 4:34){
-  lines(matrix(mat3[3000,(34*100+1+35+1):(34*100+1+35+34*100)], nrow = 100, ncol = 34, byrow = FALSE)[,t],type='l')
+  lines(matrix(mat3[3000,(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))], nrow =(N_bin+1), ncol = 34, byrow = FALSE)[,t],type='l')
 }
 mtext("Chain 3", outer=TRUE, cex=1)
 
@@ -349,10 +374,10 @@ plot(mat1[,"betar"], type="l", xlab ="", ylab="", sub="beta r")
 plot(mat1[,"Na[13]"], type="l", xlab ="", ylab="", sub="Na[13]")
 plot(mat1[,"Na[23]"], type="l", xlab ="", ylab="", sub="Na[23]")
 plot(mat1[,"Na[33]"], type="l", xlab ="", ylab="", sub="Na[33]")
-# transition probability to N1=20
-plot(mat1[,"G[20,10]"], type="l", xlab ="", ylab="", sub="Gamma[20,10], k=20,t=10")
-plot(mat1[,"G[20,20]"], type="l", xlab ="", ylab="", sub="Gamma[20,20], k=20,t=20")
-plot(mat1[,"G[20,30]"], type="l", xlab ="", ylab="", sub="Gamma[20,30], k=20,t=30")
+# transition probability to bin no. 10
+plot(mat1[,"G[10,10]"], type="l", xlab ="", ylab="", sub="Gamma[20,10], bin=10 (N1=243,...,270), t=10")
+plot(mat1[,"G[10,20]"], type="l", xlab ="", ylab="", sub="Gamma[20,20], bin=10 (N1=243,...,270), t=20")
+plot(mat1[,"G[10,30]"], type="l", xlab ="", ylab="", sub="Gamma[20,30], bin=10 (N1=243,...,270), t=30")
 mtext("Chain 1", outer=TRUE, cex=1)
 
 # Chain 2
@@ -495,3 +520,24 @@ acf(output1[[1]][501:2000,"betaa"], main="betaa, Chain 1")
 acf(output1[[2]][501:2000,"betaa"], main="betaa, Chain 2")
 acf(output1[[3]][501:2000,"betaa"], main="betaa, Chain 3")
 
+
+
+
+# Trace  ####
+#
+par(mfrow=c(4,3))
+acf(output1[[1]][501:2000,"Na[3]"], main="Na[3], Chain 1")
+acf(output1[[2]][501:2000,"Na[3]"], main="Na[3], Chain 2")
+acf(output1[[3]][501:2000,"Na[3]"], main="Na[3], Chain 3")
+
+acf(output1[[1]][501:2000,"Na[13]"], main="Na[13], Chain 1")
+acf(output1[[2]][501:2000,"Na[13]"], main="Na[13], Chain 2")
+acf(output1[[3]][501:2000,"Na[13]"], main="Na[13], Chain 3")
+
+acf(output1[[1]][501:2000,"Na[23]"], main="Na[23], Chain 1")
+acf(output1[[2]][501:2000,"Na[23]"], main="Na[23], Chain 2")
+acf(output1[[3]][501:2000,"Na[23]"], main="Na[23], Chain 3")
+
+acf(output1[[1]][501:2000,"Na[33]"], main="Na[33], Chain 1")
+acf(output1[[2]][501:2000,"Na[33]"], main="Na[33], Chain 2")
+acf(output1[[3]][501:2000,"Na[33]"], main="Na[33], Chain 3")

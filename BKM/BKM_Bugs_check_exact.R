@@ -1,11 +1,40 @@
-phi1 = double(T-1)
-phia = double(T-1)
-lambda = double(T-1)
-rho = double(T-1)
+T=36
+
+# covariates
+time <- seq(1,T,1)                
+stdT <- (time-mean(time))/sd(time)
+f=c(0.1922, 0.3082, 0.3082, -0.9676, 0.5401, 0.3082, 1.1995, 0.1921, -0.8526,
+    -1.0835, -0.6196, -1.1995, -0.5037, -0.1557, 0.0762, 2.628, -0.3877, -0.968,
+    1.9318, -0.6196, -0.3877, 1.700, 2.2797, 0.6561, -0.8516, -1.0835, -1.0835,
+    0.1922, 0.1922, -0.1557, -0.5037, -0.8516, 0.8880, -0.0398, -1.1995, 0)
+
+
+# alpha1 = 1
+# alphaa = 2
+# alphar = -2
+# alphal = -4
+# beta1 =-2
+# betaa = 0.1
+# betar = -0.7
+# betal = -0.3
+
+alpha1 = 1
+alphaa = 2
+alphar = -1.106
+alphal = -4
+beta1 = -0.19
+betaa = 0.1
+betar = -0.299 
+betal = -0.3
+
+phi1 = double(T)
+phia = double(T)
+lambda = double(T)
+rho = double(T)
 
 invlogit = function(x){exp(x)/(1+exp(x))}
 
-for(t in 1:(T-1)){
+for(t in 1:(T)){
   ind =  alpha1 + beta1*f[t]
   phi1[t] <-exp(ind)/(1+exp(ind)) # corresponds to the year 1963
   

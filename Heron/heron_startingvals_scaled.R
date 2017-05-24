@@ -1,11 +1,26 @@
-X1init=rep(1400,T)/sc
-X1init[2:T] <- rpois((T-1),c(4000/sc,y[2:(T-1)])*0.5)
-X2init=rep(1200,T)/sc
-X2init[2:T] <- rbinom((T-1),X1init[1:(T-1)],0.9)
-X3init=rep(1000,T)/sc
-X3init[2:T] <- rbinom((T-1),X2init[1:(T-1)],0.9)
-X4init=rep(900,T)/sc
-X4init[2:T] <- rbinom((T-1),X3init[1:(T-1)],0.9)
+# X1init=rep(1400,T)/sc
+# X1init[2:T] <- rpois((T-1),c(4000/sc,y[2:(T-1)])*0.5)
+# X2init=rep(1200,T)/sc
+# X2init[2:T] <- rbinom((T-1),X1init[1:(T-1)],0.9)
+# X3init=rep(1000,T)/sc
+# X3init[2:T] <- rbinom((T-1),X2init[1:(T-1)],0.9)
+# X4init=rep(900,T)/sc
+# X4init[2:T] <- rbinom((T-1),X3init[1:(T-1)],0.9)
+
+# X1init=rep(1400,T)/sc
+# X1init[2:T] <- rpois((T-1),c(4000/sc,y[2:(T-1)])*1.1)
+# X2init=rep(1200,T)/sc
+# X2init[2:T] <- rbinom((T-1),X1init[1:(T-1)],0.5)
+# X3init=rep(1000,T)/sc
+# X3init[2:T] <- rbinom((T-1),X2init[1:(T-1)],0.6)
+# X4init=rep(900,T)/sc
+# X4init[2:T] <- rbinom((T-1),X3init[1:(T-1)],0.7)
+
+
+X1init=rep(25,T)
+X2init=rep(15,T)
+X3init=rep(10,T)
+X4init=rep(40,T)
 
 # tauy = 1000
 tauy = 1

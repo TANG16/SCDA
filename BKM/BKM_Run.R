@@ -12,15 +12,18 @@ scaled_on = FALSE
 
 # MCMC details: ####
 
-# ada=1000
-# iter=3000
+# # ada=1000
+# # iter=3000
+# # th=1
+# # cha=2
+# ada=100
+# iter=2000
 # th=1
-# cha=2
-ada=100
-iter=2000
+# cha=3
+ada=0
+iter=50000
 th=1
 cha=3
-
 
 # Read data
 if (scaled_on){
@@ -74,6 +77,8 @@ mat2 = as.matrix(output1[2])
 mat3 = as.matrix(output1[3])
 summary(output1)
 
+mat1_names <- colnames(mat1)
+colMeans(mat1[,73:80])
 # Refer to particular variables ####
 sd(output1[[1]][,1])
 mean(output1[[1]][,"Na[1]"])
@@ -127,7 +132,7 @@ if (scaled_on){
 
 par(mfrow=c(2,1),oma=c(0,0,1.5,0))
 plot(colMeans(mat1[,(1:T)]), type='l', xlab ="", ylab="", sub="N1")
-plot(colMeans(mat1[,(T+1)+(T+T))]), type='l', xlab ="", ylab="", sub="Na")
+plot(colMeans(mat1[,(T+1):(T+T)]), type='l', xlab ="", ylab="", sub="Na")
 mtext("Posterior means", outer=TRUE, cex=1)
 
 
@@ -268,3 +273,58 @@ for (ii in 1:ncol(mat1)){
   IF_curr = 1 + 2*sum(acf_curr[-1])
   IF[ii] = IF_curr
 }
+
+
+
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+
+plot(mat1[,"Na[1]"], type="l", xlab ="", ylab="", sub="Na[1]")
+plot(mat1[,"Na[3]"], type="l", xlab ="", ylab="", sub="Na[3]")
+plot(mat1[,"Na[9]"], type="l", xlab ="", ylab="", sub="Na[9]")
+
+plot(mat1[,"Na[10]"], type="l", xlab ="", ylab="", sub="Na[10]")
+plot(mat1[,"Na[13]"], type="l", xlab ="", ylab="", sub="Na[13]")
+plot(mat1[,"Na[17]"], type="l", xlab ="", ylab="", sub="Na[17]")
+
+plot(mat1[,"Na[23]"], type="l", xlab ="", ylab="", sub="Na[23]")
+plot(mat1[,"Na[33]"], type="l", xlab ="", ylab="", sub="Na[33]")
+plot(mat1[,"Na[36]"], type="l", xlab ="", ylab="", sub="Na[36]")
+
+
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+
+plot(mat1[,"N1[1]"], type="l", xlab ="", ylab="", sub="N1[1]")
+plot(mat1[,"N1[3]"], type="l", xlab ="", ylab="", sub="N1[3]")
+plot(mat1[,"N1[9]"], type="l", xlab ="", ylab="", sub="N1[9]")
+
+plot(mat1[,"N1[10]"], type="l", xlab ="", ylab="", sub="N1[10]")
+plot(mat1[,"N1[13]"], type="l", xlab ="", ylab="", sub="N1[13]")
+plot(mat1[,"N1[17]"], type="l", xlab ="", ylab="", sub="N1[17]")
+
+plot(mat1[,"N1[23]"], type="l", xlab ="", ylab="", sub="N1[23]")
+plot(mat1[,"N1[33]"], type="l", xlab ="", ylab="", sub="N1[33]")
+plot(mat1[,"N1[36]"], type="l", xlab ="", ylab="", sub="N1[36]")
+
+
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(73:81)){
+  plot(mat1[,i], type="l", xlab ="", ylab="", sub=mat1_names[i])
+}
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  plot(mat1[,4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[4*(i-3)+9])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  plot(mat1[,36+4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[36+4*(i-3)+9])
+}
+ 

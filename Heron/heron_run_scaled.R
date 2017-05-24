@@ -1,3 +1,4 @@
+# setwd("Heron")
 rm(list = ls())
 library(rjags)
 library(coda)
@@ -31,7 +32,7 @@ mat1_names <- colnames(mat1)
 tstart = proc.time()
 output2 <- coda.samples(mod,params,n.iter=10*iter,thin=th)
 time_sample2 = proc.time()-tstart
-mat2 = as.matrix(output2[1])
+mat2 = as.matrix(output1[2])
 
 
 mat1_names[1:72] # "X1[1]" : "X1[72]"
@@ -51,6 +52,11 @@ par(mfrow=c(3,4))
 for (i in c(1:4,7:10,5,6,11,12)){
   plot(mat1[,4*72+i] ,type="l", xlab = "", ylab="", sub = mat1_names[4*72+i])
 }
+
+par(mfrow=c(3,4))
+for (i in c(1:12)){
+  plot(mat1[,72+i] ,type="l", xlab = "", ylab="", sub = mat1_names[72+i])
+}
 par(mfrow=c(3,4))
 for (i in c(1:4,7:10,5,6,11,12)){
   acf(mat1[,4*72+i] ,main = mat1_names[4*72+i])
@@ -60,22 +66,27 @@ for (i in c(1:4,7:10,5,6,11,12)){
 # iter = 10000
 par(mfrow=c(3,4))
 for (i in c(1:4,7:10,5,6,11,12)){
-  plot(mat2[,4*72+i] ,type="l", xlab = "", ylab="", sub = mat1_names[4*72+i])
+  plot(mat1[,4*72+i] ,type="l", xlab = "", ylab="", sub = mat1_names[4*72+i])
 }
 par(mfrow=c(3,4))
 for (i in c(1:4,7:10,5,6,11,12)){
-  acf(mat2[,4*72+i] ,main = mat1_names[4*72+i])
+  acf(mat1[,4*72+i] ,main = mat1_names[4*72+i])
 }
 
 
 
 par(mfrow=c(4,1),oma=c(0,0,1.5,0))
 for (i in 0:3){
-  plot(colMeans(mat2[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
+  plot(colMeans(mat1[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
 }
 mtext("Posterior means", outer=TRUE, cex=1)
 
 
+par(mfrow=c(2,1),oma=c(0,0,1.5,0))
+for (i in c(2,4)){
+  plot(colMeans(mat1[,(i-1)*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i),sep=""))
+}
+mtext("Posterior means", outer=TRUE, cex=1)
 
 
 

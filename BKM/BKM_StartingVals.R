@@ -1,4 +1,4 @@
-params <- c('sigy','Na','N1','N_tot',
+params <- c('sigy','Na','N1',
             'alpha1','alphaa','alphar','alphal',
             'beta1', 'betaa','betar', 'betal')
 

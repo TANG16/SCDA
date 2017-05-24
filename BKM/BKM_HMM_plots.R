@@ -12,6 +12,22 @@ mat2 = as.matrix(output1[2])
 mat3 = as.matrix(output1[3])
 
 
+# Parameters
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(37:45)){
+  plot(mat1[,i], type="l", xlab ="", ylab="", sub=mat1_names[i])
+}
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  plot(mat1[,4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[4*(i-3)+9])
+}
+ 
+par(mfrow=c(1,1),oma=c(0,0,1.5,0))
+plot(colMeans(mat1[,(1:T)]), type='l', xlab ="", ylab="", sub="Na")
+mtext("Posterior mean", outer=TRUE, cex=1)
+
 
 # Check the transition probabilities ####
 Gamma_last = matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)

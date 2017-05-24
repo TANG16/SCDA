@@ -1,12 +1,13 @@
 clear all
 close all
+
+sc = 100;
+[y, f, m, rel, time, T, T_ring] = Heron_data(sc);
+
 N_max1 = 79;
 N_max3 = 49;
 
 logfact = @(x) sum(log(1:x));
-
-T = 72;
-sc = 100;
 
 G1 = zeros((N_max1+1),T);
 P2 = zeros((N_max1+1),T);
@@ -14,22 +15,7 @@ G3 = zeros((N_max3+1),T);
 P4 = zeros((N_max3+1),T);
 Q = zeros((N_max3+1),T);
  
-time = 1:T;
-time = (time-mean(time))/std(time);
 
-% fdays:
-fdays = [12, 26, 2, 9, 6, 8, 3, 2, 17, 3, 4, 8, 38, 12, 30, 3, 2, 15, 18, 46, 6,...  
-         3, 6, 15, 6, 13, 17, 22, 22, 4, 11, 9, 2, 1, 22, 57, 12, 13, 13, 2, 15,...
-         13, 20, 12, 3, 1, 5, 0, 6, 9, 11, 33, 7, 2, 27, 5, 7, 25, 30, 16, 3, 1,...
-         1, 12, 12, 9, 6, 3, 18, 10, 0, 1];
-f = (fdays-mean(fdays))/std(fdays);
-
-y = round([0,4000, 3500, 3850, 4050, 4000, 4075, 4150, 4150, 4375, 4500, 4800, 4700, 3650, 3550, 3400, 3850, 4300,... 
-       4075, 4125, 2700, 2800, 3575, 4100, 4550, 4700, 4575, 4800, 4425, 4150, 4500, 4075, 4550, 4350, 4675,...
-       3700, 2250, 2450, 2825, 2925, 3225, 3725, 3925, 4125, 4575, 4625, 4925, 5175, 5100, 5075, 5125, 5375,... 
-       5200, 5575, 5675, 5350, 5425, 5700, 5775, 5109, 5166, 5637, 5898, 6143, 5936, 6051, 6310, 6447, 6950,... 
-       6570, 6653, 6940]/sc);
-       
 alpha = zeros(4,1);
 beta = zeros(4,1);
 alphal = 0;
@@ -44,16 +30,20 @@ tauy = 1;%10;%1000;
 % alpharho = 1.1;
 % tauy = 1000;
 
-ind = alpha(1) + beta(1)*f;
+ind = alpha(1) + beta(1)*f(1:T-1);
 phi1 = exp(ind)./(1+exp(ind));
-ind = alpha(2) + beta(2)*f;
+ind = alpha(2) + beta(2)*f(1:T-1);
 phi2 = exp(ind)./(1+exp(ind));
-ind = alpha(3) + beta(3)*f;
+ind = alpha(3) + beta(3)*f(1:T-1);
 phi3 = exp(ind)./(1+exp(ind));
-ind = alpha(4) + beta(4)*f;
+ind = alpha(4) + beta(4)*f(1:T-1);
 phi4 = exp(ind)./(1+exp(ind));
+
 ind = alpharho*ones(1,T-1); 
 rho = exp(ind);
+
+ind = alphal + betal*(time(1:T_ring));
+lambda =  exp(ind)./(1+exp(ind));
 
 C = 1000000;
 pi = 3.14159265359;
@@ -94,19 +84,20 @@ end
 % end
 
 % prior for first transition/augmented observations/observation probabilities
-for ii = 0:N_max1
-    G1(ii+1,1) = 1/N_max1; % diffuse =itialisation
-    P2(ii+1,1) = X2_prior(1);
+for t=1:2
+    for ii = 0:N_max1
+        G1(ii+1,t) = 1/N_max1; % diffuse =itialisation
+        P2(ii+1,t) = X2_prior(1);
+    end
+
+    for ii = 0:N_max3
+        G3(ii+1,t) = 1/N_max3; % diffuse =itialisation
+        P4(ii+1,t) = X4_prior(1);
+        Q(ii+1,t) = exp(-tauy*((y(t) - (X2(t) + ii + X4(t))).^2)/2)*sqrt(tauy)/sqrt(2*pi);
+    end    
 end
 
-for ii = 0:N_max3
-    G3(ii+1,1) = 1/N_max3; % diffuse =itialisation
-    P4(ii+1,1) = X4_prior(1);
-    Q(ii+1,1) = exp(-tauy*((y(1) - (X2(1) + ii + X4(1))).^2)/2)*sqrt(tauy)/sqrt(2*pi);
-end    
-
-
-for t = 2:T
+for t = 3:T
     for ii = 0:(N_max1-1)  % X1 (depends only on [imputed] X4)
         G1(ii+1,t)= exp(-exp(loglam1(t-1)) + ii*loglam1(t-1) - logfact(ii));
     end 
@@ -114,7 +105,7 @@ for t = 2:T
 
     for ii = 0:(N_max3) % X3 (depends only on [imputed] X2) & y
         if ((X2(t-1) - ii)>0)
-            G3(ii+1,t) = exp(ii*log(phi3(t-1)) + (X2(t-1) - ii)*log(1-phi3(t-1)) + logfact(X2(t-1)) - logfact(abs(X2(t-1)-ii)) - logfact(ii));
+            G3(ii+1,t) = exp(ii*log(phi3(t-2)) + (X2(t-2) - ii)*log(1-phi3(t-2)) + logfact(X2(t-2)) - logfact(abs(X2(t-2)-ii)) - logfact(ii));
         else
             G3(ii+1,t) = 0;
         end
@@ -205,3 +196,9 @@ LL = sum(loglik)
 % [theta_mle_ss, ~, ~, ~, ~, ~] = fminunc(loglik_heron_HMM_statespace, theta_init,options);
 % 
 
+theta_init = [alpha', beta', alphal, betal];
+loglik_heron_recovery = @(xx) -Heron_RR_loglik(xx, m, f)/numel(m);
+options = optimoptions('fminunc');%,'MaxFunEvals',2000,'MaxIter',1500);
+[theta_mle_rr, ~, ~, ~, ~, ~] = fminunc(loglik_heron_recovery, theta_init,options);
+ 
+% theta_mle_ss =[1.2875    0.2482    0.6782    1.2535   -0.0046   -0.0935   -0.2305    0.0577    0.3901   -0.0504]

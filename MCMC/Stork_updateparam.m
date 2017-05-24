@@ -1,8 +1,7 @@
-function [param, likhood] = updateparam(nparam, param, ncov, cov, ni, nj, data, likhood, alphap, betap, mu, sig, delta)
+function [param, likhood, accept] = Stork_updateparam(nparam, param, cov, ni, nj, data, likhood, alphap, betap, mu, sig, delta)
 %%%%%%
 % Function for updating the parameters values:
 %%%%%%
-% Output: the parameter values
     
   % output = updateparam(nparam, param, ncov, cov, ni, nj, data, likhood, alphap, betap, mu, sig, delta)
   % nparam = 3
@@ -16,16 +15,17 @@ function [param, likhood] = updateparam(nparam, param, ncov, cov, ni, nj, data, 
   % mu = [0,0)
   % sig2 = [10,10)
   % sig = sqrt(sig2)
-  
+    accept = 0; 
     % Cycle through each parameter in turn and propose to update using
     % random walk MH with Uniform proposal density:
-    for i = 1:nparam 
+    for ii = 1:nparam 
         % Keep a record of the current parameter value being updated
         oldparam = param(ii);
 
         % Propose a new value for the parameter using a random walk with
         % Uniform proposal density
-        param(ii) = runif(1, param(ii)-delta(ii), param(ii)+delta(ii));
+%         param(ii) = runif(1, param(ii)-delta(ii), param(ii)+delta(ii));
+        param(ii) = param(ii) + 2*delta(ii)*rand;
 
         % Automatically reject any moves where recapture prob is outside [0,1]
         if (param(1) >= 0 && param(1) <= 1) 
@@ -33,16 +33,16 @@ function [param, likhood] = updateparam(nparam, param, ncov, cov, ni, nj, data, 
     
             % Calculate the new likelihood value for the proposed move:
             % Calculate the numerator (num) and denominator (den) in turn:
-            newlikhood = calclikhood(ni, nj, data, param, nparam, cov, ncov);
+            newlikhood = Stork_calclikhood(ni, nj, data, param, cov);
 
             if (ii == 1) 
                 % For recapture probability add in prior (Beta) terms to the acceptance probability
-                num = newlikhood + log(dbeta(param(ii),alphap,betap));
-                den = likhood + log(dbeta(oldparam,alphap,betap));
+                num = newlikhood + log(betapdf(param(ii),alphap,betap));
+                den = likhood + log(betapdf(oldparam,alphap,betap));
             else 
                 % For regression coefficients add in prior (Normal) terms to the acceptance probability
-                num = newlikhood + log(dnorm(param(ii),mu(i-1),sig(i-1)));
-                den = likhood + log(dnorm(oldparam,mu(i-1),sig(i-1)));
+                num = newlikhood + log(normpdf(param(ii),mu(ii-1),sig(ii-1)));
+                den = likhood + log(normpdf(oldparam,mu(ii-1),sig(ii-1)));
             end
 
             % All other prior terms (for other parameters) cancel in the acceptance probability.
@@ -55,21 +55,16 @@ function [param, likhood] = updateparam(nparam, param, ncov, cov, ni, nj, data, 
         end
 
         % To do the accept/reject step of the algorithm:
-        % Simulate a random number in [0,1]:
-        u = runif(1);
+        u = rand; % Simulate a random number in [0,1]:
+        
         % Accept the move with probability A:
-
-        if (u <= A) 
-            % Accept the proposed move:
+        if (u <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
-            likhood = newlikhood;        
-        else 
-            % Reject proposed move so parameter stays at current value:
+            likhood = newlikhood;     
+            accept = accept+1;
+        else  % Reject proposed move:
+            % parameter stays at current value:
             param(ii) = oldparam;
         end
     end
-
-    % Set the values to be outputted from the function to be the
-    % set of parameter values and log(likelihood) value:
-%     output = (param, likhood);
 end

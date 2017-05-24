@@ -3,7 +3,7 @@ T1=35
 T2=35
 
 # Nstar FOR HMM INTERGRATION
-N_max = 69 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
+N_max = 59 #69 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
 # SCALE TO PRACTICE HMM
 sc <- 10 
 

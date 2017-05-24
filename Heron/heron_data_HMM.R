@@ -101,8 +101,8 @@ fdays <- c(12, 26, 2, 9, 6, 8, 3, 2, 17, 3, 4, 8, 38, 12, 30, 3, 2, 15, 18, 46, 
 f <- (fdays-mean(fdays))/sd(fdays)
 
 # Time (for recovery probability regression) - normalised.
-time <- c(1:T)
+# time <- c(1:T)
+time <- c(1:ring1)
 time <- (time-mean(time))/sd(time)
-
 
 data <- list(y=y,T=T,m=m,ring1=ring1,f=f,time=time,rel=rel, zeros=zeros, N_max1=N_max1, N_max3=N_max3, X2_prior=X2_prior, X4_prior=X4_prior)

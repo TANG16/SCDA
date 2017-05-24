@@ -34,18 +34,20 @@ function LL = Heron_HMM_loglik_statespace(theta, N_max1, N_max3, y, f, X2, X4, X
     end
 
     % prior for first transition/augmented observations/observation probabilities
-    for ii = 0:N_max1
-        G1(ii+1,1) = 1/N_max1; % diffuse =itialisation
-        P2(ii+1,1) = X2_prior(1);
+    for t=1:2
+        for ii = 0:N_max1
+            G1(ii+1,t) = 1/N_max1; % diffuse =itialisation
+            P2(ii+1,t) = X2_prior(1);
+        end
+
+        for ii = 0:N_max3
+            G3(ii+1,t) = 1/N_max3; % diffuse =itialisation
+            P4(ii+1,t) = X4_prior(1);
+            Q(ii+1,t) = exp(-tauy*((y(t) - (X2(t) + ii + X4(t))).^2)/2)*sqrt(tauy)/sqrt(2*pi);
+        end    
     end
 
-    for ii = 0:N_max3
-        G3(ii+1,1) = 1/N_max3; % diffuse =itialisation
-        P4(ii+1,1) = X4_prior(1);
-        Q(ii+1,1) = exp(-tauy*((y(1) - (X2(1) + ii + X4(1))).^2)/2)*sqrt(tauy)/sqrt(2*pi);
-    end    
-
-    for t = 2:T
+    for t = 3:T
         for ii = 0:(N_max1-1)  % X1 (depends only on [imputed] X4)
             G1(ii+1,t)= exp(-exp(loglam1(t-1)) + ii*loglam1(t-1) - logfact(ii));
         end 
@@ -53,7 +55,7 @@ function LL = Heron_HMM_loglik_statespace(theta, N_max1, N_max3, y, f, X2, X4, X
 
         for ii = 0:(N_max3) % X3 (depends only on [imputed] X2) & y
             if ((X2(t-1) - ii)>0)
-                G3(ii+1,t) = exp(ii*log(phi3(t-1)) + (X2(t-1) - ii)*log(1-phi3(t-1)) + logfact(X2(t-1)) - logfact(abs(X2(t-1)-ii)) - logfact(ii));
+                G3(ii+1,t) = exp(ii*log(phi3(t-2)) + (X2(t-2) - ii)*log(1-phi3(t-2)) + logfact(X2(t-2)) - logfact(abs(X2(t-2)-ii)) - logfact(ii));
             else
                 G3(ii+1,t) = 0;
             end

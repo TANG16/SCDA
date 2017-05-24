@@ -11,10 +11,10 @@ set.seed(1345221)
 # cha=1
 save_on = TRUE
 
-ada=100
-iter=5000
+ada=500
+iter=10000
 th=1
-cha=1
+cha=2
 
 cat("Heron HMM\n")
 
