@@ -1,4 +1,4 @@
-function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N)
+function [N, theta, accept, A_sum] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact)
 % A uniform random-walk (URW) algorithm for the demographic regression parameters,
 % Gibbs update for sigma2y
 
@@ -10,14 +10,14 @@ function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, st
   
     fn_BKM_cov = @(xx) BKM_covariates(xx,f,stdT);
     if strcmp(update_N,'SP')
-        [N_new, accept] = BKM_updateN_SP(fn_BKM_cov, N, theta, y, prior.N);
+        [N_new, accept, A_sum] = BKM_updateN_SP(fn_BKM_cov, N, theta, y, prior.N, logfact);
     elseif strcmp(update_N,'U')
-        [N_new, accept] = BKM_updateN_U(fn_BKM_cov, N, theta, y, delta.N, prior.N);
+        [N_new, accept, A_sum] = BKM_updateN_U(fn_BKM_cov, N, theta, y, delta.N, prior.N, logfact);
     else
         error('Incorrect state update specification!')
     end
     N = N_new;
-    oldlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N);
+    oldlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N, logfact);
 
     % Cycle through each theta (except sigma2) in turn 
     % and propose to update using URW random walk MH with uniform proposal density:
@@ -34,7 +34,7 @@ function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, st
         % Calculate the log(acceptance probability):
         % Calculate the new likelihood value for the proposed move:
         % Calculate the numerator (num) and denominator (den) in turn:
-        newlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N);
+        newlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N, logfact);
 
         % For regression coefficients add in prior (Normal) terms to the acceptance probability
         num = newlikhood - 0.5*(((theta(ii)-prior.T_mu(ii))^2)/prior.T_sigma2(ii));
@@ -45,13 +45,14 @@ function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, st
 
         % Acceptance probability of MH step:
         A = min(1,exp(num-den));
-
+        A_sum = A_sum + A;
         % To do the accept/reject step of the algorithm        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(T+T+ii) = A;
         else  % Reject proposed move:
             % thetaeter stays at current value:
             theta(ii) = oldtheta;
@@ -83,13 +84,14 @@ function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, st
 
         % Acceptance probability of MH step:
         A = min(1,exp(num-den));
-
+        A_sum = A_sum + A;
         % To do the accept/reject step of the algorithm        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(T+T+ii) = A;            
         else  % Reject proposed move:
             % thetaeter stays at current value:
             theta(ii) = oldtheta;
@@ -97,5 +99,5 @@ function [N, theta, accept] = BKM_update_URW(N, theta, prior, delta, y, m, f, st
     end  
     
     %% For Gibbs update for sigma2
-    theta(D) = 1/gamrnd(prior.S(1)+(T-2)/2,1/(prior.S(2)+0.5*sum((y(3:T)-N(3:T)).^2)));  % priorS = [0.001,0.001]
+%     theta(D) = 1/gamrnd(prior.S(1)+(T-2)/2,1/(prior.S(2)+0.5*sum((y(3:T)-N(3:T)).^2)));  % priorS = [0.001,0.001]
 end

@@ -18,7 +18,11 @@ N = [N1;Na];
 alpha1 = 1;
 alphaa = 2;
 alphar = -2;
-alphal = -4;
+if (sc == 1)
+    alphal = -4;
+else
+    alphal = -1;
+end
 beta1 =-2;
 betaa = 0.1;
 betar = -0.7;
@@ -32,52 +36,67 @@ params = {'alpha1', 'alphaa', 'alphar', 'alphal', ...
 theta_init = [alpha1, alphaa, alphar, alphal, beta1, betaa, betar, betal, sigy];
 theta = theta_init;
 D = size(theta,2);
-prior.N = [200 2000 0.5];
+
+[phi1, phia, rho, lambda] = BKM_covariates(theta,f,stdT);  
+
+
+prior.N = [200/sc 2000/sc 0.5];
 prior.S = [0.001,0.001];
 prior.T_mu = 0*ones(D-1,1);
 prior.T_sigma2 = 100*ones(D-1,1);
 
-delta.T = 0.1*ones(D-1,1);
-delta.N = [20.5, 100.5]; %0.5 added to have a correct dicrete uniform distribution after rounding
-oldlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N);
+priorN = prior.N;
 
-[phi1, phia, rho, lambda] = BKM_covariates(theta,f,stdT);  
- 
-M = 10000;%50000;
+logfact = @(xx) sum(log(1:1:xx));
+logfact = arrayfun(logfact,0:7000);
+
+oldlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N, logfact);
 
 
-%%
-% update_N = 'U'; % or 'SP'
-% N = [N1;Na];
-% theta = theta_init;
-% NN4 = zeros(2,T,M);
-% sample4 = zeros(M,9);
-% accept4 = zeros(M,1);
-% tic
-% for ii = 1:M
-%     % Update the parameters in the model using function "updateparam": 
-%     % Set parameter values and log(likelihood) value of current state to be the output from
-%     % the MH step:
-%     
-%     if (mod(ii,1000)==0)
-%         fprintf('MH iter = %i\n',ii); toc;
-%     end
-%     [N, theta, A] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT,update_N);
-%     NN4(:,:,ii) = N;
-%     sample4(ii,:)= theta; 
-%     accept4(ii) = A; 
+%% Set the proposals
+% for the states
+update_N = 'U'; % 'U' or 'SP'
+% for the parameters
+update_T = 'NRW'; % 'NRW' or 'URW'
+
+% step sizes 
+% given step size delta, std for URW is delta/sqrt(3), for NRW 1*delta
+% 0.5 of posterior st. dev. turns out to be: 
+% [0.04 0.04 0.1 0.02 0.03 0.02 0.06 0.02]
+
+if strcmp(update_T,'URW')
+%     delta.T = sqrt(3)*[0.04 0.04 0.1 0.02 0.03 0.02 0.06 0.02];
+    delta.T = sqrt(3)*[0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
+elseif strcmp(update_T,'NRW')
+%     delta.T =  [0.04 0.04 0.07 0.02 0.03 0.02 0.07 0.02];
+%     delta.T = [0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
+    delta.T = [0.1 0.04 0.05 0.1 0.1 0.035 0.05 0.12];
+else
+    delta.T = 0.1*ones(D-1,1);
+end
+deltaT = delta.T;
+
+if strcmp(update_N,'U')
+% if (sc == 1)
+%     delta.N = [7, 10] + 0.5; %0.5 added to have a correct dicrete uniform distribution after rounding
+% else
+    delta.N = [20/sc, 100/sc] + 0.5;
+%     delta.N = [50/sc, 140/sc] + 0.5;
+    deltaN = delta.N;
 % end
-% time = toc;
-% name = 'BKM_DA_results4_long.mat';
-% save(name,'sample4','NN4','accept4','theta_init','prior','delta','time');
+end
 
-%% WITH NORMAL PROPOSALS FOR THE REGRESSION COEFFS
-update_N = 'SP'; % 'U' or 'SP'
-N = [N1;Na];
+
+%% MH Algorithm
+M = 10000;%50000;
+NN = zeros(2,T,M);
+sample = zeros(M,9);
+accept = zeros(M,T+T+D-1);
+mean_A = zeros(M,1);
+theta_init(9) = 30000; % fixed for debugging
 theta = theta_init;
-NN5 = zeros(2,T,M);
-sample5 = zeros(M,9);
-accept5 = zeros(M,1);
+
+
 tic
 for ii = 1:M
     % Update the parameters in the model using function "updateparam": 
@@ -87,23 +106,34 @@ for ii = 1:M
     if (mod(ii,1000)==0)
         fprintf('MH iter = %i\n',ii); toc;
     end
-    [N, theta, A] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N);
-%     [N, theta, A] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N);
-    NN5(:,:,ii) = N;
-    sample5(ii,:)= theta; 
-    accept5(ii) = A; 
+    if strcmp(update_T,'NRW') 
+        [N, theta, acc, a_sum] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+    else
+        [N, theta, acc, a_sum] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+    end
+    NN(:,:,ii) = N;
+    sample(ii,:)= theta; 
+    accept(ii,:) = acc; 
+    mean_A(ii) = a_sum;
 end
 time_sampl = toc;
-name = 'BKM_DA_results_U.mat';
-save(name,'sample5','NN5','accept5','theta_init','prior','delta','time_sampl');
+% accept = accept/(2*T+D-1);
+mean_A = mean_A/(2*T+D-1);
+name = ['BKM_DA_results_',update_T,'_',update_N,'_2.mat'];
+save(name,'sample','NN','accept','theta_init','prior','delta','time_sampl', 'accept', 'mean_A');
 
+
+BurnIn = 0
 %%
 if plot_on
-    figure(11)
+    figure(1)
     set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
     for ii = 1:9
         subplot(3,3,ii)
-        plot(sample5(:,ii))
+        hold on
+        plot(sample(BurnIn+1:M,ii))
+%         plot(theta_init(ii)+0*sample(BurnIn+1:M,ii),'r')        
+        hold off
         title(params{ii})
     end
 
@@ -111,7 +141,7 @@ if plot_on
     set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
     for ii = 1:9
         subplot(3,3,ii)
-        autocorr(sample4(:,ii),40)
+        autocorr(sample(:,ii),40)
         title(params{ii})
     end   
     
@@ -119,7 +149,7 @@ if plot_on
     set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
     for ii = 1:9
         subplot(3,3,ii)
-        autocorr(sample5(:,ii),40)
+        bar(acf(sample(:,ii),40))
         title(params{ii})
     end
     
@@ -127,30 +157,62 @@ if plot_on
     set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
     for ii = 1:9
         subplot(3,3,ii)
-        plot(squeeze(NN5(1,4*(ii-3)+9,:)))
+        hold on
+        plot(squeeze(NN(1,4*(ii-3)+9,:)))
+%         plot(N1(4*(ii-3)+9) + 0*squeeze(NN(1,4*(ii-3)+9,:)),'r')
+        hold off
         title(['N1(',num2str(4*(ii-3)+9),')'])
     end
 
+    figure(22)
+    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
+    for ii = 1:9
+        subplot(3,3,ii)
+        autocorr(squeeze(NN(1,4*(ii-3)+9,:)),40)
+        title(['N1(',num2str(4*(ii-3)+9),')'])
+    end
 
     figure(3)
     set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
     for ii = 1:9
         subplot(3,3,ii)
-        plot(squeeze(NN5(2,4*(ii-3)+9,:)))
+        hold on
+        plot(squeeze(NN(2,4*(ii-3)+9,:)))
+%         plot(Na(4*(ii-3)+9) + 0*squeeze(NN(2,4*(ii-3)+9,:)),'r')
+        hold off
+        title(['Na(',num2str(4*(ii-3)+9),')'])
+    end
+
+    figure(33)
+    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
+    for ii = 1:9
+        subplot(3,3,ii)
+        autocorr(squeeze(NN(2,4*(ii-3)+9,:)),40)
         title(['Na(',num2str(4*(ii-3)+9),')'])
     end
 
 
-    figure(4)
+    figure(33)
+    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
+    for ii = 1:9
+        subplot(3,3,ii)
+        bar(acf(squeeze(NN(2,4*(ii-3)+9,:))',40))
+        title(['Na(',num2str(4*(ii-3)+9),')'])
+    end    
+    
+    figure(4)   
     subplot(2,1,1)
     hold on
-    plot(mean(NN4(1,:,:),3))
-%     plot(mean(NN2(1,:,:),3),'r')
+    plot(mean(NN(1,:,:),3))
     hold off
 
     subplot(2,1,2)
     hold on
-    plot(mean(NN4(2,:,:),3))
-%     plot(mean(NN2(2,:,:),3),'r')
+    plot(mean(NN(2,:,:),3))
     hold off
+    
+    
+    figure(5)
+    bar(sum((accept>0))/M)
+
 end

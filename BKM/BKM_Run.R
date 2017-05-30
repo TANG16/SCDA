@@ -21,7 +21,7 @@ scaled_on = FALSE
 # th=1
 # cha=3
 ada=0
-iter=50000
+iter=10000
 th=1
 cha=3
 
@@ -319,6 +319,11 @@ for (i in c(73:81)){
 
 
 par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(73:81)){
+  acf(mat1[,i], main=mat1_names[i])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
 for (i in c(1:9)){
   plot(mat1[,4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[4*(i-3)+9])
 }
@@ -327,4 +332,12 @@ par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
 for (i in c(1:9)){
   plot(mat1[,36+4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[36+4*(i-3)+9])
 }
+
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  acf(mat1[,36+4*(i-3)+9], main=mat1_names[36+4*(i-3)+9])
+}
+
+
  

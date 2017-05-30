@@ -1,4 +1,4 @@
-function loglik_ss = BKM_statespace(N, theta, y, f, stdT, priorN)
+function loglik_ss = BKM_statespace(N, theta, y, f, stdT, priorN, logfact)
 % loglik_y
     N1 = N(1,:);
     Na = N(2,:);

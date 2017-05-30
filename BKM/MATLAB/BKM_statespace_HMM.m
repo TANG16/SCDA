@@ -1,4 +1,4 @@
-function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max)
+function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max, logfact)
 % loglik_y
     T = length(y);
     [phi1, phia, rho, ~] = BKM_covariates(theta,f,stdT);
@@ -9,8 +9,8 @@ function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max)
 %     loglam = zeros(T-1,1);   
     loglam = log(Na) + log(rho) + log(phi1);
     
-    logfact = @(xx) sum(log(1:1:xx));
-%     logfact = @(xx) log(factorial(xx));  % logfact is the log of the factorial: log(x!)
+%     logfact = @(xx) sum(log(1:1:xx));
+% %     logfact = @(xx) log(factorial(xx));  % logfact is the log of the factorial: log(x!)
     IND = 0:N_max;
     loglik = sum(log(binopdf(Na(1:2),priorN(1),priorN(2))));
     
@@ -18,12 +18,15 @@ function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max)
         G = zeros(N_max+1, 1);
         P = zeros(N_max+1, 1);
         
-        G(1:N_max,1) = exp(-exp(loglam(t-2)) + IND(1:N_max)*loglam(t-2) - logfact(IND(1:N_max))); 
+        G(1:N_max,1) = exp(-exp(loglam(t-2)) + IND(1:N_max)*loglam(t-2) - logfact(IND(1:N_max) + 1)); 
         G(N_max+1,1) = max(0,1 - sum(G(1:(N_max))));
 
         IND_ok = IND((IND + Na(t-1) - Na(t)) > 0);
-        P(IND_ok+1) =  exp(Na(t)*log(phia(t-1)) + (IND_ok + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
-                    arrayfun(logfact,IND_ok + Na(t-1)) - arrayfun(logfact, IND_ok + Na(t-1) - Na(t)) - logfact(Na(t)));
+        P(IND_ok+1) = exp(Na(t)*log(phia(t-1)) + (IND_ok + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
+                    logfact(IND_ok + Na(t-1) + 1) - ...
+                    logfact(IND_ok + Na(t-1) - Na(t) + 1) - ...
+                    logfact(Na(t) + 1));
+%                     arrayfun(logfact,IND_ok + Na(t-1)) - arrayfun(logfact, IND_ok + Na(t-1) - Na(t)) - logfact(Na(t)));
  
 %         for ii = 0:(N_max-1)
 %             G(ii+1) = exp(-exp(loglam(t-2)) + ii*loglam(t-2) - logfact(ii)); 

@@ -9,7 +9,7 @@ library(coda)
 library(lattice)
 set.seed(134522)
 
-save_on = TRUE
+save_on = FALSE
 # MCMC details: ####
 
 # ada=500
@@ -17,7 +17,7 @@ save_on = TRUE
 # th=1
 # cha=4
 
-ada=100
+ada=0 #100
 iter=2000
 th=1
 cha=3

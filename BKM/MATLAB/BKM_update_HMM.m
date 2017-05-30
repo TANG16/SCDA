@@ -1,17 +1,14 @@
-function [N, theta, accept] = BKM_update_HMM(N, theta, prior, delta, y, m, f, stdT, N_max)
+function [N, theta, accept, A_sum] = BKM_update_HMM(N, theta, prior, delta, y, m, f, stdT, N_max, logfact)
 % A normal random-walk algorithm for the demographic regression parameters,
 % Gibbs update for sigma2y
 
     T = size(N,2);
-    %   N1 = N(1,:);
-    %   Na = N(2,:);
-
     D = size(theta,2); 
 
     fn_BKM_cov = @(xx) BKM_covariates(xx,f,stdT);
-    [N_new, accept] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, delta.N, prior.N, N_max);
+    [N_new, accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, delta.N, prior.N, N_max, logfact);
     N = N_new;  
-    oldlikhood = BKM_calclikhood_HMM(N, theta, y, m, f, stdT, prior.N, N_max);
+    oldlikhood = BKM_calclikhood_HMM(N, theta, y, m, f, stdT, prior.N, N_max, logfact);
 
     % Cycle through each theta (except sigma2) in turn 
     % and propose to update using random walk MH with uniform proposal density:
@@ -28,7 +25,7 @@ function [N, theta, accept] = BKM_update_HMM(N, theta, prior, delta, y, m, f, st
         % Calculate the log(acceptance probability):
         % Calculate the new likelihood value for the proposed move:
         % Calculate the numerator (num) and denominator (den) in turn:
-        newlikhood = BKM_calclikhood_HMM(N, theta, y, m, f, stdT, prior.N, N_max);
+        newlikhood = BKM_calclikhood_HMM(N, theta, y, m, f, stdT, prior.N, N_max, logfact);
 
         % For regression coefficients add in prior (Normal) terms to the acceptance probability
         num = newlikhood - 0.5*(((theta(ii)-prior.T_mu(ii))^2)/prior.T_sigma2(ii));
@@ -39,13 +36,14 @@ function [N, theta, accept] = BKM_update_HMM(N, theta, prior, delta, y, m, f, st
 
         % Acceptance probability of MH step:
         A = min(1,exp(num-den));
-
+        A_sum = A_sum + A;
         % To do the accept/reject step of the algorithm        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(T+ii) = A;
         else  % Reject proposed move:
             % thetaeter stays at current value:
             theta(ii) = oldtheta;
@@ -77,13 +75,15 @@ function [N, theta, accept] = BKM_update_HMM(N, theta, prior, delta, y, m, f, st
 
         % Acceptance probability of MH step:
         A = min(1,exp(num-den));
+        A_sum = A_sum + A;
 
         % To do the accept/reject step of the algorithm        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(T+ii) = A;
         else  % Reject proposed move:
             % thetaeter stays at current value:
             theta(ii) = oldtheta;
