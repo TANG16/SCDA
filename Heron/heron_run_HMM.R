@@ -43,6 +43,7 @@ if (save_on) {
 
 summary(output1)
 mat1 = as.matrix(output1[1])
+mat2 = as.matrix(output1[2])
 mat1_names <- colnames(mat1)
 
 

@@ -229,7 +229,7 @@ function [N, accept, A_sum] = BKM_updateN_U(fn_BKM_cov, N, theta, y, deltaN, pri
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
 %             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
             accept(t) = A;                        
         else  % Reject proposed move:
             % N1 stays at current value:

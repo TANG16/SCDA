@@ -46,16 +46,6 @@ mat1_names[4*72+11] # "betal"
 mat1_names[4*72+12] # "tauy"
 
 
-# iter = 5000
-par(mfrow=c(3,4))
-for (i in c(1:4,7:10,5,6,11,12)){
-  plot(mat1[,4*72+i] ,type="l", xlab = "", ylab="", sub = mat1_names[4*72+i])
-}
-par(mfrow=c(3,4))
-for (i in c(1:4,7:10,5,6,11,12)){
-  acf(mat1[,4*72+i] ,main = mat1_names[4*72+i])
-}
-
 
 # iter = 10000
 par(mfrow=c(3,4))
@@ -69,9 +59,60 @@ for (i in c(1:4,7:10,5,6,11,12)){
 
 
 
+
+#######################################################################
+
+# iter = 5000
+mat1_DA = as.matrix(output1[1])
+mat1_names_DA <- colnames(mat1_DA) 
+
+par(mfrow=c(3,4))
+for (i in c(1:4,7:10,5,6,11,12)){
+  plot(mat1_DA[,4*72+i] ,type="l", xlab = "", ylab="", sub = mat1_names_DA[4*72+i])
+}
+par(mfrow=c(3,4))
+for (i in c(1:4,7:10,5,6,11,12)){
+  acf(mat1_DA[,4*72+i] ,main = mat1_names_DA[4*72+i])
+}
+
+
+# X States: trace plots and scfs#####
+# X2
+par(mfrow=c(3,4))
+for (i in seq(1,72,6)){
+  plot(mat1_DA[,72+i] ,type="l", xlab = "", ylab="", sub = mat1_names_DA[72+i])
+}
+# X4
+par(mfrow=c(3,4))
+for (i in seq(1,72,6)){
+  plot(mat1_DA[,72*3+i] ,type="l", xlab = "", ylab="", sub = mat1_names_DA[3*72+i])
+}
+
+
+
+# X2
+par(mfrow=c(3,4))
+for (i in seq(1,72,6)){
+  acf(mat1_DA[,72+i], main = mat1_names_DA[72+i])
+}
+# X4
+par(mfrow=c(3,4))
+for (i in seq(1,72,6)){
+  acf(mat1_DA[,3*72+i], main = mat1_names_DA[3*72+i])
+}
+
+
+
+
+
+
+
+
+#####
+
 par(mfrow=c(4,1),oma=c(0,0,1.5,0))
 for (i in 0:3){
-  plot(colMeans(mat1[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
+  plot(colMeans(mat1_DA[,i*72+(1:72)]), type='l', xlab ="", ylab="", sub=paste("X",toString(i+1),sep=""))
 }
 mtext("Posterior means", outer=TRUE, cex=1)
 

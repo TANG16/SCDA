@@ -31,9 +31,9 @@ cat(sprintf("chains = %i",cha),"\n")
 
 
 # Read data ###
-source("BKM_Data_HMM.R")
+source("BKM_Data_HMM_unifprior.R")
 # Set parameters and inital values
-source("BKM_StartingVals_HMM.R")
+source("BKM_StartingVals_HMM_unifprior.R")
 
 
 cat("V1: explicit pdf formulae\n")
@@ -43,15 +43,12 @@ cat("V1: explicit pdf formulae\n")
 cat("Initialise the model:\n")
 # Run the MCMC: ###
 tstart=proc.time()
-# mod <- jags.model('BKM_Bugs_HMM.R',data,inits,n.chains=cha,n.adapt=ada)
-# mod <- jags.model('BKM_Bugs_HMM_v2.R',data,inits,n.chains=cha,n.adapt=ada)
-mod <- jags.model('BKM_Bugs_HMM_MP.R',data,inits,n.chains=cha,n.adapt=ada)
+mod <- jags.model('BKM_Bugs_HMM_unifprior.R',data,inits,n.chains=cha,n.adapt=ada)
 temp=proc.time()-tstart
 time_HMM_init <- temp 
 if (save_on) {
-  save(mod, time_HMM_init, file = paste("Results/BKM_HMM_model_ada",toString(ada),"_linux_MP2.RData",sep=""))
-  # save(mod, time_HMM_init, file = paste("Results/BKM_HMM_v2_model_ada",toString(ada),"_linux.RData",sep=""))
-}
+  save(mod, time_HMM_init, file = paste("Results/BKM_HMM_model_ada",toString(ada),"_linux_unifprior2.RData",sep=""))
+ }
 
 
 cat("Run the MCMC simulations:\n")
@@ -60,8 +57,7 @@ output1 <- coda.samples(mod,params,n.iter=iter,thin=th)
 temp=proc.time()-tstart
 time_HMM_sample <- temp 
 if (save_on) {
-  save(output1, time_HMM_sample, mod, time_HMM_init, file = paste("Results/BKM_HMM_iter",toString(iter),"_ada",toString(ada),"_linux_MP2.RData",sep=""))
-  # save(output1, time_HMM_sample, mod, time_HMM_init, file = paste("Results/BKM_HMM_v2_iter",toString(iter),"_ada",toString(ada),"_linux.RData",sep=""))
-}
+  save(output1, time_HMM_sample, mod, time_HMM_init, file = paste("Results/BKM_HMM_iter",toString(iter),"_ada",toString(ada),"_linux_unifprior2.RData",sep=""))
+ }
 
 quit()

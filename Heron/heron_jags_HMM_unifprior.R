@@ -56,19 +56,23 @@ model{
     
     for (t in 1:T){
       # Use a discrete Uniform prior so the only influence on the posterior distr is the Upper limit
-      X2[t] ~ dcat(X2_prior[]) # X2_prior = rep(1/(Up2+1), Up2+1); entered as data
-      X4[t] ~ dcat(X4_prior[]) # X4_prior = rep(1/(Up4+1), Up4+1); entered as data
+      # X2[t] ~ dcat(X2_prior[]) # X2_prior = rep(1/(Up2+1), Up2+1); entered as data
+      # X4[t] ~ dcat(X4_prior[]) # X4_prior = rep(1/(Up4+1), Up4+1); entered as data
+      X2[t]  <- round(X2_cont[t]) 
+      X2_cont[t] ~ dunif(0.5, Up2+0.5)
+      X4[t]  <- round(X4_cont[t]) 
+      X4_cont[t] ~ dunif(0.5, Up4+0.5)
     }
     
     # prior for first transition/augmented observations/observation probabilities
     for (t in 1:2){
       for (i in 0:N_max1){
         G1[i+1,t] <- 1/N_max1 # diffuse initialisation
-        P2[i+1,t] <- X2_prior[1]
+        P2[i+1,t] <- 1/Up2 #X2_prior[1]
       }
       for (i in 0:N_max3){
         G3[i+1,t] <- 1/N_max3 # diffuse initialisation
-        P4[i+1,t] <- X4_prior[1]
+        P4[i+1,t] <- 1/Up4 #X4_prior[1]
         Q[i+1,t] <- sqrt(tauy)*exp(-0.5*tauy*pow((y[t] - (X2[t] + i + X4[t])),2))/sqrt(2*pi)
       }    
     } 

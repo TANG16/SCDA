@@ -80,21 +80,81 @@ mat3 = as.matrix(output1[3])
 mat1_names <- colnames(mat1) 
 
 mat1_names[1] # "G[1,3]"
-mat1_names[34*60]      # "G[60,36]"
-mat1_names[34*60+1]    # "Na[1]"
-mat1_names[34*60+1+35] # "Na[36]"
-mat1_names[34*60+1+35+1] # "P[1,3]"
-mat1_names[34*60+1+35+34*60] #"P[100,36]"
+mat1_names[34*(N_bin+1)]      # "G[60,36]"
+mat1_names[34*(N_bin+1)+1]    # "Na[1]"
+mat1_names[34*(N_bin+1)+1+35] # "Na[36]"
+mat1_names[34*(N_bin+1)+1+35+1] # "P[1,3]"
+mat1_names[34*(N_bin+1)+1+35+34*(N_bin+1)] #"P[100,36]"
 mat1_names[7036]
-(34*60+1+35+1):(34*100+1+35+34*60)
+mat1_names[(34*(N_bin+1)+1+35+1):(34*(N_bin+1)+1+35+34*(N_bin+1))]
 
 
 # PLOTS ####
 
-# Posterior means ######
-plot(colMeans(mat1[,(34*(N_bin+1)+1):(34*(N_bin+1)+1+35)]), type='l', xlab ="", ylab="", sub="Na")
+# with Gammas and Ps ####
 
+# Posterior means 
+plot(colMeans(mat1[,(34*(N_bin+1)+1):(34*(N_bin+1)+1+35)]), type='l', xlab ="", ylab="", sub="Na")
 mtext("Posterior means", outer=TRUE, cex=1)
+
+mat1_names[1397:1405]
+# "alpha1" "alphaa" "alphal" "alphar" "beta1"  "betaa"  "betal"  "betar"  "sigy"  
+ 
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1397:1405)){
+  plot(mat1[,i], type="l", xlab ="", ylab="", sub=mat1_names[i])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1397:1405)){
+  acf(mat1[,i], main=mat1_names[i])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  plot(mat1[,34*(N_bin+1)+1+4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[34*(N_bin+1)+1+4*(i-3)+9])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  acf(mat1[,34*(N_bin+1)+1+4*(i-3)+9], main=mat1_names[34*(N_bin+1)+1+4*(i-3)+9])
+}
+
+# without Gamma and Ps ####
+
+# Posterior means 
+par(mfrow=c(1,1))
+plot(colMeans(mat1[,1:36]), type='l', xlab ="", ylab="", sub="Na")
+mtext("Posterior means", outer=TRUE, cex=1)
+
+mat1_names[37:45]
+# "alpha1" "alphaa" "alphal" "alphar" "beta1"  "betaa"  "betal"  "betar"  "sigy"  
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(37:45)){
+  plot(mat1[,i], type="l", xlab ="", ylab="", sub=mat1_names[i])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(37:45)){
+  acf(mat1[,i], main=mat1_names[i])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  plot(mat1[,4*(i-3)+9], type="l", xlab ="", ylab="", sub=mat1_names[4*(i-3)+9])
+}
+
+par(mfrow=c(3,3), oma = c(0, 0, 1.5, 0))
+for (i in c(1:9)){
+  acf(mat1[,4*(i-3)+9], main=mat1_names[4*(i-3)+9])
+}
+
+
+
+
+
+
 
 # Check the transition probabilities ####
 Gamma_last = matrix(mat1[1000,1:(34*100)], nrow = 100, ncol = 34, byrow = FALSE)
@@ -126,38 +186,6 @@ sd(output1[[1]][,"sigy"])
 
 
 
-# Collect results for printing ####
-### FULL DA posterior means and std####
-# alpha1     0.5540 6.888e-02 
-# alphaa     1.5678 6.338e-02 
-# alphal    -4.5760 3.534e-02 
-# alphar    -1.1723 6.579e-02 
-# beta1     -0.1913 5.668e-02 
-# betaa     -0.2465 3.786e-02 
-# betal     -0.3650 3.981e-02 
-# betar     -0.3360 3.254e-02 
-
-# Na[3]    993.9475 26.52
-# Na[13]  1789.2550 52.95
-# Na[23]  1469.4150 49.46
-# Na[33]   975.9720 59.51
-
-### FULL DA SCALED adapt 1000 iter 3000
-
-# Na[3]  104.7057, 5.74023, 
-# Na[13] 170.9540, 6.73734, 
-# Na[23] 158.9238,  7.29764, 
-# Na[33]  94.5547,  5.72801, 
-# 
-# alpha1   0.5261,  0.06790, 
-# alphaa   1.5357,  0.06691,
-# alphal  -2.2752,  0.03572, 
-# alphar  -1.1330,  0.09853, 
-# beta1   -0.2034,  0.05903,
-# betaa   -0.2501,  0.03805, 
-# betal   -0.3564,  0.04183, 
-# betar   -0.3061,  0.07159, 
-# sigy   157.1837, 57.75430, 
 
 # DA WITH HMM MEANS STD #####
 # sigy #### 

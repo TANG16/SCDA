@@ -1,0 +1,32 @@
+http://www.columbia.edu/~cjd11/charles_dimaggio/DIRE/styled-4/styled-11/code-8/
+# Cont Unif to Discr Unif?
+
+Specifying a new prior distribution  
+
+The 'zeros' trick at the prior level for a parameter theta  that is not part of the standard set.
+A single zero Poisson observation (with mean phi = phi( theta )) contributes a term exp(-phi) to the likelihood for theta. 
+When this is combined with a 'flat' prior for theta the correct prior distribution results.
+
+         zero <- 0
+         theta ~ dflat()
+         phi <- expression for - log( desired prior for theta )
+         zero ~ dpois(phi)
+
+This is illustrated in new-prior by an example in which a normal prior is constructed using the zeros trick and the results are compared to the standard formulation.
+
+It is important to note that this method produces high auto-correlation, poor convergence and high MC error, so it is computationally slow and long runs are necessary.
+
+
+
+
+Initialization for HMM [ada = 100]
+ 494 with Up 2000
+ 84.99 with Up 300 
+ 13.60 with Up 30 
+ 
+ flat prior for Na_prior <- rep(1/(Up+1), Up+1) 
+ 
+ 
+ Simulation [iter 10000, ch = 2]
+1381.89 with Up 30 
+8370.03  with Up 300 

@@ -47,7 +47,8 @@ if (1==0){
 
 # Compile the model: ####
 tstart=proc.time()
-mod <- jags.model('BKM_Bugs_HMM.R',data,inits,n.chains=cha,n.adapt=ada)
+# mod <- jags.model('BKM_Bugs_HMM.R',data,inits,n.chains=cha,n.adapt=ada)
+mod <- jags.model('BKM_Bugs_HMM_MP.R',data,inits,n.chains=cha,n.adapt=ada)
 temp=proc.time()-tstart
 time_HMM_init <- temp # ada=100 PC: 357.39 ~ 6min --> 188.28 ~3 min with 0!
 # ada = 1000 --> PC: 1798.68 

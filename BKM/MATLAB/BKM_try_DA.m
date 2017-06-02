@@ -23,7 +23,7 @@ if (sc == 1)
 else
     alphal = -1;
 end
-beta1 =-2;
+beta1 = -2;
 betaa = 0.1;
 betar = -0.7;
 betal = -0.3;
@@ -71,6 +71,7 @@ elseif strcmp(update_T,'NRW')
 %     delta.T =  [0.04 0.04 0.07 0.02 0.03 0.02 0.07 0.02];
 %     delta.T = [0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
     delta.T = [0.1 0.04 0.05 0.1 0.1 0.035 0.05 0.12];
+%   0.2842    0.3067    0.2388    0.3783    0.2618    0.3188    0.2730    0.3647    
 else
     delta.T = 0.1*ones(D-1,1);
 end
@@ -80,7 +81,7 @@ if strcmp(update_N,'U')
 % if (sc == 1)
 %     delta.N = [7, 10] + 0.5; %0.5 added to have a correct dicrete uniform distribution after rounding
 % else
-    delta.N = [20/sc, 100/sc] + 0.5;
+    delta.N = [60/sc, 100/sc] + 0.5;
 %     delta.N = [50/sc, 140/sc] + 0.5;
     deltaN = delta.N;
 % end
