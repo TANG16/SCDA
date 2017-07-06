@@ -26,10 +26,11 @@ loglikelihood.SV0<-function(y,phi,sigma,beta,m,gmax){
   foo <- solve(t(diag(m)-Gamma+1),rep(1,m)) # compute delta=delta*Gamma, the stationary distribution of the MC 
   llk <- 0	
   for (t in 1:length(y)){	
+    # P <- dnorm(y[t],0,sey)
     foo <- foo%*%Gamma*dnorm(y[t],0,sey)	
     sumfoo <- sum(foo)
     llk <- llk+log(sumfoo)	
     foo <- foo/sumfoo
     }	
   return(llk)
-}	#16
+}
