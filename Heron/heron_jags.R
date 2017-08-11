@@ -35,10 +35,13 @@ model{
 
 #  Define the initial population priors for (a in 1:4){
    
-    X1[1] ~ dpois(2500)
-    X2[1] ~ dpois(1500) 
+#     X1[1] ~ dpois(2500)
+    X1[1] ~ dpois(2000)
+#     X2[1] ~ dpois(1500) 
+    X2[1] ~ dpois(1100) 
     X3[1] ~ dpois(1000)
-    X4[1] ~ dpois(4000) 
+#     X4[1] ~ dpois(4000) 
+    X4[1] ~ dpois(3500) 
 
 
 #  Define the system process for the count data 

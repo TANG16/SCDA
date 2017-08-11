@@ -1,0 +1,8 @@
+DA: 
+init: 118.111 ~ 2 min
+sample: 2977.602  ~ 50 min
+
+
+HMM:
+init: 1393.462 ~ 23 min
+sample: 16959.741 ~ 4.7 h 

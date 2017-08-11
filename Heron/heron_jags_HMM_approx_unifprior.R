@@ -1,4 +1,4 @@
-var G1[(N_bin1+1),T], P2[(N_bin1+1),T], G3[(N_bin3+1),T], P4[(N_bin3+1),T], Q[(N_bin3+1),T];
+var G1[((N_bin1-N_bin_min1)+1),T], P2[((N_bin1-N_bin_min1)+1),T], G3[((N_bin3-N_bin_min3)+1),T], P4[((N_bin3-N_bin_min3)+1),T], Q[((N_bin3-N_bin_min3)+1),T];
 
 
 model{ 
@@ -17,11 +17,11 @@ model{
     
     # for (t in 2:T){
     for (t in 3:T){
-        for (i in 0:(N_bin1)){  # X1 (depends only on [imputed] X4)
+        for (i in 0:(N_bin1-N_bin_min1)){  # X1 (depends only on [imputed] X4)
           G1[i+1,t] <- exp(-exp(loglam1[t-2]) + bin1[i+1] *loglam1[t-2] - logfact(bin1[i+1] )) # 2nd order
         } 
 
-      for (i in 0:(N_bin3)){  # y & X3 (depends only on [imputed] X2)
+      for (i in 0:(N_bin3-N_bin_min3)){  # y & X3 (depends only on [imputed] X2)
         G3[i+1,t] <- ifelse((X2[t-1]-bin3[i+1] )>0,
                             exp(bin3[i+1]*log(phi3[t-2]) + (X2[t-2]-bin3[i+1] )*log(1-phi3[t-2]) + logfact(X2[t-2]) - logfact(abs(bin3[i+1] - X2[t-2])) - logfact(bin3[i+1])),
                             0)   
@@ -29,13 +29,13 @@ model{
         Q[i+1,t] <- sqrt(tauy)*exp(-0.5*tauy*pow((y[t] - (X2[t] + bin3[i+1]  + X4[t])),2))/sqrt(2*pi)
       } 
  
-      for (i in 0:(N_bin1)){  # X2 (depends on [integrated] X1)
+      for (i in 0:(N_bin1-N_bin_min1)){  # X2 (depends on [integrated] X1)
         P2[i+1,t] <- ifelse((bin1[i+1] - X2[t])>0,
                             exp(X2[t]*log(phi2[t-1]) + (bin1[i+1] - X2[t])*log(1-phi2[t-1]) + logfact(bin1[i+1]) - logfact(abs(bin1[i+1]  - X2[t])) - logfact(X2[t])),
                             0)
       }
 
-      for (i in 0:(N_bin3)){  # X4 (depends on [integrated] X3)
+      for (i in 0:(N_bin3-N_bin_min3)){  # X4 (depends on [integrated] X3)
         P4[i+1,t] <- ifelse((bin3[i+1]  + X4[t-1] - X4[t])>0,
                             exp(X4[t]*log(phi4[t-1]) + (bin3[i+1]  + X4[t-1] - X4[t])*log(1-phi4[t-1]) + logfact(bin3[i+1]  + X4[t-1]) - logfact(abs(bin3[i+1]  + X4[t-1] - X4[t])) - logfact(X4[t])),
                             0)
@@ -49,12 +49,12 @@ model{
  
   # prior for first transition/augmented observations/observation probabilities
   for (t in 1:2){
-    for (i in 0:N_bin1){
-      G1[i+1,t] <- 1/(N_bin1+1) # diffuse initialisation
+    for (i in 0:(N_bin1-N_bin_min1)){
+      G1[i+1,t] <- 1/((N_bin1-N_bin_min1)+1) # diffuse initialisation
       P2[i+1,t] <- 1/Up2 #X2_prior[1]
     }
-    for (i in 0:N_bin3){
-      G3[i+1,t] <- 1/(N_bin3+1) # diffuse initialisation
+    for (i in 0:(N_bin3-N_bin_min3)){
+      G3[i+1,t] <- 1/((N_bin3-N_bin_min3)+1) # diffuse initialisation
       P4[i+1,t] <- 1/Up4 #X4_prior[1]
       Q[i+1,t] <- 1 #sqrt(tauy)*exp(-0.5*tauy*pow((y[t] - (X2[t] + bin3[i+1] + X4[t])),2))/sqrt(2*pi)
     }    
@@ -158,12 +158,15 @@ model{
   sigmay <- 1/tauy
   
   
-  # Bins' midpoints ####
-  for (i in 0:(N_bin1)){
-    bin1[i+1] <- 0.5*(bin_size1*(2*i+1)-1) # ith bin's midpoint
+  
+  # Bins' midpoints
+  for (i in 0:(N_bin1-N_bin_min1)){
+    bin1[i+1] <- N_bin_min1*bin_size1 + 0.5*(bin_size1*(2*i+1)-1) # ith bin's midpoint
   }
-  for (i in 0:(N_bin3)){
-    bin3[i+1] <- 0.5*(bin_size3*(2*i+1)-1) # ith bin's midpoint
-  }    
+  
+  for (i in 0:(N_bin3-N_bin_min3)){
+    bin3[i+1] <-  N_bin_min3*bin_size3 + 0.5*(bin_size3*(2*i+1)-1) # ith bin's midpoint
+  }
+  
 }
 

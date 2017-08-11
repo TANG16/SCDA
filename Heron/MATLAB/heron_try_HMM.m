@@ -1,7 +1,9 @@
 clear all
 close all
 
-sc = 100;
+% sc = 100;
+sc = 1;
+
 [y, f, m, rel, time, T, T_ring] = Heron_data(sc);
 
 N_max1 = 79;

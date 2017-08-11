@@ -29,5 +29,6 @@ inits <- function()(list(alpha=alpha,beta=beta,alphal=alphal,betal=betal,alpharh
                          X1=X1init,X2=X2init,X3=X3init,X4=X4init))
 
 
-params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X1', 'X2', 'X3', 'X4')
+# params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X1', 'X2', 'X3', 'X4')
+params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X2', 'X4')
 #params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'X1', 'X2', 'X3', 'X4')

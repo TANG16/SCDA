@@ -6,8 +6,12 @@ T2=35
 sc <- 1 
 
 # BINS for approximative HMM INTERGRATION
-N_bin = 29 # 19#59 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
-bin_size = 28# 27#9 # odd so the midpoints are integer
+# N_bin = 29 # 19#59 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
+# bin_size = 28# 27#9 # odd so the midpoints are integer
+
+N_bin = 15 # 19#59 # reduction based on Gamma plots # 99 # was 100 but we need 0 so to have 100 in total set it to 99
+bin_size = 55#
+
 
 # bin = rep(0,N_bin+1)
 # # Bins' midpoints

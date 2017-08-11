@@ -1,4 +1,5 @@
 # G and P only for some initial runs to check whether they make sese...
+sc = 1
 params <- c('sigy','Na',
             'alpha1','alphaa','alphar','alphal',
             'beta1', 'betaa','betar', 'betal')

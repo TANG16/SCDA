@@ -32,4 +32,5 @@ X4init= c(4000, y[-1]*4/7);
 inits <- function()(list(alpha=alpha,beta=beta,alphal=alphal,betal=betal,alpharho=alpharho,tauy=tauy,
                          X2_cont=X2init,X4_cont=X4init))
 
-params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X2', 'X4')
+# params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X2', 'X4','G1','P2','G3','P4','Q')
+params <- c('alpha','alpharho','alphal', 'beta', 'betal', 'tauy', 'X2', 'X4','G1','P2')

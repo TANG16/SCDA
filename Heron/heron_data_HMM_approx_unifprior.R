@@ -11,21 +11,26 @@ Up4 <- 6000
 sc = 1 #100
 
 # BINS for approximative HMM INTERGRATION
-N_bin1 = 59 #  # reduction to be based on Gamma plots
-bin_size1 = 69 #  odd so the midpoints are integer
+N_bin1 = 59 # 109 #59 #  # reduction to be based on Gamma plots
+bin_size1 = 49 #29 # 69#  odd so the midpoints are integer
 N_bin3 = 49 #  # reduction to be based on Gamma plots 
 bin_size3 = 19#  odd so the midpoints are integer
 
+N_bin_min1 = 12 # how many first bins are skipped 
+N_bin_min3 = 20 # how many first bins are skipped
+
 # Bins' midpoints
-bin1 = rep(0,N_bin1+1)
-for (i in 0:(N_bin1)){
-  bin1[i+1] <- 0.5*(bin_size1*(2*i+1)-1) # ith bin's midpoint
+bin1 = rep(0,N_bin1-N_bin_min1+1)
+for (i in 0:(N_bin1-N_bin_min1)){
+  bin1[i+1] <- N_bin_min1*bin_size1 + 0.5*(bin_size1*(2*i+1)-1) # ith bin's midpoint
 }
 
-bin3 = rep(0,N_bin3+1)
-for (i in 0:(N_bin3)){
-  bin3[i+1] <- 0.5*(bin_size3*(2*i+1)-1) # ith bin's midpoint
+bin3 = rep(0,N_bin3-N_bin_min3+1)
+for (i in 0:(N_bin3-N_bin_min3)){
+  bin3[i+1] <-  N_bin_min3*bin_size3 + 0.5*(bin_size3*(2*i+1)-1) # ith bin's midpoint
 }
+
+
 
 # logfact <- function(x){sum(log(seq_len(x)))}
 # logfact_m = rep(NaN, 7000)
@@ -126,4 +131,5 @@ f <- (fdays-mean(fdays))/sd(fdays)
 time <- c(1:ring1)
 time <- (time-mean(time))/sd(time)
 
-data <- list(y=y,T=T,m=m,ring1=ring1,f=f,time=time,rel=rel, zeros=zeros, Up2=Up2, Up4=Up4, N_bin1=N_bin1,  N_bin3=N_bin3, bin_size1=bin_size1,  bin_size3=bin_size3)
+data <- list(y=y,T=T,m=m,ring1=ring1,f=f,time=time,rel=rel, zeros=zeros, Up2=Up2, Up4=Up4, 
+             N_bin1=N_bin1, N_bin3=N_bin3, bin_size1=bin_size1, bin_size3=bin_size3, N_bin_min1=N_bin_min1, N_bin_min3=N_bin_min3)

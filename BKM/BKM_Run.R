@@ -12,18 +12,24 @@ scaled_on = FALSE
 
 # MCMC details: ####
 
-# # ada=1000
-# # iter=3000
+# # # ada=1000
+# # # iter=3000
+# # # th=1
+# # # cha=2
+# # ada=100
+# # iter=2000
 # # th=1
-# # cha=2
-# ada=100
-# iter=2000
+# # cha=3
+# ada=0
+# iter=10000
 # th=1
 # cha=3
-ada=0
-iter=10000
+
+ada=10000
+iter=100000
 th=1
-cha=3
+cha=1
+
 
 # Read data
 if (scaled_on){

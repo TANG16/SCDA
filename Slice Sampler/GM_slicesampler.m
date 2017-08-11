@@ -1,5 +1,5 @@
 clear all
-
+% https://stats.stackexchange.com/questions/205866/the-harris-recurrence-of-a-stepping-out-slice-sampling-within-gibbs-mcmc
 A = 1; B = 0; C1 = 3; C2 = 3; 
 L = true;
 mu_init = [0, 0.1];

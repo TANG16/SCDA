@@ -1,3 +1,4 @@
+# setwd("Heron")
 rm(list = ls())
 library(rjags)
 library(coda)
@@ -10,10 +11,10 @@ save_on = TRUE
 # th=1000
 # cha=1
 
-ada=500
-iter=10000
+ada=1000
+iter=30000
 th=1
-cha=2
+cha= 1 #2
 
 
 cat("Heron DA\n")
@@ -25,26 +26,23 @@ cat(sprintf("chains = %i",cha),"\n")
 
 
 source("heron_data.R")
-source("heron_startingvals.R")
-
+# source("heron_startingvals.R")
+load(file = "X2_X4_inits_from_HMM.RData")
 
 cat("Initialise the model:\n")
 tstart = proc.time()
-mod <- jags.model('heron_jags.R',data,inits,n.chains=cha,n.adapt=ada)
-time_init = proc.time()-tstart
-
-if (save_on) {
-  save(mod, time_init, file = paste("Results/Heron_DA_model_ada",toString(ada),"_linux.RData",sep=""))
-}
+mod_DA <- jags.model('heron_jags.R',data,inits,n.chains=cha,n.adapt=ada)
+time_init_DA = proc.time()-tstart
 
 
 cat("Run the MCMC simulations:\n")
 tstart = proc.time()
-output1 <- coda.samples(mod,params,n.iter=iter,thin=th)
-time_sample = proc.time()-tstart
+output_DA <- coda.samples(mod_DA,params,n.iter=iter,thin=th)
+time_sample_DA = proc.time()-tstart
  
 if (save_on) {
-  save(output1, time_sample, mod, time_init, file = paste("Results/Heron_DA_iter",toString(iter),"_ada",toString(ada),"_linux.RData",sep=""))
+  save(output_DA, time_sample_DA, mod_DA, time_init_DA, 
+       file = paste("Results/Heron_DA_iter",toString(iter),"_ada",toString(ada),"_HMMinit_linux.RData",sep=""))
 }
 
 quit()

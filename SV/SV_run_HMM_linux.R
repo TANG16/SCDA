@@ -1,0 +1,92 @@
+# setwd("SV")
+rm(list = ls())
+library(rjags)
+library(coda)
+set.seed(1345221)
+
+save_on = TRUE
+
+
+ada=1000
+iter=10000
+th=1
+cha= 2 #2
+
+
+
+phi <- 0.98
+sigma <- 0.2
+sigma2 <- sigma^2
+# beta = 0.05;
+beta <- 0.5;
+mu <- 2*log(beta);
+
+# sigma2_init = 0.15 # working case
+sigma2_init = 0.1^2
+param <- c(mu, phi, sigma2)
+
+a1 = mu
+P1 <- (sigma^2)/(1-phi^2)
+
+
+################# simultated data ####
+T <- 1000
+h_true <- rep(NaN,T)
+
+h_true[1] <- a1 + sqrt(P1)*rnorm(1)
+for (t in c(2:T)){
+  h_true[t] = mu + phi*(h_true[t-1]-mu) + sigma*rnorm(1)
+}
+y <- exp(h_true/2)*rnorm(T)
+# plot(y,type='l')
+# lines(h_true, type='l', col='red')
+
+
+
+################# HMM integration ####
+# integrate out the odd states, impute the even ones
+# assume T is even so for the last observation we have an imputation
+
+N_bin <- 30 # 10 #30
+bin_range <- 4
+Up_h <- 10
+inits_hmm <- function()(list(mu = 0, phi_star = (0.97+1)/2, sigma2_star = 1/sigma2_init, h = log(var(y))*rep(1,T/2)))
+# params_hmm <- c('mu','sigma2','phi','h','G_odd','G_even','Q_odd','Q_even')
+# params_hmm <- c('mu','sigma2','phi','G_odd','G_even')
+# params_hmm <- c('mu','sigma2','phi','Q_odd','Q_even')
+params_hmm <- c('mu','sigma2','phi','h')
+
+#   N_bin = 30
+#   bin_range = 4
+#   bins = seq(-bin_range,bin_range,length=N_bin+1);
+#   bin_midpoint = (bins[1:N_bin] + bins[2:(N_bin+1)])/2;
+
+bin = rep(NaN, N_bin+1) # bins boundaries
+for (i in 0:N_bin){
+  bin[i+1] <- -bin_range + i*2*bin_range/N_bin # the (i+1)'th bin's midpoint
+}
+
+bin_mid = rep(NaN, N_bin)
+# Bins' midpoints
+for (i in 0:(N_bin-1)){
+  bin_mid[i+1] <- -bin_range + (2*i+1)*bin_range/N_bin # the (i+1)'th bin's midpoint
+}
+
+data_hmm <- list(y=y, T=T, N_bin=N_bin, bin_range=bin_range, Up_h = Up_h, bin_mid=bin_mid, bin = bin, zeros = rep(0,round(T/2)))
+
+
+tstart = proc.time()
+sv_model_HMM <- jags.model('sv_model_hmm.R', 
+                           data=data_hmm, inits=inits_hmm, n.chains = cha, n.adapt = ada)
+time_init_HMM = proc.time()-tstart
+
+tstart = proc.time()
+output_sv_HMM <- coda.samples(sv_model_HMM, params_hmm, n.iter = iter, thin=th)
+time_sample_HMM = proc.time()-tstart
+
+if (save_on) {
+  save(file=paste("SV_HMM_Nbin",toString(N_bin),"_changed_inits.RData",sep=""),
+       y, h_true, param, output_sv_HMM,sv_model_HMM,time_init_HMM,time_sample_HMM)
+}
+
+quit()

@@ -84,7 +84,8 @@ if ~isvector(initial)  % initial value is required to be a vector or scalar
     error(message('stats:slicesample:NonvectorIni'));
 end;
 
-initial = initial(:)';
+initial = initial(:)'; % Forces x to be a row vector
+
 % parse the information in the name/value pairs 
 pnames = {'pdf' ,'logpdf', 'width','burnin','thin'};
 dflts =  {[] [] 10 0 1};
@@ -128,7 +129,7 @@ rnd = zeros(nsamples,dim,outclass); % place holder for the random sample sequenc
 neval = nsamples;  % one function evaluation is needed for each slice of the density.
 
 e = exprnd(1,nsamples*thin+burnin,1); % needed for the vertical position of the slice.
-
+                                      % -log(rand)
 RW = rand(nsamples*thin+burnin,dim); % factors of randomizing the width
 RD = rand(nsamples*thin+burnin,dim); % uniformly draw the point within the slice
 x0 = initial; % current value 
@@ -137,15 +138,15 @@ x0 = initial; % current value
 inside = @(x,th) (logpdf(x) > th); 
 
 % update using stepping-out and shrinkage procedures.
-for i = 1-burnin:nsamples*thin
+for ii = 1-burnin:nsamples*thin
     % A vertical level is drawn uniformly from (0,f(x0)) and used to define
     % the horizontal "slice".
-    z = logpdf(x0) - e(i+burnin);
+    z = logpdf(x0) - e(ii+burnin); % e is -log(rand)
 
     % An interval [xl, xr] of width w is randomly position around x0 and then
     % expanded in steps of size w until both size are outside the slice.   
     % The choice of w is usually tricky.  
-    r = width.*RW(i+burnin,:); % random width/stepsize
+    r = width.*RW(ii+burnin,:); % random width/stepsize
     xl = x0 - r; 
     xr = xl + width; 
     iter = 0;
@@ -153,7 +154,7 @@ for i = 1-burnin:nsamples*thin
     % step out procedure is performed only when univariate samples are drawn.
     if dim==1 
         % step out to the left.
-        while inside(xl,z) && iter<maxiter
+        while inside(xl,z) && iter<maxiter %(logpdf(x) > th)
             xl = xl - width;
             iter = iter +1;
         end       
@@ -161,12 +162,14 @@ for i = 1-burnin:nsamples*thin
             error(message('stats:slicesample:ErrStepout')) 
         end;
         neval = neval +iter;
+        
         % step out to the right
         iter = 0;  
-        while (inside(xr,z)) && iter<maxiter
+        while (inside(xr,z)) && iter<maxiter %(logpdf(x) > th)
             xr = xr + width;
             iter = iter+1;        
         end
+        
         if iter>=maxiter || any(xr>sqrt(realmax)) % It takes too many iterations to step out.
              error(message('stats:slicesample:ErrStepout')) 
         end;
@@ -174,25 +177,27 @@ for i = 1-burnin:nsamples*thin
     neval = neval +iter;
     
     % A new point is found by picking uniformly from the interval [xl, xr].
-    xp = RD(i+burnin,:).*(xr-xl) + xl;
+    xp = RD(ii+burnin,:).*(xr-xl) + xl;
     
     % shrink the interval (or hyper-rectangle) if a point outside the
     % density is drawn.
-    iter = 0;  
-    while(~inside(xp,z))&& iter<maxiter 
-        rshrink = (xp>x0);
-        xr(rshrink) = xp(rshrink);
-        lshrink = ~rshrink;
-        xl(lshrink) = xp(lshrink);
-        xp = rand(1,dim).*(xr-xl) + xl; % draw again
+    iter = 0;
+    
+%     while(~inside(xp,z))&& iter<maxiter 
+    while (~(logpdf(xp) > z))&& iter<maxiter 
+        rshrink = (xp>x0); % in which directions the proposed point bigger than the current one
+        xr(rshrink) = xp(rshrink); % move the too high edge/bound to the proposed one
+        lshrink = ~rshrink; % in which directions the proposed point bigger than the current one
+        xl(lshrink) = xp(lshrink);  % move the too low edge/bound to the proposed one
+        xp = rand(1,dim).*(xr-xl) + xl; % draw again from the shrinked interval
         iter = iter+1;
     end
     if iter>=maxiter % It takes too many iterations to shrink in.
              error(message('stats:slicesample:ErrShrinkin')) 
     end
     x0 = xp; % update the current value 
-    if i>0 && mod(i,thin)==0; % burnin and thin
-        rnd(i/thin,:) = x0;
+    if ii>0 && mod(ii,thin)==0; % burnin and thin
+        rnd(ii/thin,:) = x0;
     end;  
     neval = neval +iter;
 end
