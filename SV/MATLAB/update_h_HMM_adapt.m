@@ -1,4 +1,4 @@
-function [h, accept, A_sum] = update_h_HMM_v2(y, h, theta, delta_h,  bins, bin_midpoint)
+function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h,  mid)
 % integrate out the odd h(t)'s and impute the even ones
     T = length(y);
     odd = mod(T,2);    
@@ -10,7 +10,7 @@ function [h, accept, A_sum] = update_h_HMM_v2(y, h, theta, delta_h,  bins, bin_m
     mu = theta(1);
     phi = theta(2);
     sigma2 = theta(3);
-    stdev_y = exp((mu+bin_midpoint)/2);  
+    sigma = sqrt(sigma2);
 
     accept = 0;
     A_sum = 0;
@@ -26,18 +26,25 @@ function [h, accept, A_sum] = update_h_HMM_v2(y, h, theta, delta_h,  bins, bin_m
         % Calculate the log(acceptance probability):
         % Calculate the new likelihood value for the proposed move:
         % Calculate the numerator (num) and denominator (den) in turn:
+        
+        % determine the quantiles
+        if (t == 2)
+            bin_midpoint = my_norminv(mid,phi*(h0-mu),sigma);
+        else
+            bin_midpoint = my_norminv(mid,phi*(h(t-2)-mu),sigma);
+        end
 
         %% Numerator
         num = -0.5*(log(2*pi) + h(t) + (y(t)^2)/exp(h(t)));
         % integrate out the previous h 
         loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t) - mu - phi*bin_midpoint).^2)/sigma2);
         loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t-1)^2)./exp(mu + bin_midpoint));    
-    %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
-        if (t==2)
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h0-mu)).^2)/sigma2);
-        else
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2);
-        end    
+%     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
+%         if (t==2)
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h0-mu)).^2)/sigma2);
+%         else
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2);
+%         end    
         num = num + log(sum(exp(loglik_int)));
         
         % integrate out the next h 
@@ -54,12 +61,12 @@ function [h, accept, A_sum] = update_h_HMM_v2(y, h, theta, delta_h,  bins, bin_m
         % integrate out the previous h 
         loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h_old - mu - phi*bin_midpoint).^2)/sigma2);
         loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t-1)^2)./exp(mu + bin_midpoint));    
-    %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
-        if (t==2)
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h0-mu)).^2)/sigma2);
-        else
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2);
-        end    
+%     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
+%         if (t==2)
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h0-mu)).^2)/sigma2);
+%         else
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2);
+%         end    
         den = den + log(sum(exp(loglik_int)));
         
         % integrate out the next h 

@@ -28,7 +28,7 @@ P1 <- (sigma^2)/(1-phi^2)
 
 
 ################# simultated data ####
-T <- 1000
+T <- 2000
 h_true <- rep(NaN,T)
 
 h_true[1] <- a1 + sqrt(P1)*rnorm(1)
@@ -93,9 +93,37 @@ tstart = proc.time()
 output_sv_DA <- coda.samples(sv_model_DA, params, n.iter = iter, thin=th)
 time_sample_DA = proc.time()-tstart
 
+# save selected output
+
+mat1_DA = as.matrix(output_sv_DA[1]) 
+mat2_DA = as.matrix(output_sv_DA[2]) 
+mat_names_DA <- colnames(mat1_DA)
+
+ESS_DA = lapply(output_sv_DA,effectiveSize)
+ESS1_DA = as.matrix(ESS_DA[[1]])
+ESS2_DA = as.matrix(ESS_DA[[2]])
+
+theta1_DA = mat1_DA[,T+(1:3)] 
+theta2_DA = mat2_DA[,T+(1:3)] 
+
+H_short1_DA = mat1_DA[,seq(200,T,by=200)]
+H_short2_DA = mat2_DA[,seq(200,T,by=200)]
+
+mean_H1_DA = colMeans(mat1_DA[,1:(T/2)])
+mean_H2_DA = colMeans(mat2_DA[,1:(T/2)])
+
 
 if (save_on) {
-  save(file="SV_DA.RData",y, h_true, param, output_sv_DA, sv_model_DA, time_init_DA, time_sample_DA)
+  save(file=paste("SV_DA_T",toString(T),"_selected.RData",sep=""),
+       y, h_true, param, 
+       sv_model_DA, time_init_DA, time_sample_DA, mat_names_DA,
+       ESS1_DA, ESS2_DA, theta1_DA, theta2_DA, 
+       H_short1_DA, H_short2_DA, mean_H1_DA, mean_H2_DA)
 }
+ 
+# if (save_on) {
+#   save(file=paste("SV_DA_T",toString(T),".RData",sep=""),
+#        y, h_true, param, output_sv_DA, sv_model_DA, time_init_DA, time_sample_DA)
+# }
 
 quit()

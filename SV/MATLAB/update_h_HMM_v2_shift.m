@@ -54,12 +54,13 @@ function [h, accept, A_sum] = update_h_HMM_v2_shift(y, h, theta, delta_h,  bins,
             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t)-mu)).^2)/sigma2);
+			num = num + log(sum(exp(loglik_int)));
         elseif (~shift && (t+1 == T))
             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t)-mu)).^2)/sigma2);            
+			num = num + log(sum(exp(loglik_int)));
         end    
-        num = num + log(sum(exp(loglik_int)));
         
         %% Denominator
         den = -0.5*(log(2*pi) + h_old + (y(t)^2)/exp(h_old));
@@ -82,12 +83,13 @@ function [h, accept, A_sum] = update_h_HMM_v2_shift(y, h, theta, delta_h,  bins,
             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h_old-mu)).^2)/sigma2);
+			den = den + log(sum(exp(loglik_int)));
         elseif (~shift && (t+1 == T))
             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h_old-mu)).^2)/sigma2);
+			den = den + log(sum(exp(loglik_int)));
         end    
-        den = den + log(sum(exp(loglik_int)));
         
         %% Acceptance Rate
         % Proposal terms cancel since proposal distribution is symmetric.

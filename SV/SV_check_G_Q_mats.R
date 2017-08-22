@@ -109,10 +109,20 @@ mat_names_HMM_adapt[T*N_q+ (1:T/2)] # "h[1]" - "h[500]"
 mat_names_HMM_adapt[T*N_q+ T/2 + (1:3) ] #  "mu"     "phi"    "sigma2"
 
 
+
+par(mfrow = c(1,1))
+  plot(seq(2,T,by=2),colMeans(mat1_HMM_adapt[,T*N_q+ (1:T/2)]),type='l',col='blue', xlab="", ylab="", sub='posterior mean h(t)')
+  lines(seq(2,T,by=2),colMeans(mat2_HMM_adapt[,T*N_q+ (1:T/2)]),type='l',col='green')
+  lines(h_true,type='l',col='red')
+
+
+
+# trace params 
 par(mfrow = c(3,1))
 for (i in 1:3){
   plot(mat1_HMM_adapt[,T*N_q+T/2+i],type='l',col='blue', xlab="", ylab="", sub=mat_names_HMM_adapt[T/2+i])
-  lines(mat2_HMM_adapt[,T*N_q+T/2+i],type='l',col='red')
+  lines(mat2_HMM_adapt[,T*N_q+T/2+i],type='l',col='green')
+  lines(param[i] + 0*mat2_HMM_adapt[,T*N_q+T/2+i],type='l',col='red')
 }
 
 par(mfrow = c(4,2))

@@ -5,12 +5,28 @@ model{
     zeros[t] ~ dpois(PHI[t])
     PHI[t] <- -loglik[t] + C
 #     loglik[t] <- log(exp(log(Q_even[t]) + log(sum(G_odd[,t] * Q_odd[,t] * G_even[,t]))))
-    loglik[t] <- log(exp(log(Q_even[t]) + log(sum(Q_odd[,t]))))
+    loglik[t] <- log(exp(log(Q_even[t]) + log(sum(Q_odd[,t]* G_even[,t]))))
+#     loglik[t] <- log(exp(log(Q_even[t]) + log(sum(bin_size[,t]*Q_odd[,t]* G_even[,t]))))
     
   }
 
   C <- 1000000
   
+#   # bin sizes
+#   for (t in 2:round(T/2)){  
+#     bin_size[1,t] = bin_max
+#     bin_size[N_q,t] = bin_max 
+#     for (i in 2:(N_q-1)){ 
+#       bin_size[i,t] = 0.5*(bin_mid[i+1,t] - bin_mid[i,t]) + 0.5*(bin_mid[i,t] - bin_mid[i-1,t])
+#     }
+#   }
+# 
+#   bin_size[1,1] = 1/N_q
+#   bin_size[N_q,1] = 1/N_q 
+#   for (i in 2:(N_q-1)){ 
+#     bin_size[i,1] = 1/N_q
+#   }
+
   # EVEN IMPUTED, ODD INTEGRATED
   for (t in 1:round(T/2)){
     Q_even[t] <- dnorm(y[2*t],0, 1.0/exp(h[t])) #  observation density for even observations given even states
@@ -19,14 +35,14 @@ model{
   for (t in 2:round(T/2)){ # we have T observations and T/2 imputed states
     #########  integration of odd
     for (i in 1:N_q){ # bins are DEMEANED VOLATILITIES
-      # Gs are now simply a constant for all values as we are using the quantiles of the distribution       
-      #       G_odd[i,t] <- dnorm(bin_mid[i] + mu , mu + phi*(h[t-1] - mu), sigma2_star) # transition probability to h_odd[t] from h_even[t-1]
-#       G_odd[i,t] <- pnorm(bin[i+1] + mu , mu + phi*(h[t-1] - mu), sigma2_star) 
+      # G_odd is now simply a constant for all values as we are using the quantiles of the distribution       
+      #       G_odd[i,t] <- dnorm(bin_mid[i], phi*(h[t-1] - mu), sigma2_star) # transition probability to h_odd[t] from h_even[t-1]
+#       G_odd[i,t] <- pnorm(bin[i], phi*(h[t-1] - mu), sigma2_star) 
 #       - pnorm(bin[i] + mu , mu + phi*(h[t-1] - mu), sigma2_star) # transition probability to h_odd[t] from h_even[t-1]
       bin_mid[i,t] <- qnorm(mid[i],phi*(h[t-1] - mu), sigma2_star) 
       
       Q_odd[i,t] <- dnorm(y[2*t-1],0, 1.0/exp(bin_mid[i,t]  + mu)) # observation density for odd observations given odd states
-#       G_even[i,t] <- dnorm(h[t], mu + phi*(bin_mid[i]), sigma2_star) # transition probability to h_even[t] from h_odd[t]    
+      G_even[i,t] <- dnorm(h[t], mu + phi*(bin_mid[i,t]), sigma2_star) # transition probability to h_even[t] from h_odd[t]    
     }
   }
   
@@ -40,7 +56,7 @@ model{
 #     - pnorm(bin[i] + mu , mu + phi*(h0- mu), sigma2_star) # transition probability to h_odd[t] from h_even[t-1]
     bin_mid[i,1] <- qnorm(mid[i],phi*(h0 - mu), sigma2_star) 
     Q_odd[i,1] = dnorm(y[1],0, 1.0/exp(bin_mid[i,1]  + mu)) # observation density for odd observations given odd states
-#     G_even[i,1] = dnorm(h[1], mu + phi*(bin_mid[i]), sigma2_star) # transition probability to h_even[t] from h_odd[t]    
+    G_even[i,1] = dnorm(h[1], mu + phi*(bin_mid[i,1]), sigma2_star) # transition probability to h_even[t] from h_odd[t]    
   }
   
   for (t in 1:round(T/2)){
@@ -50,12 +66,7 @@ model{
   h0 ~ dnorm(mean_h0,1/P1)
   P1 <- sigma2/(1-phi^2)
   mean_h0 <- mu
-  
-# N_q = 30
-# qu <- c(0:(N_q-1))/N_q
-# mid <- qu+qu[2]/2
-  
-  
+    
   ######### PARAMETER PRIORS
   mu ~ dnorm(0,0.1)
   

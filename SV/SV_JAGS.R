@@ -240,26 +240,6 @@ for (i in 1:3){
   lines(mat2_HMM[7000:10000,T/2+i],type='l',col='red')
 }
 
-# ################# HMM WITH FIXED PARAMS ####
-# 
-# inits_hmm_FIX <- function()(list(h = log(var(y))*rep(1,T/2)))
-# params_hmm_FIX <- c( 'h')
-# data_hmm_FIX <- list(y=y, T=T, N_bin=N_bin, bin_range=bin_range, Up_h=Up_h, bin=bin,
-#                      bin_mid=bin_mid, mu=mu, phi=phi, sigma2 = sigma2)
-# 
-# sv_model_hmm_FIX <- jags.model('sv_model_hmm_FIX.R', 
-#                            data=data_hmm_FIX, inits=inits_hmm_FIX, n.chains = 2, n.adapt = 1000)
-# output_sv_HMM_FIX <- coda.samples(sv_model_hmm_FIX, params_hmm, n.iter = 10000, thin=1)
-# # print(summary(output_sv_HMM))
-# 
-# mat1_HMM_FIX  = as.matrix(output_sv_HMM_FIX [1]) 
-# mat2_HMM_FIX  = as.matrix(output_sv_HMM_FIX [2]) 
-# mat_names_HMM_FIX  <- colnames(mat1_HMM_FIX )
-# 
-# plot(h_true,type='l')
-# lines(seq(2,T,by=2),colMeans(mat1_HMM_FIX[,1:(T/2)]),col='green')
-# lines(seq(2,T,by=2),colMeans(mat1_HMM_FIX[5000:10000,1:(T/2)]),col='red')
-
 ################# HMM WITH ADAPTIVE INTERVALS ####
 
 N_q = 10

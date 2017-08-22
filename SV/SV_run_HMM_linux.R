@@ -21,8 +21,8 @@ sigma2 <- sigma^2
 beta <- 0.5;
 mu <- 2*log(beta);
 
-# sigma2_init = 0.15 # working case
-sigma2_init = 0.1^2
+sigma2_init = 0.15 # working case
+# sigma2_init = 0.1^2
 param <- c(mu, phi, sigma2)
 
 a1 = mu
@@ -30,7 +30,7 @@ P1 <- (sigma^2)/(1-phi^2)
 
 
 ################# simultated data ####
-T <- 1000
+T <- 2000
 h_true <- rep(NaN,T)
 
 h_true[1] <- a1 + sqrt(P1)*rnorm(1)
@@ -47,7 +47,7 @@ y <- exp(h_true/2)*rnorm(T)
 # integrate out the odd states, impute the even ones
 # assume T is even so for the last observation we have an imputation
 
-N_bin <- 30 # 10 #30
+N_bin <- 20 # 10 #30
 bin_range <- 4
 Up_h <- 10
 inits_hmm <- function()(list(mu = 0, phi_star = (0.97+1)/2, sigma2_star = 1/sigma2_init, h = log(var(y))*rep(1,T/2)))
@@ -84,9 +84,39 @@ tstart = proc.time()
 output_sv_HMM <- coda.samples(sv_model_HMM, params_hmm, n.iter = iter, thin=th)
 time_sample_HMM = proc.time()-tstart
 
+
+# save selected output
+
+mat1_HMM = as.matrix(output_sv_HMM[1]) 
+mat2_HMM = as.matrix(output_sv_HMM[2]) 
+mat_names_HMM <- colnames(mat1_HMM)
+
+ESS_HMM = lapply(output_sv_HMM,effectiveSize)
+ESS1_HMM = as.matrix(ESS_HMM[[1]])
+ESS2_HMM = as.matrix(ESS_HMM[[2]])
+
+theta1_HMM = mat1_HMM[,(T/2)+(1:3)] 
+theta2_HMM = mat2_HMM[,(T/2)+(1:3)] 
+
+H_short1_HMM = mat1_HMM[,seq(100,T/2,by=100)]
+H_short2_HMM = mat2_HMM[,seq(100,T/2,by=100)]
+
+mean_H1_HMM = colMeans(mat1_HMM[,1:(T/2)])
+mean_H2_HMM = colMeans(mat2_HMM[,1:(T/2)])
+
+
+# if (save_on) {
+#   save(file=paste("SV_HMM_Nbin",toString(N_bin),"_T",toString(T),".RData",sep=""),
+#        y, h_true, param, output_sv_HMM,sv_model_HMM,time_init_HMM,time_sample_HMM)
+# }
+
 if (save_on) {
-  save(file=paste("SV_HMM_Nbin",toString(N_bin),"_changed_inits.RData",sep=""),
-       y, h_true, param, output_sv_HMM,sv_model_HMM,time_init_HMM,time_sample_HMM)
+  save(file=paste("SV_HMM_Nbin",toString(N_bin),"_T",toString(T),"_selected.RData",sep=""),
+       y, h_true, param, 
+       sv_model_HMM, time_init_HMM, time_sample_HMM, mat_names_HMM,
+       ESS1_HMM, ESS2_HMM, theta1_HMM, theta2_HMM, 
+       H_short1_HMM, H_short2_HMM, mean_H1_HMM, mean_H2_HMM)
 }
+
 
 quit()
