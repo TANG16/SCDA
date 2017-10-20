@@ -18,7 +18,8 @@ function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max, lo
         G = zeros(N_max+1, 1);
         P = zeros(N_max+1, 1);
         
-        G(1:N_max,1) = exp(-exp(loglam(t-2)) + IND(1:N_max)*loglam(t-2) - logfact(IND(1:N_max) + 1)); 
+        G(1:N_max,1) = exp(-exp(loglam(t-2)) + IND(1:N_max)*loglam(t-2) - ...
+                    logfact(IND(1:N_max) + 1)); 
         G(N_max+1,1) = max(0,1 - sum(G(1:(N_max))));
 
         IND_ok = IND((IND + Na(t-1) - Na(t)) > 0);

@@ -105,14 +105,27 @@ else
 end
 deltaN = delta.N;
 
+
+% No bins
 N_max = 69 * 10/sc;
 IND = 0:N_max;
+% Bins
+%  Bins' midpoints  
+N_bin = 30;
+bin_size = 29;
+% bin = zeros(N_bin,1);
+% for ii = 0:N_bin
+%     bin(ii+1) = 0.5*(bin_size*(2*ii+1)-1); % ith bin's midpoint
+% end
+bin = 0.5*(bin_size*(2*(1:N_bin)+1)-1)';
 logfact = @(xx) sum(log(1:1:xx));
-logfact = arrayfun(logfact,0:7000) ;
+logfact = arrayfun(logfact,(0:7000)') ;
 
-oldlikhood = BKM_calclikhood_HMM(Na, theta_init, y, m, f, stdT, prior.N, N_max, logfact);
+% oldlikhood = BKM_calclikhood_HMM(Na, theta_init, y, m, f, stdT, prior.N, N_max, logfact);
+oldlikhood = BKM_calclikhood_HMM_bin(Na, theta_init, y, m, f, stdT, prior.N, bin, logfact);
 
 M = 10000;
+BurnIn = 1000;
 N = Na;
 theta = theta_init;
 % theta(9) = 30000;
@@ -123,7 +136,7 @@ mean_A = zeros(M,1);
 
 tic
 % profile on
-for ii = 1:M
+for ii = -BurnIn:M
     % Update the parameters in the model using function "updateparam": 
     % Set parameter values and log(likelihood) value of current state to be the output from
     % the MH step:
@@ -131,18 +144,21 @@ for ii = 1:M
     if (mod(ii,1000)==0)
         fprintf('MH iter = %i\n',ii); toc;
     end
-    [N, theta, acc, a_sum] = BKM_update_HMM(N, theta, prior, delta, y, m, f, stdT, N_max, logfact);
-    NN(:,ii) = N;
-    sample(ii,:)= theta; 
-    accept(ii,:) = acc; 
-    mean_A(ii) = a_sum;
+    if (ii>0)
+%     [N, theta, acc, a_sum] = BKM_update_HMM(N, theta, prior, delta, y, m, f, stdT, N_max, logfact);
+        [N, theta, acc, a_sum] = BKM_update_HMM_bin(N, theta, prior, delta, y, m, f, stdT, bin, logfact);
+        NN(:,ii) = N;
+        sample(ii,:)= theta; 
+        accept(ii,:) = acc; 
+        mean_A(ii) = a_sum;
+    end
 end
 time_sampl = toc; 
 mean_A = mean_A/(T+D-1);
-% accept = accept/(T+D-1);
+mean_accept = mean(accept);
 
-name = 'BKM_HMM_results_sigma2.mat';
-save(name,'sample','NN','accept','theta_init','prior','delta','time_sampl', 'accept', 'mean_A');
+% name = 'BKM_HMM_results_sigma2.mat';
+% save(name,'sample','NN','accept','theta_init','prior','delta','time_sampl', 'accept', 'mean_A');
 
 % with poissrnd and binopdf 4.97 sec per draw
 % with explicit formulae 0.5055 sec per draw
@@ -162,66 +178,3 @@ min(sqrt(var(NN(:,M/2+1:M),1,2))) % 19.8906 ==> 1/2 post st dev = 9.5
 
 BurnIn = 0;
 BurnIn = 2000; %5000;
-%%
-if plot_on
-    figure(1)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        hold on
-        plot(sample(BurnIn+1:M,ii))
-%         plot(theta_init(ii)+0*sample(BurnIn+1:M,ii),'r')        
-        hold off
-        title(params{ii})
-    end
-
-    figure(10)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        autocorr(sample(BurnIn+1:M,ii),40)
-        title(params{ii})   
-    end   
-    
-    figure(100)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        bar(acf(sample(BurnIn+1:M,ii),40))
-        title(params{ii})
-    end
-    
-
-    figure(3)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        hold on
-        plot(NN(4*(ii-3)+9,BurnIn+1:M))
-%         plot(Na(4*(ii-3)+9) + 0*NN(4*(ii-3)+9,BurnIn+1:M),'r')
-        hold off
-        title(['Na(',num2str(4*(ii-3)+9),')'])
-    end
-
-    figure(33)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        autocorr(NN(4*(ii-3)+9,BurnIn+1:M),40)
-        title(['Na(',num2str(4*(ii-3)+9),')'])
-    end
-    
-    figure(333)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    for ii = 1:9
-        subplot(3,3,ii)
-        bar(acf(NN(4*(ii-3)+9,BurnIn+1:M),40))
-        title(['Na(',num2str(4*(ii-3)+9),')'])
-    end
-    
-    figure(4)
-    set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-    hold on
-    plot(mean(NN,2))
-    hold off
-end

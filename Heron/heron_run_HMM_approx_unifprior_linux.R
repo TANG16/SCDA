@@ -11,14 +11,14 @@ set.seed(1345221)
 # cha=1
 save_on = TRUE
 
-# ada= 1000
-# iter=1000000
-# th=1
-# cha=2 #2
-ada=1000
-iter=30000
+ada= 1000
+iter=1000000
 th=1
-cha=2
+cha=2 #2
+# ada=1000
+# iter=30000
+# th=1
+# cha=2
 
 cat("Heron HMM\n")
 
@@ -43,7 +43,7 @@ time_init_HMM = proc.time()-tstart
 
 cat("Run the MCMC simulations:\n")
 tstart = proc.time()
-output_HMM <- coda.samples(mod,params,n.iter=iter,thin=th)
+output_HMM <- coda.samples(mod_HMM,params,n.iter=iter,thin=th)
 time_sample_HMM = proc.time()-tstart
  
 # if (save_on) {
@@ -53,8 +53,8 @@ time_sample_HMM = proc.time()-tstart
 
 
 
-mat1_HMM = as.matrix(output_HMM[1]) 
-mat2_HMM = as.matrix(output_HMM[2]) 
+mat1_HMM = as.matrix(output1[[1]]) 
+mat2names_HMM <- colnames(mat1_HMM)
 mat_names_HMM <- colnames(mat1_HMM)
 
 ESS_HMM = lapply(output_HMM,effectiveSize)

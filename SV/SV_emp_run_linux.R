@@ -12,30 +12,18 @@ iter=10000
 th=1
 cha= 2 #2
 
+################# READ DATA ####
+
+y <- read.csv('Data/Perc_Rets_GSPC_IBM_AAPL_MSFT_JPM_GE.csv')[,4]
+time = c(1998,(2017 + 8/12));       
+TT = length(y);
+T = 2000;
+y = y[(TT-T+1):TT];
+
+sigma2_init = 0.15 
 
 
-phi <- 0.98
-sigma <- 0.2
-sigma2 <- sigma^2
-# beta = 0.05;
-beta <- 0.5;
-mu <- 2*log(beta);
 
-param <- c(mu, phi, sigma2)
-
-a1 = mu
-P1 <- (sigma^2)/(1-phi^2)
-
-
-################# simultated data ####
-T <- 2000
-h_true <- rep(NaN,T)
-
-h_true[1] <- a1 + sqrt(P1)*rnorm(1)
-for (t in c(2:T)){
-  h_true[t] = mu + phi*(h_true[t-1]-mu) + sigma*rnorm(1)
-}
-y <- exp(h_true/2)*rnorm(T)
 # plot(y,type='l')
 # lines(h_true, type='l', col='red')
 
@@ -114,9 +102,8 @@ mean_H2_DA = colMeans(mat2_DA[,1:T])
 
 
 if (save_on) {
-  save(file=paste("SV_DA_T",toString(T),"_selected.RData",sep=""),
-       y, h_true, param, 
-       sv_model_DA, time_init_DA, time_sample_DA, mat_names_DA,
+  save(file=paste("SV_emp_DA_T",toString(T),"_selected.RData",sep=""),
+       y, sv_model_DA, time_init_DA, time_sample_DA, mat_names_DA,
        ESS1_DA, ESS2_DA, theta1_DA, theta2_DA, 
        H_short1_DA, H_short2_DA, mean_H1_DA, mean_H2_DA)
 }

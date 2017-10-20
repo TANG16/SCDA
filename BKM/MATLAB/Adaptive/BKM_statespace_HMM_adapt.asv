@@ -1,0 +1,63 @@
+function loglik_ss = BKM_statespace_HMM_adapt(Na, theta, y, f, stdT, priorN, mid, logfact)
+% loglik_y
+    T = length(y);
+    [phi1, phia, rho, ~] = BKM_covariates(theta,f,stdT);
+%     lam = N(2:(T-1)).*rho(2:(T-1)).*phi1(2:(T-1));
+    sigy = theta(9);
+%     G = zeros(N_mid+1, T);
+%     P = zeros(N_mid+1, T);
+%     loglam = zeros(T-1,1);   
+    loglam = log(Na) + log(rho) + log(phi1);
+    
+%     logfact = @(xx) sum(log(1:1:xx));
+% %     logfact = @(xx) log(factorial(xx));  % logfact is the log of the factorial: log(x!)
+    N_mid = length(mid);
+
+%     IND = 1:N_mid;
+    loglik = sum(log(midopdf(Na(1:2),priorN(1),priorN(2))));
+    
+    for t = 3:T
+        
+%       midbin[i+1,t] = qnorm(mid[i+1],exp(loglam[t-1]),1/exp(loglam[t-1]))
+        midbin = exp(loglam) + exp(loglam[t-1]/2)*mid;
+      
+% G is now simply a constant for all values as we are using the quantiles of the distribution 
+% and a normal approximation (so they are exact).
+         
+%         G2 = zeros(N_mid, 1);
+        P2 = zeros(N_mid, 1);
+        
+%         G2(1:(N_mid-1),1) = exp(-exp(loglam(t-2)) + mid(1:(N_mid-1))*loglam(t-2) - ...
+%                             logfact(mid(1:N_mid-1) + 1)); 
+        G2(N_mid,1) = max(0,1 - sum(G2(1:(N_mid-1))));
+
+        IND_ok = ((mid + Na(t-1) - Na(t)) > 0);
+        mid_ok = mid(IND_ok);
+        P2(IND_ok) = exp(Na(t)*log(phia(t-1)) + (mid_ok + Na(t-1) - ...
+                    Na(t))*log(1-phia(t-1)) + ...
+                    logfact(mid_ok + Na(t-1) + 1) - ...
+                    logfact(mid_ok + Na(t-1) - Na(t) + 1) - ...
+                    logfact(Na(t) + 1));
+%                     arrayfun(logfact,IND_ok + Na(t-1)) - arrayfun(logfact, IND_ok + Na(t-1) - Na(t)) - logfact(Na(t)));
+ 
+%         for ii = 0:(N_mid-1)
+%             G(ii+1) = exp(-exp(loglam(t-2)) + ii*loglam(t-2) - logfact(ii)); 
+% %             G(ii+1) = poisspdf(ii,exp(loglam(t-2))); 
+%             if ((ii + Na(t-1) - Na(t)) > 0)
+%                 P(ii+1) = exp(Na(t)*log(phia(t-1)) + (ii + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
+%                     logfact(ii + Na(t-1)) - logfact(ii + Na(t-1) - Na(t)) - logfact(Na(t))); 
+% %                 P(ii+1) = midopdf(Na(t),ii + Na(t-1),phia(t-1));                 
+%             end
+%         end
+%         G(N_mid) = max(0,1 - sum(G(1:(N_mid))));
+%         if ((N_mid + Na(t-1) - Na(t)) > 0)
+%             P(N_mid+1) = exp(Na(t)*log(phia(t-1)) + (N_mid + Na(t-1) - Na(t))*log(1-phia(t-1)) + ...
+%                 logfact(N_mid + Na(t-1)) - logfact(N_mid + Na(t-1) - Na(t)) - logfact(Na(t))); 
+% %             P(ii+1) = midopdf(Na(t),ii + Na(t-1),phia(t-1));             
+%         end    
+        loglik = loglik + log(sum(G2.*P2)); % piecewise multiplication enough here
+    end
+    
+    loglik_y = sum(- 0.5*(log(2*pi) + log(sigy) + ((y(3:T)-Na(3:T)).^2)/sigy));  
+    loglik_ss = loglik + loglik_y;
+end

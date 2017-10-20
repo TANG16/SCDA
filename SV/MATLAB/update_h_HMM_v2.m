@@ -10,7 +10,7 @@ function [h, accept, A_sum] = update_h_HMM_v2(y, h, theta, delta_h,  bins, bin_m
     mu = theta(1);
     phi = theta(2);
     sigma2 = theta(3);
-    stdev_y = exp((mu+bin_midpoint)/2);  
+%     stdev_y = exp((mu+bin_midpoint)/2);  
 
     accept = 0;
     A_sum = 0;

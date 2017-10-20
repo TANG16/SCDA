@@ -7,37 +7,24 @@ set.seed(1345221)
 save_on = TRUE
 
 
-ada=100#0
-iter=1000#0
+
+ada=1000
+iter=10000
 th=1
 cha= 2 #2
 
+################# READ DATA ####
+ 
+y <- read.csv('Data/Perc_Rets_GSPC_IBM_AAPL_MSFT_JPM_GE.csv')[,4]
+time = c(1998,(2017 + 8/12));       
+TT = length(y);
+T = 2000;
+y = y[(TT-T+1):TT];
 
-phi <- 0.98
-sigma <- 0.2
-sigma2 <- sigma^2
-# beta = 0.05;
-beta <- 0.5;
-mu <- 2*log(beta);
-
-param <- c(mu, phi, sigma2)
-
-sigma2_init = 0.15 # working case
-# sigma2_init = 0.1^2
-
-a1 = mu
-P1 <- (sigma^2)/(1-phi^2)
+sigma2_init = 0.15 
 
 
-################# simultated data ####
-T <- 2000
-h_true <- rep(NaN,T)
-
-h_true[1] <- a1 + sqrt(P1)*rnorm(1)
-for (t in c(2:T)){
-  h_true[t] = mu + phi*(h_true[t-1]-mu) + sigma*rnorm(1)
-}
-y <- exp(h_true/2)*rnorm(T)
+ 
 # plot(y,type='l')
 # lines(h_true, type='l', col='red')
 
@@ -81,6 +68,9 @@ mat1_HMM_adapt = as.matrix(output_sv_HMM_adapt[1])
 mat2_HMM_adapt = as.matrix(output_sv_HMM_adapt[2])
 mat_names_HMM_adapt <- colnames(mat1_HMM_adapt)
 
+# BIN100_1 =  mat1_HMM_adapt[,1:300]
+# BIN100_2 =  mat2_HMM_adapt[,1:300]
+
 ESS_HMM_adapt = lapply(output_sv_HMM_adapt,effectiveSize)
 ESS1_HMM_adapt = as.matrix(ESS_HMM_adapt[[1]])
 ESS2_HMM_adapt = as.matrix(ESS_HMM_adapt[[2]])
@@ -94,19 +84,21 @@ H_short2_HMM_adapt = mat2_HMM_adapt[,seq(100,T/2,by=100)]
 mean_H1_HMM_adapt = colMeans(mat1_HMM_adapt[,1:(T/2)])
 mean_H2_HMM_adapt = colMeans(mat2_HMM_adapt[,1:(T/2)])
 
-# BIN100_1 =  mat1_HMM_adapt[,1:300]
-# BIN100_2 =  mat2_HMM_adapt[,1:300]
+
 
 # if (save_on) {
-#   save(file=paste("SV_HMM_adapt_Nq",toString(N_q),"_T",toString(T),"_selected_mid_BIN100.RData",sep=""),
+#   save(file=paste("SV_emp_HMM_adapt_Nq",toString(N_q),"_T",toString(T),"_selected_mid_BIN100.RData",sep=""),
 #        mat_names_HMM_adapt, BIN100_1, BIN100_2)
 # }
 
 if (save_on) {
-  save(file=paste("SV_HMM_adapt_Nq",toString(N_q),"_T",toString(T),"_selected_mid.RData",sep=""),
+  save(file=paste("SV_emp_HMM_adapt_Nq",toString(N_q),"_T",toString(T),"_selected_mid.RData",sep=""),
        y, sv_model_HMM_adapt, time_init_HMM_adapt, time_sample_HMM_adapt, mat_names_HMM_adapt,
        ESS1_HMM_adapt, ESS2_HMM_adapt, theta1_HMM_adapt, theta2_HMM_adapt, 
        H_short1_HMM_adapt, H_short2_HMM_adapt, mean_H1_HMM_adapt, mean_H2_HMM_adapt)
 }
 
-# quit()
+quit()
+
+
+ 

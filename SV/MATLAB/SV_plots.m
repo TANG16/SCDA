@@ -8,17 +8,18 @@ ff = figure(1);
 set(gcf,'units','normalized','outerposition',[0.25 0.25 0.45 0.45]);
 % ax1 = axes('Position',[0.25 0.25 0.3 0.3],'Visible','on');
 hold on
-plot(h_true,'r')
+% plot(h_true,'r')
 % plot(h,'b')
 % plot(mean(H_DA((5000+1):M,:),1),'g')
 % plot(mean(H_HMM_shift((5000+1):M,:),1),'m')
 % plot(2:2:T,mean(H_HMM((5000+1):M,2:2:T),1),'b')
+% plot(2:2:T,mean_H_HMM_adapt(:,2:2:T),'b')
 plot(mean_H_DA,'g')
 % plot(mean_H_DA_RW,'c')
 plot(mean_H_DA_RW_eff,'c')
-plot(2:2:T,mean_H_HMM_eff(:,2:2:T),'b')
-% plot(2:2:T,mean_H_HMM(:,2:2:T),'g')
-plot(mean_H_HMM_shift,'m')
+% plot(2:2:T,mean_H_HMM(:,2:2:T),'b')
+plot(2:2:T,mean_H_HMM_eff(:,2:2:T),'r')
+% plot(mean_H_HMM_shift,'m')
 hold off
 plotTickLatex2D;%('FontSize',12);
 leg = legend('true','DA','DA RW','HMM','HMM shift');
@@ -60,18 +61,19 @@ set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
 for t = 1:9
     subplot(3,3,t)
     hold on
-    plot(H_subset_HMM_eff(:,t)*0 + h_true((t+1)*100),'r')
-    plot(H_subset_DA(:,t),'g')
-    plot(H_subset_DA_RW_eff(:,t),'c')
-    plot(H_subset_HMM_eff(:,t),'b')
+%     plot(H_subset_HMM_adapt(:,t)*0 + h_true((t+1)*100),'r')
+    plot(H_subset_DA(:,t),'b')
+%     plot(H_subset_DA_RW_eff(:,t),'c')
+%     plot(H_subset_HMM_eff(:,t),'r')
+    plot(H_subset_HMM_adapt(:,t),'m')
     hold off    
-    XL = xlabel('MCMC iteration');
-%     pos = get(XL,'pos'); % Read position [x y z]
-%     YL = get(gca,'ylim');
-%     pos(2) = 1.01*YL(1); 
-%     set(XL,'pos',pos) % Move label up 
-    title(['Time = ',num2str(100*(t+1))])   
-%     plotTickLatex2D;%('FontSize',12);
+%     XL = xlabel('MCMC iteration');
+% %     pos = get(XL,'pos'); % Read position [x y z]
+% %     YL = get(gca,'ylim');
+% %     pos(2) = 1.01*YL(1); 
+% %     set(XL,'pos',pos) % Move label up 
+%     title(['Time = ',num2str(100*(t+1))])   
+% %     plotTickLatex2D;%('FontSize',12);
 end
 leg = legend('true','DA','DA RW','HMM');
 set(leg,'Interpreter','latex');%,'FontSize',12,'position',[0.8 0.42 0.18 0.16])
@@ -93,12 +95,17 @@ end
 
 
 %% ACF
+if ~exist('autocorr','builtin')
+    autocorr = @(xx,ll) acf(xx,ll);
+end
+
+
 ff = figure(3);
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
 for t = 1:9
     subplot(3,3,t)
-    autocorr(H_subset_DA(:,t),40)
-    set(gca,'ylabel',[])    
+    autocorr(H_subset_DA(:,t),200)
+%     set(gca,'ylabel',[])    
     title(['Time = ',num2str(100*(t+1))])
 %     plotTickLatex2D;%('FontSize',12);
 end
@@ -119,12 +126,13 @@ if save_on
     end
 end
 
+
 ff = figure(33);
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
 for t = 1:9
     subplot(3,3,t)
-    autocorr(H_subset_DA_RW_eff(:,t),40)
-    set(gca,'ylabel',[])    
+    autocorr(H_subset_DA_RW_eff(:,t),200)
+%     set(gca,'ylabel',[])    
     title(['Time = ',num2str(100*(t+1))])
 %     plotTickLatex2D;%('FontSize',12);
 end
@@ -146,13 +154,12 @@ if save_on
 end
 
 
-
 ff = figure(4);
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
 for t = 1:9
     subplot(3,3,t)
-    autocorr(H_subset_HMM_eff(:,t),40)
-    set(gca,'ylabel',[])    
+    autocorr(H_subset_HMM_eff(:,t),200)
+%     set(gca,'ylabel',[])    
     title(['Time = ',num2str(100*(t+1))])
 %     plotTickLatex2D;%('FontSize',12);
 end
@@ -174,7 +181,6 @@ if save_on
 end
 
 
-
 ff = figure(5);
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
 for t = 1:9
@@ -186,7 +192,6 @@ for t = 1:9
 end
 suptitle('Even HMM shift')
  
-
 if save_on
     name = ['figures/SV_HMM_shift_even_acf.png']; %eps
     set(gcf,'PaperPositionMode','auto');
@@ -201,7 +206,6 @@ if save_on
         end
     end
 end
-
 
 
 ff = figure(6);
@@ -230,6 +234,37 @@ if save_on
     end
 end
 
+
+ff = figure(7);
+set(gcf,'units','normalized','outerposition',[0.1 0.1 0.8 0.8]);
+for t = 1:9
+    subplot(3,3,t)
+    autocorr(H_subset_HMM_adapt(:,t),200)
+%     set(gca,'ylabel',[])    
+    title(['Time = ',num2str(100*(t+1))])
+%     plotTickLatex2D;%('FontSize',12);
+end
+suptitle('Even HMM adaptive')
+
+
+
+if save_on
+    name = ['figures/SV_HMM_adapt.png']; %eps
+    set(gcf,'PaperPositionMode','auto');
+    print_fail = 1;
+    while print_fail 
+        try                 
+%             print(ff,name,'-depsc','-r0')
+            print(ff,name,'-dpng','-r0')
+            print_fail = 0;
+        catch
+            print_fail = 1;
+        end
+    end
+end
+
+
+
 %% Trace Plots params 
 ff = figure(16);
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.4 0.8]);
@@ -237,14 +272,14 @@ for ii = 1:3
     subplot(3,1,ii)
     hold on    
     plot(theta_DA(:,ii),'g')
-    plot(theta_DA_RW_eff(:,ii),'c')
-    plot(theta_HMM_eff(:,ii),'b')   
-    plot(theta_HMM_shift(:,ii),'m')      
-    plot(theta_true(ii) + 0*theta_DA_RW_eff(:,ii),'r')
+%     plot(theta_DA_RW_eff(:,ii),'c')
+%     plot(theta_HMM_eff(:,ii),'r')   
+    plot(theta_HMM_adapt(:,ii),'m')      
+%     plot(theta_true(ii) + 0*theta_DA_RW_eff(:,ii),'r')
     hold off
 %     set(gca,'ylabel',[])    
-    title(params{ii})
-    plotTickLatex2D;%('FontSize',12);
+%     title(params{ii})
+%     plotTickLatex2D;%('FontSize',12);
  end
 suptitle('Trace plots params')
 leg = legend('DA','DA RW','HMM','HMM shift','true');
@@ -272,8 +307,8 @@ set(gcf,'units','normalized','outerposition',[0.1 0.1 0.4 0.8]);
 for ii = 1:3
     subplot(3,1,ii)
     autocorr(theta_DA(:,ii),40)
-    set(gca,'ylabel',[])
-    title(params{ii})
+%     set(gca,'ylabel',[])
+%     title(params{ii})
  end
 suptitle('ACF params DA')
 
@@ -299,8 +334,8 @@ set(gcf,'units','normalized','outerposition',[0.1 0.1 0.4 0.8]);
 for ii = 1:3
     subplot(3,1,ii)
     autocorr(theta_DA_RW_eff(:,ii),40)
-    set(gca,'ylabel',[])
-    title(params{ii})
+%     set(gca,'ylabel',[])
+%     title(params{ii})
  end
 suptitle('ACF params DA RW')
 
@@ -326,8 +361,8 @@ set(gcf,'units','normalized','outerposition',[0.1 0.1 0.4 0.8]);
 for ii = 1:3
     subplot(3,1,ii)
     autocorr(theta_HMM_eff(:,ii),40)
-    set(gca,'ylabel',[])
-    title(params{ii})
+%     set(gca,'ylabel',[])
+%     title(params{ii})
  end
 suptitle('ACF params HMM')
 

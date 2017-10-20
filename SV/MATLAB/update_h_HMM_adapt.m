@@ -1,4 +1,5 @@
-function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h,  mid)
+% function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid)
+function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid_inv)
 % integrate out the odd h(t)'s and impute the even ones
     T = length(y);
     odd = mod(T,2);    
@@ -29,9 +30,11 @@ function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h,  mid)
         
         % determine the quantiles
         if (t == 2)
-            bin_midpoint = my_norminv(mid,phi*(h0-mu),sigma);
+%             bin_midpoint = my_norminv(mid,phi*(h0-mu),sigma);
+            bin_midpoint = phi*(h0-mu) + sigma.*mid_inv;
         else
-            bin_midpoint = my_norminv(mid,phi*(h(t-2)-mu),sigma);
+%             bin_midpoint = my_norminv(mid,phi*(h(t-2)-mu),sigma);
+            bin_midpoint = phi*(h(t-2)-mu) + sigma.*mid_inv;          
         end
 
         %% Numerator
