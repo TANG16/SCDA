@@ -11,7 +11,7 @@ function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max, lo
     
 %     logfact = @(xx) sum(log(1:1:xx));
 % %     logfact = @(xx) log(factorial(xx));  % logfact is the log of the factorial: log(x!)
-    IND = 0:N_max;
+    IND = (0:N_max)';
     loglik = sum(log(binopdf(Na(1:2),priorN(1),priorN(2))));
     
     for t = 3:T

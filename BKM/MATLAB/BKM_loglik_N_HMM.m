@@ -18,7 +18,7 @@ function loglik = BKM_loglik_N_HMM(y, Na, Na_prev, Na_prev2, phia, phi1, rho, si
     G = zeros(N_max+1,1);
     P = zeros(N_max+1,1);
     
-    IND = 0:N_max;
+    IND = (0:N_max)';
     G(1:N_max,1) = exp(-exp(loglam) + IND(1:N_max)*loglam - logfact(IND(1:N_max) + 1)); 
     G(N_max+1,1) = max(0,1 - sum(G(1:(N_max))));
     

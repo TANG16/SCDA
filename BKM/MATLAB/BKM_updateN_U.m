@@ -186,7 +186,7 @@ function [N, accept, A_sum] = BKM_updateN_U(fn_BKM_cov, N, theta, y, deltaN, pri
                 num = N(1,t)*loglam - logfact(N(1,t) + 1);                             
                 den = N1_old*loglam - logfact(N1_old + 1);                
             else
-                if (N(1,t) + N(2,t) >= N(2,t+1))
+                if ((N(1,t) + N(2,t) >= N(2,t+1)) && ((N1_old + N(2,t) >= N(2,t+1))))
     %%                 num = log(poisspdf(N(1,t),N(2,t-1).*rho(t-1).*phi1(t-1)))...
     %                     + log(binopdf(N(2,t+1),N(1,t)+N(2,t),phia(t)));
     %                 den = log(poisspdf(N1_old,N(2,t-1).*rho(t-1).*phi1(t-1)))...
@@ -242,7 +242,7 @@ function [N, accept, A_sum] = BKM_updateN_U(fn_BKM_cov, N, theta, y, deltaN, pri
         % Propose a new value for N1
         N(2,t) = Na_old + round(deltaN(2) * (2*rand-1)) ; % deltaNa = 100.5
         % Automatically reject any moves where Na<= 0
-        if ((N(2,t) > 0) && ((N(1,t-1) + N(2,t-1) >= N(2,t))))
+        if ((N(2,t) > 0) && ((N(1,t-1) + N(2,t-1) >= N(2,t))) && ((N(1,t-1)+N(2,t-1)) >= Na_old))
             % Calculate the log(acceptance probability):
             % Calculate the new likelihood value for the proposed move:
             % Calculate the numerator (num) and denominator (den) in turn:
@@ -252,12 +252,12 @@ function [N, accept, A_sum] = BKM_updateN_U(fn_BKM_cov, N, theta, y, deltaN, pri
 %                 den = - 0.5*(log(2*pi) + log(sigy) + ((y(t)-Na_old)^2)/(sigy)) ...
 %                      + log(binopdf(Na_old,N(1,t-1)+N(2,t-1),phia(t-1)));
                  
-                loglam = log(N(2,t)) + log(rho(t)) + log(phi1(t));                 
+%                 loglam = log(N(2,t)) + log(rho(t)) + log(phi1(t));                 
                 num =  - 0.5*(log(2*pi) + log(sigy) + ((y(t)-N(2,t))^2)/(sigy));
                 num = num + N(2,t)*log(phia(t-1)) -N(2,t)*log(1-phia(t-1)) - ...
                       logfact(N(1,t-1)+N(2,t-1) - N(2,t) + 1) - ...
                       logfact(N(2,t) + 1);             
-                loglam = log(Na_old) + log(rho(t)) + log(phi1(t));
+%                 loglam = log(Na_old) + log(rho(t)) + log(phi1(t));
                 den = - 0.5*(log(2*pi) + log(sigy) + ((y(t)-Na_old)^2)/(sigy));
                 den = den + Na_old*log(phia(t-1)) - Na_old*log(1-phia(t-1)) - ...                      
                       logfact(N(1,t-1)+N(2,t-1) - Na_old + 1) - ...
