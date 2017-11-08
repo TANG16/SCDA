@@ -1,4 +1,4 @@
-function [N, theta, accept, A_sum] = BKM_update_HMM_adapt(N, theta, prior, delta, y, m, f, stdT, mid, logfact)
+function [N, theta, accept, A_sum] = BKM_update_HMM_bin(N, theta, prior, delta, y, m, f, stdT, bin, logfact)
 % A normal random-walk algorithm for the demographic regression parameters,
 % Gibbs update for sigma2y
 
@@ -6,15 +6,32 @@ function [N, theta, accept, A_sum] = BKM_update_HMM_adapt(N, theta, prior, delta
     D = size(theta,2); 
 
     fn_BKM_cov = @(xx) BKM_covariates(xx,f,stdT);
-    [N_new, accept, A_sum] = BKM_updateN_HMM_adapt(fn_BKM_cov, N, theta, y, delta.N, prior.N, mid, logfact);
+    [N_new, accept, A_sum] = BKM_updateN_HMM_bin(fn_BKM_cov, N, theta, y, delta.N, prior.N, bin, logfact);
     N = N_new;  
-    oldlikhood = BKM_calclikhood_HMM_adapt(N, theta, y, m, f, stdT, prior.N, mid, logfact);
+    oldlikhood = BKM_calclikhood_HMM_bin(N, theta, y, m, f, stdT, prior.N, bin, logfact);
 
     % Cycle through each theta (except sigma2) in turn 
     % and propose to update using random walk MH with uniform proposal density:
     
     % For survival/reproduction parameters
-    for ii = [1:3,5:7] 
+    for ii = [1:3,5:7]
+        % Keep a record of the current thetaeter value being updated
+        oldtheta = theta(ii);
+        
+        % Propose a new value for the logistic regression parameter theta using a RW with uniform proposal density
+        % theta(ii) = runif(1, theta(ii)-delta(ii), theta(ii)+delta(ii));
+        theta(ii) = theta(ii) + delta.T(ii)*randn; 
+                 
+        % Calculate the log(acceptance probability):
+        % Calculate the new likelihood value for the proposed move:
+        % Calculate the numerator (num) and denominator (den) in turn:
+        newlikhood = BKM_calclikhood_HMM_bin(N, theta, y, m, f, stdT, prior.N, bin, logfact);
+
+        % For regression coefficients add in prior (Normal) terms to the acceptance probability
+        num = newlikhood - 0.5*(((theta(ii)-prior.T_mu(ii))^2)/prior.T_sigma2(ii));
+        den = oldlikhood - 0.5*(((oldtheta-prior.T_mu(ii))^2)/prior.T_sigma2(ii));
+        
+        % All other prior terms (for other thetas) cancel in the acceptance probability.
         % Proposal terms cancel since proposal distribution is symmetric.
 
         % Acceptance probability of MH step:

@@ -19,6 +19,11 @@ function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid_inv)
     h0 = mu; %mu/(1-phi); % unconditional mean
     
     for t = 2:2:T % 1:2:T    
+%       bin_mid[i,t] <- qnorm(mid[i],phi*(h[t-1] - mu), sigma2_star) 
+%       
+%       Q_odd[i,t] <- dnorm(y[2*t-1],0, 1.0/exp(bin_mid[i,t]  + mu)) # observation density for odd observations given odd states
+%       G_even[i,t] <- dnorm(h[t], mu + phi*(bin_mid[i,t]), sigma2_star) # transition probability to h_even[t] from h_odd[t]       
+                      
         %% RW IMPUTATION
         % Keep a record of the current N1 value being updated
         h_old = h(t);
@@ -36,6 +41,10 @@ function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid_inv)
 %             bin_midpoint = my_norminv(mid,phi*(h(t-2)-mu),sigma);
             bin_midpoint = phi*(h(t-2)-mu) + sigma.*mid_inv;          
         end
+        
+% CURRENTLY UPDATED H BECOMES A QUANTILE AS WELL
+bin_midpoint_next = phi*(h(t)-mu) + sigma.*mid_inv;          
+bin_midpoint_next_old = phi*(h_old-mu) + sigma.*mid_inv;
 
         %% Numerator
         num = -0.5*(log(2*pi) + h(t) + (y(t)^2)/exp(h(t)));
@@ -50,14 +59,22 @@ function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid_inv)
 %         end    
         num = num + log(sum(exp(loglik_int)));
         
+%         % integrate out the next h 
+%         if (t<T)   % t+2 <= T
+%             loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint).^2)/sigma2);
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
+%     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t)-mu)).^2)/sigma2);
+%             num = num + log(sum(exp(loglik_int)));
+%         end    
         % integrate out the next h 
         if (t<T)   % t+2 <= T
-            loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint).^2)/sigma2);
-            loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
+            loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint_next).^2)/sigma2);
+            loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint_next) + (y(t+1)^2)./exp(mu + bin_midpoint_next));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t)-mu)).^2)/sigma2);
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h(t)-mu)).^2)/sigma2);
             num = num + log(sum(exp(loglik_int)));
-        end    
+        end
         
         %% Denominator
         den = -0.5*(log(2*pi) + h_old + (y(t)^2)/exp(h_old));
@@ -72,15 +89,22 @@ function [h, accept, A_sum] = update_h_HMM_adapt(y, h, theta, delta_h, mid_inv)
 %         end    
         den = den + log(sum(exp(loglik_int)));
         
+%         % integrate out the next h 
+%         if (t<T)   % t+2 <= T
+%             loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint).^2)/sigma2);
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
+%     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h_old-mu)).^2)/sigma2);
+%             den = den + log(sum(exp(loglik_int)));
+%         end  
         % integrate out the next h 
         if (t<T)   % t+2 <= T
-            loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint).^2)/sigma2);
-            loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint) + (y(t+1)^2)./exp(mu + bin_midpoint));    
+            loglik_int = - 0.5*(log(2*pi) + log(sigma2) + ((h(t+2) - mu - phi*bin_midpoint_next_old).^2)/sigma2);
+            loglik_int = loglik_int - 0.5*(log(2*pi) + (mu + bin_midpoint_next_old) + (y(t+1)^2)./exp(mu + bin_midpoint_next_old));    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
-            loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h_old-mu)).^2)/sigma2);
+%             loglik_int = loglik_int - 0.5*(log(2*pi) + log(sigma2) + ((bin_midpoint - phi*(h_old-mu)).^2)/sigma2);
             den = den + log(sum(exp(loglik_int)));
-        end  
-        
+        end          
         %% Acceptance Rate
         % Proposal terms cancel since proposal distribution is symmetric.
         % All other prior terms cancel in the acceptance probability. 

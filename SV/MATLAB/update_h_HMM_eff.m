@@ -86,7 +86,6 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_eff(y, h, theta, delta_h, 
              den = den + oldloglik(t/2+1);
         end    
  
-        
         %% Acceptance Rate
         % Proposal terms cancel since proposal distribution is symmetric.
         % All other prior terms cancel in the acceptance probability. 

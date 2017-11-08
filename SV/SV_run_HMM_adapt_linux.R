@@ -7,8 +7,8 @@ set.seed(1345221)
 save_on = TRUE
 
 
-ada=100#0
-iter=1000#0
+ada=1000
+iter=10000
 th=1
 cha= 2 #2
 
@@ -48,6 +48,7 @@ y <- exp(h_true/2)*rnorm(T)
 N_q = 30
 qu <- c(0:(N_q-1))/N_q
 mid <- qu+qu[2]/2
+mid <- qnorm(mid)
 Up_h <- 10
 
 inits_hmm_adapt <- function()(list(mu = 0, phi_star = (0.97+1)/2, sigma2_star = 1/sigma2_init, h = log(var(y))*rep(1,T/2)))

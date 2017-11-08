@@ -670,11 +670,11 @@ for jj = 1:4
     for ii = 1:3
         subplot(3,4,(ii-1)*4+jj)
         hold on         
-        autocorr(theta_HMM_adapt_eff(:,ii),200)      
+        autorcorr(theta_HMM_adapt_eff(:,ii),200)      
          hold off
     %     set(gca,'ylabel',[])    
         title([params{ii},' ',', Nbin = ',num2str(N_bin)])
     %     plotTickLatex2D;%('FontSize',12);
     end
 end
-suptitle('Acf plots params')
+suptitle('A plots params')

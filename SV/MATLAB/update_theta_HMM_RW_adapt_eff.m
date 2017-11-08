@@ -1,5 +1,5 @@
-function [theta, accept, oldloglik] = update_theta_HMM_RW_eff(y, h, theta,...
-    bins, bin_midpoint, hyper, delta, oldloglik)
+function [theta, accept, oldloglik] = update_theta_HMM_RW_adapt_eff(y, h, theta, ...
+    mid, hyper, delta, oldloglik)
 
     accept = zeros(1,3);
 %     mu = theta(:,1);     % prior: mu ~ normpdf(c, 0, 10);
@@ -17,12 +17,12 @@ function [theta, accept, oldloglik] = update_theta_HMM_RW_eff(y, h, theta,...
     for ii = 1:3
         % Keep a record of the current theta value being updated
         oldtheta = theta(ii);
-%         oldloglik = loglik_h_HMM_eff(y, h, theta, bins, bin_midpoint);
-       
+%         oldlikhood = loglik_h_HMM_adapt(y, h, theta, mid);
+        
         % Propose a new value using a RW with uniform proposal density
         theta(ii) = theta(ii) + delta(ii)*randn; 
         if ((ii == 1) || ((ii == 2) && (abs(theta(ii))<1)) || ((ii == 3) && (theta(ii)>0)))
-            newloglik = loglik_h_HMM_eff(y, h, theta, bins, bin_midpoint);
+            newloglik = loglik_h_HMM_adapt_eff(y, h, theta, mid);
 
             % Calculate the log(acceptance probability):
             % Calculate the new likelihood value for the proposed move:
@@ -43,12 +43,12 @@ function [theta, accept, oldloglik] = update_theta_HMM_RW_eff(y, h, theta,...
             num = sum(newloglik) + newprior;
             den = sum(oldloglik) + oldprior;
 
+
             % All other prior terms (for other thetas) cancel in the acceptance probability.
             % Proposal terms cancel since proposal distribution is symmetric.
 
             % Acceptance probability of MH step:
             A = min(1,exp(num-den));
-%             fprintf('Old theta: %6.4f, new theta: %6.4f, den: %6.4f, num: %6.4f, ...',oldtheta,theta(ii),den,num);
         else
             A = 0;
         end
@@ -58,11 +58,9 @@ function [theta, accept, oldloglik] = update_theta_HMM_RW_eff(y, h, theta,...
             % Update the log(likelihood) value:
             oldloglik = newloglik;
             accept(ii) = A;
-%             fprintf('ACCEPT \n, ...');
         else  % Reject proposed move:
             % theta stays at current value:
             theta(ii) = oldtheta;
-%             fprintf('DO NOT ACCEPT \n, ...');
         end
     end  
     

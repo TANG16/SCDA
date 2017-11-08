@@ -11,14 +11,14 @@ lines(ESS1_HMM_adapt[c(1:T/2)],type='l',col='blue')
 lines(ESS2_HMM_adapt[c(1:T/2)],type='l',col='darkblue')
 legend(0,1000,legend = c("DA","HMM","HMM_adapt"),lty =1,col=c("red","green","blue"))
 
-
+par(mfrow=c(1,1))
 plot(h_true,type='l',col='black',xlab="",ylab="",
      sub=paste("posterior mean h N_bin=",toString(N_bin),", Nq=",toString(N_q),sep=""))
 plot(mean_H1_DA,type='l',col='red',xlab="",ylab="")
 lines(mean_H2_DA,type='l',col='darkred')
 lines(seq(2,T,by=2),mean_H1_HMM,type='l',col='green')
 lines(seq(2,T,by=2),mean_H2_HMM,type='l',col='darkgreen')
-plot(seq(2,T,by=2),mean_H1_HMM_adapt,type='l',col='blue',xlab="",ylab="")
+lines(seq(2,T,by=2),mean_H1_HMM_adapt,type='l',col='blue',xlab="",ylab="")
 lines(seq(2,T,by=2),mean_H2_HMM_adapt,type='l',col='darkblue')
 legend(0,-3,legend = c("true","DA","HMM","HMM_adapt"),lty =1,col=c("black","red","green","blue"))
 
@@ -59,7 +59,7 @@ ESS2_HMM_adapt[1:3]
 par(mfrow=c(3,1))
 for (i in 1:3){
   plot(theta1_HMM_adapt[,i],type= 'l',xlab='',ylab='',col='blue')
-  lines(theta1_HMM_adapt[,i],type= 'l',xlab='',ylab='',col='darkblue')
+  lines(theta2_HMM_adapt[,i],type= 'l',xlab='',ylab='',col='darkblue')
   # lines(param[i] + 0*theta1_HMM_adapt[,i],type= 'l',xlab='',ylab='',col='red')
 }
 
