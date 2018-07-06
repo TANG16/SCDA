@@ -11,6 +11,7 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_adapt_eff(y, h, theta, del
     phi = theta(2);
     sigma2 = theta(3);
     sigma = sqrt(sigma2);
+    s0 = sigma2/(1-phi^2);
 
     accept = 0;
     A_sum = 0;
@@ -18,6 +19,7 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_adapt_eff(y, h, theta, del
     h0 = mu; %mu/(1-phi); % unconditional mean
  
     Gauss_const = - 0.5*(log(2*pi) + log(sigma2));
+    Gauss_const0 = - 0.5*(log(2*pi) + log(s0));
     
     newloglik = zeros(1,T2);
     
@@ -38,7 +40,8 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_adapt_eff(y, h, theta, del
         
         % determine the quantiles
         if (t == 2)
-            bin_midpoint = phi*(h0-mu) + sigma.*mid_inv;
+%             bin_midpoint = phi*(h0-mu) + sigma.*mid_inv;
+            bin_midpoint = sqrt(s0).*mid_inv;
         else
             bin_midpoint = phi*(h(t-2)-mu) + sigma.*mid_inv;          
         end

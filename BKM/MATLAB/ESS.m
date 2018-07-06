@@ -3,9 +3,9 @@ function N_ess = ESS(x, f)
     [N,D] = size(x);
     N_ess = zeros(1,D);
     
-    if ~exist('autocorr','builtin')
-        autocorr = @(xx,ll) acf(xx,ll);
-    end
+%     if ~exist('autocorr','builtin')
+%         autocorr = @(xx,ll) acf(xx,ll);
+%     end
 
     if (f > 0)
         for d = 1:D

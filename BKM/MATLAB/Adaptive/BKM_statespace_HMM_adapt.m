@@ -9,7 +9,9 @@ function loglik_ss = BKM_statespace_HMM_adapt(Na, theta, y, f, stdT, priorN, mid
 %     logfact = @(xx) sum(log(1:1:xx));
 % %     logfact = @(xx) log(factorial(xx));  % logfact is the log of the factorial: log(x!)
     N_mid = length(mid);
-
+    
+% loglik = zeros(T,1); 
+% loglik(1:2) = sum(log(binopdf(Na(1:2),priorN(1),priorN(2))));
     loglik = sum(log(binopdf(Na(1:2),priorN(1),priorN(2))));
     
     for t = 3:T
@@ -30,6 +32,7 @@ function loglik_ss = BKM_statespace_HMM_adapt(Na, theta, y, f, stdT, priorN, mid
                     logfact(round(mid_ok + Na(t-1)) + 1) - ...
                     logfact(round(mid_ok + Na(t-1)) - Na(t) + 1) - ...
                     logfact(Na(t) + 1));
+%         loglik(t) = log(sum(P2));
         loglik = loglik + log(sum(P2));
     end
     

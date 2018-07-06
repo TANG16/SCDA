@@ -1,5 +1,6 @@
-function BKM_try_DA(M,BurnIn)% clear all
+function Results = BKM_try_DA(M, BurnIn, save_on)% clear all
     % close all
+    % M=10000; BurnIn=10000;
     fprintf('*** BKM_DA ***\n');
 
     plot_on = false;
@@ -50,6 +51,7 @@ function BKM_try_DA(M,BurnIn)% clear all
 
     logfact = @(xx) sum(log(1:1:xx));
     logfact = arrayfun(logfact,0:7000);
+%     logfact = arrayfun(logfact,0:100000);
 
     oldlikhood = BKM_calclikhood(N, theta, y, m, f, stdT, prior.N, logfact);
 
@@ -65,11 +67,8 @@ function BKM_try_DA(M,BurnIn)% clear all
     % [0.04 0.04 0.1 0.02 0.03 0.02 0.06 0.02]
 
     if strcmp(update_T,'URW')
-    %     delta.T = sqrt(3)*[0.04 0.04 0.1 0.02 0.03 0.02 0.06 0.02];
         delta.T = sqrt(3)*[0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
     elseif strcmp(update_T,'NRW')
-    %     delta.T =  [0.04 0.04 0.07 0.02 0.03 0.02 0.07 0.02];
-    %     delta.T = [0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
         delta.T = [0.1 0.04 0.05 0.1 0.1 0.035 0.05 0.12];
     %   0.2842    0.3067    0.2388    0.3783    0.2618    0.3188    0.2730    0.3647    
     else
@@ -82,14 +81,15 @@ function BKM_try_DA(M,BurnIn)% clear all
     %     delta.N = [7, 10] + 0.5; %0.5 added to have a correct dicrete uniform distribution after rounding
     % else
         delta.N = [60/sc, 100/sc] + 0.5;
-    %     delta.N = [50/sc, 140/sc] + 0.5;
         deltaN = delta.N;
     % end
     end
 
     %% MH Algorithm
     % M = 10000;%50000;
-    % BurnIn = 1000;
+    % BurnIn = 0; %1000;
+%          N = [N1;Na];
+
     NN = zeros(2,T,M);
     Theta = zeros(M,9);
     accept = zeros(M,T+T+D-1);
@@ -105,9 +105,12 @@ function BKM_try_DA(M,BurnIn)% clear all
 
         if (mod(ii,1000)==0)
             fprintf('MH iter = %i\n',ii); toc;
+%             fprintf('Sigma2 = %6.4f \n',theta(:,end));            
         end
 %         if strcmp(update_T,'NRW') 
-            [N, theta, acc, a_sum] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+%             [N, theta, acc, a_sum] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+%             [N, theta, acc, a_sum] = BKM_update_NRW_v2(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+            [N, theta, acc, a_sum] = BKM_update_NRW_debug(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
 %         else
 %             [N, theta, acc, a_sum] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
 %         end
@@ -121,103 +124,17 @@ function BKM_try_DA(M,BurnIn)% clear all
     time_sampl = toc;
     % accept = accept/(2*T+D-1);
     mean_A = mean_A/(2*T+D-1);
-    name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_DA_',update_T,'_',update_N,'.mat'];
-    save(name,'Theta','NN','accept','theta_init','prior','delta','time_sampl', ...
-        'accept', 'mean_A');
+    
+    Results.NN = NN;
+    Results.Theta = Theta;
+    Results.accept = accept;
+    Results.mean_A = mean_A;
+    Results.time_sampl = time_sampl;
 
-
-    %%
-    if plot_on
-        figure(1)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            hold on
-            plot(Theta(:,ii))
-    %         plot(theta_init(ii)+0*sample(BurnIn+1:M,ii),'r')        
-            hold off
-            title(params{ii})
-        end
-
-        figure(10)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            autocorr(Theta(:,ii),40)
-            title(params{ii})
-        end   
-
-        figure(110)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            bar(acf(Theta(:,ii),40))
-            title(params{ii})
-        end
-
-        figure(2)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            hold on
-            plot(squeeze(NN(1,4*(ii-3)+9,:)))
-    %         plot(N1(4*(ii-3)+9) + 0*squeeze(NN(1,4*(ii-3)+9,:)),'r')
-            hold off
-            title(['N1(',num2str(4*(ii-3)+9),')'])
-        end
-
-        figure(22)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            autocorr(squeeze(NN(1,4*(ii-3)+9,:)),40)
-            title(['N1(',num2str(4*(ii-3)+9),')'])
-        end
-
-        figure(3)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            hold on
-            plot(squeeze(NN(2,4*(ii-3)+9,:)))
-    %         plot(Na(4*(ii-3)+9) + 0*squeeze(NN(2,4*(ii-3)+9,:)),'r')
-            hold off
-            title(['Na(',num2str(4*(ii-3)+9),')'])
-        end
-
-        figure(33)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            autocorr(squeeze(NN(2,4*(ii-3)+9,:)),40)
-            title(['Na(',num2str(4*(ii-3)+9),')'])
-        end
-
-
-        figure(33)
-        set(gcf,'units','normalized','outerposition',[0.0 0.0 1.0 1.0]);
-        for ii = 1:9
-            subplot(3,3,ii)
-            bar(acf(squeeze(NN(2,4*(ii-3)+9,:))',40))
-            title(['Na(',num2str(4*(ii-3)+9),')'])
-        end    
-
-        figure(4)   
-        subplot(2,1,1)
-        hold on
-        plot(mean(NN(1,:,:),3))
-        hold off
-
-        subplot(2,1,2)
-        hold on
-        plot(mean(NN(2,:,:),3))
-        hold off
-
-
-        figure(5)
-        bar(sum((accept>0))/M)
-
+    if save_on
+%         name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_DA_',update_T,'_',update_N,'.mat'];
+        name = ['/home/aba228/Documents/BKM/BKM_DA_',update_T,'_',update_N,'_v2_long.mat'];
+        save(name,'Theta','NN','accept','theta_init','prior','delta','time_sampl', ...
+            'accept', 'mean_A');
     end
-
-
 end

@@ -15,12 +15,12 @@ cha= 2 #2
 
 
 phi <- 0.98
-sigma <- 0.2
+sigma <- 0.1#0.2
 sigma2 <- sigma^2
 # beta = 0.05;
-beta <- 0.5;
-mu <- 2*log(beta);
-
+# beta <- 0.5;
+# mu <- 2*log(beta);
+mu <- -1
 param <- c(mu, phi, sigma2)
 
 a1 = mu
@@ -127,3 +127,17 @@ if (save_on) {
 # }
 
 quit()
+
+
+
+
+par(mfrow=c(2,2))
+for (i in 1:3){
+  acf(theta1_DA[,i],xlab='',ylab='',lag=100,main=colnames(theta1_DA)[i])
+}
+
+
+par(mfrow=c(3,3))
+for (i in 1:9){
+  acf(H_short1_DA[,i],xlab='',ylab='',lag=100,main=colnames(H_short1_DA)[i])
+}

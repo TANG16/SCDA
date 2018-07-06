@@ -11,6 +11,7 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_eff(y, h, theta, delta_h, 
     mu = theta(1);
     phi = theta(2);
     sigma2 = theta(3);
+    s0 = sigma2/(1-phi^2);
 
     accept = 0;
     A_sum = 0;
@@ -20,6 +21,7 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_eff(y, h, theta, delta_h, 
     mu_bin = (mu + bin_midpoint);
     exp_mu_bin = exp(mu + bin_midpoint);
     Gauss_const = - 0.5*(log(2*pi) + log(sigma2));
+    Gauss_const0 = - 0.5*(log(2*pi) + log(s0));
     
     newloglik = zeros(1,T2);
   
@@ -40,7 +42,8 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_eff(y, h, theta, delta_h, 
         loglik_int = loglik_int - 0.5*(log(2*pi) + mu_bin + (y(t-1)^2)./exp_mu_bin);    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
         if (t==2)
-            loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h0-mu)).^2)/sigma2;
+%             loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h0-mu)).^2)/sigma2;
+            loglik_int = loglik_int + Gauss_const0 - 0.5*((bin_midpoint).^2)/s0;
         else
             loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2;
         end  
@@ -67,7 +70,8 @@ function [h, accept, A_sum, newloglik] = update_h_HMM_eff(y, h, theta, delta_h, 
         loglik_int = loglik_int - 0.5*(log(2*pi) + mu_bin + (y(t-1)^2)./exp_mu_bin);    
     %     loglik_int = loglik_int + log(diff(normcdf((bins-phi*(h_prev-mu))/sigma)));
         if (t==2)
-            loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h0-mu)).^2)/sigma2;
+%             loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h0-mu)).^2)/sigma2;
+            loglik_int = loglik_int + Gauss_const0 - 0.5*((bin_midpoint).^2)/s0;
         else
             loglik_int = loglik_int + Gauss_const - 0.5*((bin_midpoint - phi*(h(t-2)-mu)).^2)/sigma2;
         end    

@@ -1,0 +1,8 @@
+Adapt10: v2
+Adapt20: v3
+Adapt30: v3
+Bin30: v3
+Bin20: v1
+Bin10: v3
+Ex: v3
+DA: v3

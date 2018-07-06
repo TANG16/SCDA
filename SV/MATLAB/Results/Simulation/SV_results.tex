@@ -1,0 +1,46 @@
+{ \renewcommand{\arraystretch}{1.2} 
+\begin{table} 
+\center 
+\begin{tabular}{ccc cc cc} 
+\hline 
+ & && DA KSC & DA RW & HMM fix & HMM adapt \\ \hline  \hline
+ \multicolumn{2}{c}{time (s)}& & 15.8279  & 15.3329  & 332.3208  & 391.2560  \\  \hline 
+\multicolumn{7}{c}{$\theta$} \\ \hline 
+\multirow{4}{*}{$\mu$}   & mean  &   & -0.9337  & -1.0765  & -1.2508  & -1.2393  \\ [0.75ex]
+ & std  &   & (0.2933)  & (0.2636)  & (0.2546)  & (0.2705)  \\ [0.75ex]
+ & ESS  &   & 1784.9643  & 1149.6087  & 226.3855  & 285.9039  \\ [0.75ex]
+ & AR && --  & 0.3603  & 0.3764  & 0.3540  \\ [1.3ex] 
+\multirow{4}{*}{$\phi$}   & mean  &   & 0.9820  & 0.9831  & 0.9831  & 0.9829  \\ [0.75ex]
+ & std  &   & (0.0055)  & (0.0054)  & (0.0055)  & (0.0054)  \\ [0.75ex]
+ & ESS  &   & 58.3797  & 28.2200  & 73.3595  & 122.5542  \\ [0.75ex]
+ & AR && --  & 0.3472  & 0.3493  & 0.3543  \\ [1.3ex] 
+\multirow{4}{*}{$\sigma^2$}   & mean  &   & 0.0378  & 0.0327  & 0.0346  & 0.0356  \\ [0.75ex]
+ & std  &   & (0.0072)  & (0.0075)  & (0.0067)  & (0.0064)  \\ [0.75ex]
+ & ESS  &   & 24.0080  & 12.9827  & 37.7376  & 50.3528  \\ [0.75ex]
+ & AR && --  & 0.3157  & 0.3383  & 0.3377  \\ [1.3ex] 
+\hline 
+\multicolumn{7}{c}{$ \bm{h} $} \\ \hline 
+\multirow{4}{*}{$h_{200}$}   & mean &   & -1.7121  & -1.7292  & -1.7327  & -1.7188  \\ [0.75ex]
+ & std &   & (0.4101)  & (0.3435)  & (0.3709)  & (0.3965)  \\ [0.75ex]
+ & ESS  &   & 20.2006  & 44.5343  & 170.0508  & 142.9184  \\ [1.3ex] 
+\multirow{4}{*}{$h_{600}$}   & mean &   & -2.1073  & -2.1907  & -2.2202  & -2.1673  \\ [0.75ex]
+ & std &   & (0.3884)  & (0.3956)  & (0.4011)  & (0.4175)  \\ [0.75ex]
+ & ESS  &   & 36.4182  & 38.6571  & 140.5668  & 45.8781  \\ [1.3ex] 
+\multirow{4}{*}{$h_{1000}$}   & mean &   & -2.8431  & -2.7318  & -2.7380  & -2.7221  \\ [0.75ex]
+ & std &   & (0.3582)  & (0.3557)  & (0.3933)  & (0.4256)  \\ [0.75ex]
+ & ESS  &   & 59.2643  & 63.1334  & 46.4923  & 67.8062  \\ [1.3ex] 
+\multirow{4}{*}{$h_{1400}$}   & mean &   & -0.0987  & -0.1627  & -0.1763  & -0.1848  \\ [0.75ex]
+ & std &   & (0.4358)  & (0.3217)  & (0.3801)  & (0.3897)  \\ [0.75ex]
+ & ESS  &   & 30.0437  & 26.7934  & 113.2120  & 117.0448  \\ [1.3ex] 
+\multirow{4}{*}{$h_{1800}$}   & mean &   & -0.8231  & -0.6487  & -0.6624  & -0.6886  \\ [0.75ex]
+ & std &   & (0.4004)  & (0.3765)  & (0.3900)  & (0.4010)  \\ [0.75ex]
+ & ESS  &   & 11.7891  & 26.2585  & 109.2368  & 81.1609  \\ [1.3ex] 
+ & AR & & --  & 0.3604  & 0.4038  & 0.3521 \\ \hline 
+\hline 
+\multicolumn{7}{p{11cm}}{\footnotesize{ESS: effective sample size at lag equal to the lowest order at which sample autocorrelation is not significant.}}  \\ 
+\multicolumn{7}{p{11cm}}{\footnotesize{AR: acceptance rate of the MH RW algorithm. (for $h_{t}$ average over imputations)}}  \\ 
+\end{tabular}
+ \caption{Posterior means, standard deviations, effective sample sizes (ESS)  for $M=10000$ posterior draws after a burn-in of $10000$ for $T=2000$ observations of \textbf{simulated} data.}
+\label{tab:SV_results}  
+\end{table}
+}

@@ -13,18 +13,22 @@ function loglik = loglik_h_HMM_adapt_eff(y, h, theta, mid_inv)
     phi = theta(2);
     sigma2 = theta(3);
     sigma = sqrt(sigma2);
+    s0 = sigma2/(1-phi^2);
+
 %     stdev_y = exp((mu+bin_midpoint)/2);  
    
     h0 = mu;  % unconditional mean
 
     Gauss_const = - 0.5*(log(2*pi) + log(sigma2));
-    
+    Gauss_const0 = - 0.5*(log(2*pi) + log(s0));
+
     loglik = zeros(1,T2); % logliks for the integrals consisiting of 3 terms each
     for t = 2:2:T     
         % determine the quantiles
         if (t == 2)
-%             bin_midpoint = my_norminv(mid,phi*(h0-mu),sigma);
-            bin_midpoint = phi*(h0-mu) + sigma.*mid_inv;
+% %             bin_midpoint = my_norminv(mid,phi*(h0-mu),sigma);
+%             bin_midpoint = phi*(h0-mu) + sigma.*mid_inv;
+            bin_midpoint = sqrt(s0).*mid_inv;
         else
 %             bin_midpoint = my_norminv(mid,phi*(h(t-2)-mu),sigma);
             bin_midpoint = phi*(h(t-2)-mu) + sigma.*mid_inv;          

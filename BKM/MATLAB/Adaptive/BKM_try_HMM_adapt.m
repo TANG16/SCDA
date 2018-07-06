@@ -1,5 +1,9 @@
-function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
-    % close all
+function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
+%     clear all
+%     close all
+%     N_q = 30;
+%     M = 10000;
+%     BurnIn = 20000; %50000;
     
     fprintf('*** BKM_HMM_adapt M=%i, BurnIn=%i, N_q = %i ***\n', M, BurnIn,N_q);
     
@@ -25,6 +29,7 @@ function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
     betal = -0.37;
     sigy = 1; 
 
+    
     params = {'alpha1', 'alphaa', 'alphar', 'alphal', ...
         'beta1', 'betaa', 'betar', 'betal',...
         'sigy'};
@@ -41,14 +46,14 @@ function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
 
 
     % Quanatiles
-%     N_q = 30; 
+%     N_q = 20; 
     qu = (0:(N_q-1))/N_q;
     qu_mid = qu + qu(2)/2; 
     mid = norminv(qu_mid);  
 
     logfact_fun = @(xx) sum(log(1:1:xx));
-    logfact = arrayfun(logfact_fun,0:7000) ;
-
+%     logfact = arrayfun(logfact_fun,0:7000) ;
+    logfact = arrayfun(logfact_fun,0:10000) ;
     %% Set the proposals
     % for the parameters
     update_T = 'NRW';  
@@ -72,7 +77,8 @@ function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
         delta.N = 75 + 0.5;  %mean(mean_accept(1:T)) = 0.4141
     elseif (N_q == 30)
         delta.N = 95 + 0.5;  %mean(mean_accept(1:T)) =  0.3672
-
+    else
+        delta.N = 15 + 0.5;
     end
 
     deltaN = delta.N;
@@ -98,8 +104,10 @@ function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
 
         if (mod(ii,1000)==0)
             fprintf('MH iter = %i\n',ii); toc;
+            fprintf('Sigma2 = %6.4f \n',theta(:,end));
         end
-        [N, theta, acc, a_sum] = BKM_update_HMM_adapt(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
+%         [N, theta, acc, a_sum] = BKM_update_HMM_adapt(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
+        [N, theta, acc, a_sum] = BKM_update_HMM_adapt_v2(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
         if (ii > 0)
             NN(:,ii) = N;
             Theta(ii,:)= theta; 
@@ -110,9 +118,17 @@ function BKM_try_HMM_adapt(N_q, M, BurnIn)% clear all
     time_sampl = toc; 
     mean_A = mean_A/(T+D-1);
     mean_accept = mean(accept);
-
-    name = ['../Results/BurnIn_',num2str(BurnIn),'/BKM_adapt_Nq',num2str(N_q),'.mat'];
-    save(name,'delta','prior','theta_init','Na','NN','Theta',...
-        'accept','mean_A','mean_accept','time_sampl');
-
+    
+    Results.NN = NN;
+    Results.Theta = Theta;
+    Results.accept = accept;
+    Results.mean_A = mean_A;
+    Results.time_sampl = time_sampl;
+    if save_on
+% %         name = ['../Results/BurnIn_',num2str(BurnIn),'/BKM_adapt_Nq',num2str(N_q),'.mat'];
+%         name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_adapt_Nq',num2str(N_q),'.mat'];
+        name = ['/home/aba228/Documents/BKM/BKM_adapt_Nq',num2str(N_q),'_v2.mat'];
+        save(name,'delta','prior','theta_init','Na','NN','Theta',...
+            'accept','mean_A','mean_accept','time_sampl');
+    end
 end

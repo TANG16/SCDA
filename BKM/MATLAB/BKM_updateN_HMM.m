@@ -6,7 +6,7 @@ function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, 
     [phi1, phia, rho] = fn_BKM_cov(theta);    
     sigy = theta(9);
     
-%     accept = 0
+%     accept = 0;
     accept = zeros(1,T+8);
     A_sum = 0;    
     for t = 1:2            

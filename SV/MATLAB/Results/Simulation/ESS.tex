@@ -1,0 +1,43 @@
+{ \renewcommand{\arraystretch}{1.2} 
+\begin{table} 
+\center 
+\begin{tabular}{ccc cc cc} 
+\hline 
+ & ESS lag&& DA KSC & DA RW & HMM fix & HMM adapt \\ \hline  \hline
+ \multicolumn{2}{c}{time (s)}& & 15.8279  & 15.3329  & 332.3208  & 391.2560  \\  \hline 
+\multicolumn{7}{c}{$\theta$} \\ \hline 
+\multirow{4}{*}{$\mu$}   & sig &  & 1784.9643  & 1149.6087  & 226.3855  & 285.9039  \\ 
+ & 40 &  & 1568.8530  & 1114.3090  & 329.5439  & 338.4211  \\ 
+ & 100 &  & 494.2444  & 660.0217  & 408.7591  & 752.2157  \\ 
+ & 1000 &  & 1119.5159  & 983.1169  & 266.5337  & 281.7544  \\ 
+ & AR & & --  & 0.3603  & 0.3764  & 0.3540  \\ [1.3ex] 
+\multirow{4}{*}{$\phi$}   & sig &  & 58.3797  & 28.2200  & 73.3595  & 122.5542  \\ 
+ & 40 &  & 360.1433  & 240.1525  & 304.5492  & 339.5698  \\ 
+ & 100 &  & 55.2576  & 28.6555  & 82.2641  & 567.9870  \\ 
+ & 1000 &  & 171.7770  & 112.3194  & 168.1893  & 197.0579  \\ 
+ & AR & & --  & 0.3472  & 0.3493  & 0.3543  \\ [1.3ex] 
+\multirow{4}{*}{$\sigma^2$}   & sig &  & 24.0080  & 12.9827  & 37.7376  & 50.3528  \\ 
+ & 40 &  & 136.7803  & 128.8342  & 145.8999  & 148.3154  \\ 
+ & 100 &  & 24.1467  & 13.1931  & 52.4641  & 287.1741  \\ 
+ & 1000 &  & 62.2498  & 56.3525  & 72.7653  & 74.6433  \\ 
+ & AR & & --  & 0.3157  & 0.3383  & 0.3377  \\ [1.3ex] 
+\hline 
+\multicolumn{7}{c}{$ \bm{h} $} \\ \hline 
+mean & sig &  & 47.5247  & 42.8227  & 146.0129  & 138.6172  \\ 
+std & sig &  & [19.1934]  & [17.4572]  & [40.2282]  & [40.2369]  \\  [1ex]
+mean & 40 &  & 168.4731  & 165.7626  & 240.6286  & 236.6045  \\ 
+std & 40 &  & [11.4363]  & [11.1037]  & [22.4211]  & [23.5874]  \\  [1ex]
+mean & 100 &  & 76.8292  & -34.6421  & 2689.3874  & -294.8470  \\ 
+std & 100 &  & [359.6410]  & [3865.7262]  & [52796.7548]  & [17184.6612]  \\  [1ex]
+mean & 1000 &  & 88.9574  & 86.0373  & 166.5994  & 161.7595  \\ 
+std & 1000 &  & [11.2333]  & [10.5419]  & [27.2902]  & [28.2477]  \\  [1ex]
+ & AR &  & 0.3194  & 0.3604  & 0.4038  & 0.3521  \\  [1ex]
+\hline 
+\multicolumn{7}{p{11cm}}{\footnotesize{sig: lag equal to the lowest order at which sample autocorrelation is not significant.}}  \\ 
+\multicolumn{7}{p{11cm}}{\footnotesize{AR: acceptance rate of the MH RW algorithm.}}  \\ 
+\multicolumn{7}{p{11cm}}{\footnotesize{mean/std: over the imputed states.}}  \\ 
+\end{tabular}
+ \caption{Effective sample sizes (ESS) at different lags  for $M=10000$ posterior draws after a burn-in of $10000$ for $T=2000$ observations of \textbf{simulated} data.}
+\label{tab:ESS}  
+\end{table}
+}

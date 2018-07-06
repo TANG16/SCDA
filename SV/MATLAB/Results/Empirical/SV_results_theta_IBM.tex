@@ -1,0 +1,55 @@
+{ \renewcommand{\arraystretch}{1.2} 
+\begin{table} 
+\center 
+\begin{tabular}{cc ccc } 
+ Method & &  $\mu$ & $\phi$ &$\sigma^2$ \\ \hline  \hline
+\rowcolor{LightCyan} 
+DA & Mean 
+ & 0.3794  & 0.9634  & 0.0768  \\  [0.75ex] 
+ & (Std) 
+ & (0.1181)  & (0.0057)  & (0.0093)  \\  [0.75ex] 
+ [ 36.22 s] & ESS 
+ & 639.8827  & 45.9907  & 22.4574  \\  [0.75ex] 
+\rowcolor{LightCyan} 
+Adapt10 & Mean 
+ & 0.4430  & 0.9619  & 0.0869  \\  [0.75ex] 
+ & (Std) 
+ & (0.1131)  & (0.0067)  & (0.0138)  \\  [0.75ex] 
+ [642.03 s] & ESS 
+ & 1147.4264  & 46.0972  & 29.2063  \\  [0.75ex] 
+\rowcolor{LightCyan} 
+Adapt20 & Mean 
+ & 0.4358  & 0.9606  & 0.0879  \\  [0.75ex] 
+ & (Std) 
+ & (0.1136)  & (0.0068)  & (0.0136)  \\  [0.75ex] 
+ [760.91 s] & ESS 
+ & 1165.6924  & 58.3565  & 32.7646  \\  [0.75ex] 
+\rowcolor{LightCyan} 
+Adapt30 & Mean 
+ & 0.4320  & 0.9594  & 0.0896  \\  [0.75ex] 
+ & (Std) 
+ & (0.1112)  & (0.0068)  & (0.0138)  \\  [0.75ex] 
+ [855.32 s] & ESS 
+ & 903.6723  & 45.7657  & 30.7075  \\  [0.75ex] 
+\rowcolor{LightCyan} 
+Bin20 & Mean 
+ & 0.4398  & 0.9621  & 0.0808  \\  [0.75ex] 
+ & (Std) 
+ & (0.1144)  & (0.0065)  & (0.0126)  \\  [0.75ex] 
+ [679.02 s] & ESS 
+ & 779.7755  & 57.3736  & 33.4020  \\  [0.75ex] 
+\rowcolor{LightCyan} 
+Bin30 & Mean 
+ & 0.4347  & 0.9614  & 0.0823  \\  [0.75ex] 
+ & (Std) 
+ & (0.1147)  & (0.0062)  & (0.0114)  \\  [0.75ex] 
+ [745.02 s] & ESS 
+ & 1103.7671  & 70.0202  & 41.6181  \\  [0.75ex] 
+  \hline 
+\multicolumn{5}{p{6cm}}{\footnotesize{ESS: at lag equal to the lowest order at which sample autocorrelation is not significant.}}  \\ 
+\multicolumn{5}{p{6cm}}{\footnotesize{Computing times  (in seconds) in square brackets.}}  \\ 
+\end{tabular}
+ \caption{SV model: posterior means, standard deviations and effective sample sizes (ESS) of the model parameters for $M=10000$ posterior draws after a burn-in of $10000$.}
+\label{tab:SV_results_theta_IBM}  
+\end{table}
+}} \normalsize

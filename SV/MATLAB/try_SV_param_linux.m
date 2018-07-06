@@ -2,6 +2,7 @@ function try_SV_param_linux(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7)
 % clear all
 close all
 
+
 s = RandStream('mt19937ar','Seed',1);
 RandStream.setGlobalStream(s); 
 
@@ -14,7 +15,8 @@ if (arg0 == 0) % simulate
     mu = 2*log(beta);
     
 %     mu = 0;
-    theta = [mu, 0.98, 0.2^2];
+    theta = [0, 0.95, 0.1^2];
+%     theta = [mu, 0.98, 0.2^2];
     theta_true = theta;
     params = {'\mu','\phi','\sigma^2'};
 
@@ -30,7 +32,7 @@ if (arg0 == 0) % simulate
     phi = theta(2);
     sigma2 = theta(3);
     data_name = '';
-    path = 'Results/';
+    path = 'Results/Simulation/';
 % kernel = @(xx) -loglik_h(h_true, xx)/T;
 % theta_mle = fminunc(kernel,theta_init);
 else % empirical
@@ -55,7 +57,7 @@ hyper.P = [20, 3/2];
 % P0 = sqrt(sigma2/(1-phi^2)); % unconditional st. dev. 0.6120
 % bin_range = 5*P0;
 bin_range = 4;
-N_bin = 10; %15; %20; %25; %30; %15; % 20;%30; %50;
+N_bin = 30; %10; %25; %20; %30; %10; %15; %20; %25; %30; %15; % 20;%30; %50;
 bins = linspace(-bin_range,bin_range,N_bin+1);
 bin_midpoint = (bins(1:N_bin) + bins(2:N_bin+1))/2;
 mid = (0:(N_bin-1))/N_bin;
@@ -65,7 +67,7 @@ mid_inv = norminv(mid);
 
 
 M = 10000;
-BurnIn = 1000 + 3000;
+BurnIn = 1000 + 3000 + 6000;
 h_init = log(var(y))*ones(1,T); 
 
 % theta_init = [0, 0.95, 0.1^2];
@@ -131,7 +133,7 @@ h_init = log(var(y))*ones(1,T);
         ESS_H_DA_1000 = ESS(H_DA,1000);
         ESS_H_DA_sig = ESS(H_DA,0);
         
-        H_subset_DA = H_DA(:,(2:10)*100);        
+        H_subset_DA = H_DA(:,(2:20)*100);        
         
         name = [path,'SV_results_param_DA',data_name,'.mat'];
         save(name,...
@@ -162,6 +164,11 @@ h_init = log(var(y))*ones(1,T);
         h = h_init;
         [theta, delta] = SV_initialise(arg0, 2);
         
+h = h_init;        
+theta = theta_true;
+delta.t = [0.12, 0.02, 0.001];
+delta.h = 0.3;
+ 
         H_DA_RW = zeros(M,T);
         theta_DA_RW = zeros(M,3);
 
@@ -204,7 +211,7 @@ h_init = log(var(y))*ones(1,T);
         ESS_H_DA_RW_1000 = ESS(H_DA_RW,1000);
         ESS_H_DA_RW_sig = ESS(H_DA_RW,0);
         
-        H_subset_DA_RW = H_DA_RW(:,(2:10)*100);        
+        H_subset_DA_RW = H_DA_RW(:,(2:20)*100);        
 
         name = [path,'SV_results_param_DA_RW',data_name,'.mat'];
         save(name,...
@@ -271,7 +278,7 @@ h_init = log(var(y))*ones(1,T);
         ESS_H_DA_RW_eff_1000 = ESS(H_DA_RW_eff,1000);
         ESS_H_DA_RW_eff_sig = ESS(H_DA_RW_eff,0);
         
-        H_subset_DA_RW_eff = H_DA_RW_eff(:,(2:10)*100);        
+        H_subset_DA_RW_eff = H_DA_RW_eff(:,(2:20)*100);        
 
         name = [path,'SV_results_param_DA_RW_eff',data_name,'.mat'];
         save(name,...
@@ -399,12 +406,12 @@ h_init = log(var(y))*ones(1,T);
         ESS_theta_HMM_1000 = ESS(theta_HMM,1000);
         ESS_theta_HMM_sig = ESS(theta_HMM,0);     
 
-        ESS_H_HMM_40 = ESS(H_HMM,40);
-        ESS_H_HMM_100 = ESS(H_HMM,100);
-        ESS_H_HMM_1000 = ESS(H_HMM,1000);
-        ESS_H_HMM_sig = ESS(H_HMM,0);
+        ESS_H_HMM_40 = ESS(H_HMM(:,2:2:T),40);
+        ESS_H_HMM_100 = ESS(H_HMM(:,2:2:T),100);
+        ESS_H_HMM_1000 = ESS(H_HMM(:,2:2:T),1000);
+        ESS_H_HMM_sig = ESS(H_HMM(:,2:2:T),0);
 
-        H_subset_HMM = H_HMM(:,(2:10)*100);
+        H_subset_HMM = H_HMM(:,(2:20)*100); 
         
         name = [path,'SV_results_param_HMM_Nbin',num2str(N_bin),data_name,'.mat'];
         save(name,...
@@ -476,11 +483,11 @@ h_init = log(var(y))*ones(1,T);
         ESS_theta_HMM_shift_100 = ESS(theta_HMM_shift,100);
         ESS_theta_HMM_shift_1000 = ESS(theta_HMM_shift,1000);
 
-        ESS_H_HMM_shift_40 = ESS(H_HMM_shift,40);
-        ESS_H_HMM_shift_100 = ESS(H_HMM_shift,100);
-        ESS_H_HMM_shift_1000 = ESS(H_HMM_shift,1000);
+        ESS_H_HMM_shift_40 = ESS(H_HMM_shift(:,2:2:T),40);
+        ESS_H_HMM_shift_100 = ESS(H_HMM_shift(:,2:2:T),100);
+        ESS_H_HMM_shift_1000 = ESS(H_HMM_shift(:,2:2:T),1000);
 
-        H_subset_HMM_shift = H_HMM_shift(:,(2:10)*100);
+        H_subset_HMM_shift = H_HMM_shift(:,(2:20)*100); 
         H_subset_HMM_shift2 = H_HMM_shift(:,(2:10)*100-1);
 
         name = [path,'SV_results_param_HMM_shift',data_name,'.mat'];
@@ -499,7 +506,7 @@ h_init = log(var(y))*ones(1,T);
     end
  
 %% SEMI DA efficient implementation:
-    if ((nargin == 6) || ((nargin == 7) && (arg5 == 1)))
+    if ((nargin == 6) || ((nargin > 6) && (arg5 > 0)))
         % integrate out the odd h(t)'s and impute the even ones 
 % % %         delta.t = [0.3, 0.01, 0.004]; 
 % %         delta.t = [0.1, 0.005, 0.001]; 
@@ -515,10 +522,24 @@ h_init = log(var(y))*ones(1,T);
 %         h = h_init;
 %         theta = theta_init;
 %         theta = theta_init2;    
-
-        h = h_init;
-        [theta, delta] = SV_initialise(arg0, 5);
+N_bin = 30; %25;    
+ 
+        if (arg5 > 1)
+            N_bin = arg5;
+            bins = linspace(-bin_range,bin_range,N_bin+1);
+            bin_midpoint = (bins(1:N_bin) + bins(2:N_bin+1))/2;
+        end
         
+        [theta, delta] = SV_initialise(arg0, 5);
+        h = h_init;
+
+mean(A_H_HMM_eff) 
+mean(A_theta_HMM_eff)
+
+theta = theta_true;
+delta.t = [0.001, 0.02, 0.0001]
+delta.h = 0.1; 
+
         H_HMM_eff  = zeros(M,T);
         theta_HMM_eff  = zeros(M,3);
 
@@ -527,7 +548,6 @@ h_init = log(var(y))*ones(1,T);
         A_theta_HMM_eff  = zeros(M,3);
 
 
-% theta = theta_true;
         loglik = loglik_h_HMM_eff(y, h, theta, bins, bin_midpoint); 
         % this is the loglik for the integrals ONLY 
         % so the denominator for the theta updates (up to the prior terms)
@@ -548,9 +568,9 @@ h_init = log(var(y))*ones(1,T);
             if (ii > 0)
                 theta_HMM_eff (ii,:) = theta;
 
-                H_HMM_eff (ii,:) = h;
-                accept_HMM_eff (ii,1) = acc;
-                A_H_HMM_eff (ii,1) = A_h;
+                H_HMM_eff(ii,:) = h;
+                accept_HMM_eff(ii,1) = acc;
+                A_H_HMM_eff(ii,1) = A_h;
                 A_theta_HMM_eff(ii,:) = A_theta;        
             end
         end
@@ -568,12 +588,12 @@ h_init = log(var(y))*ones(1,T);
         ESS_theta_HMM_eff_1000 = ESS(theta_HMM_eff,1000);
         ESS_theta_HMM_eff_sig = ESS(theta_HMM_eff,0);
 
-        ESS_H_HMM_eff_40 = ESS(H_HMM_eff,40);
-        ESS_H_HMM_eff_100 = ESS(H_HMM_eff,100);
-        ESS_H_HMM_eff_1000 = ESS(H_HMM_eff,1000);
-        ESS_H_HMM_eff_sig = ESS(H_HMM_eff,0);
+        ESS_H_HMM_eff_40 = ESS(H_HMM_eff(:,2:2:T),40);
+        ESS_H_HMM_eff_100 = ESS(H_HMM_eff(:,2:2:T),100);
+        ESS_H_HMM_eff_1000 = ESS(H_HMM_eff(:,2:2:T),1000);
+        ESS_H_HMM_eff_sig = ESS(H_HMM_eff(:,2:2:T),0);
         
-        H_subset_HMM_eff = H_HMM_eff(:,(2:10)*100);
+        H_subset_HMM_eff = H_HMM_eff(:,(2:20)*100); 
         
         name = [path,'SV_results_param_HMM_eff_Nbin',num2str(N_bin),data_name,'.mat'];
         save(name,...
@@ -627,17 +647,17 @@ h_init = log(var(y))*ones(1,T);
 
         mean_H_HMM_adapt = mean(H_HMM_adapt);
 
-        ESS_theta_HMM_adapt_40 = ESS(theta_HMM_adapt,40);
-        ESS_theta_HMM_adapt_100 = ESS(theta_HMM_adapt,100);
+        ESS_theta_HMM_adapt_40 = ESS(theta_HMM_adapt(:,2:2:T),40);
+        ESS_theta_HMM_adapt_100 = ESS(theta_HMM_adapt(:,2:2:T),100);
         ESS_theta_HMM_adapt_1000 = ESS(theta_HMM_adapt,1000);
         ESS_theta_HMM_adapt_sig = ESS(theta_HMM_adapt,0);     
 
-        ESS_H_HMM_adapt_40 = ESS(H_HMM_adapt,40);
-        ESS_H_HMM_adapt_100 = ESS(H_HMM_adapt,100);
-        ESS_H_HMM_adapt_1000 = ESS(H_HMM_adapt,1000);
-        ESS_H_HMM_adapt_sig = ESS(H_HMM_adapt,0);
+        ESS_H_HMM_adapt_40 = ESS(H_HMM_adapt(:,2:2:T),40);
+        ESS_H_HMM_adapt_100 = ESS(H_HMM_adapt(:,2:2:T),100);
+        ESS_H_HMM_adapt_1000 = ESS(H_HMM_adapt(:,2:2:T),1000);
+        ESS_H_HMM_adapt_sig = ESS(H_HMM_adapt(:,2:2:T),0);
 
-        H_subset_HMM_adapt = H_HMM_adapt(:,(2:10)*100);
+        H_subset_HMM_adapt = H_HMM_adapt(:,(2:20)*100); 
         
         name = [path,'SV_results_param_HMM_adapt_Nbin',num2str(N_bin),data_name,'.mat'];
         save(name,...
@@ -654,7 +674,13 @@ h_init = log(var(y))*ones(1,T);
     end
     
 %% SEMI DA ADAPTIVE EFFICIENT
-    if ((nargin == 8) && arg7)
+    if ((nargin == 8) && (arg7 > 0))
+        if (arg7 > 1)
+            N_bin = arg7;
+            mid = (0:(N_bin-1))/N_bin;
+            mid = mid + mid(2)/2;
+            mid_inv = norminv(mid);
+        end
         h = h_init;
         
         [theta, delta] = SV_initialise(arg0, 6);
@@ -698,12 +724,12 @@ h_init = log(var(y))*ones(1,T);
         ESS_theta_HMM_adapt_eff_1000 = ESS(theta_HMM_adapt_eff,1000);
         ESS_theta_HMM_adapt_eff_sig = ESS(theta_HMM_adapt_eff,0);     
 
-        ESS_H_HMM_adapt_eff_40 = ESS(H_HMM_adapt_eff,40);
-        ESS_H_HMM_adapt_eff_100 = ESS(H_HMM_adapt_eff,100);
-        ESS_H_HMM_adapt_eff_1000 = ESS(H_HMM_adapt_eff,1000);
-        ESS_H_HMM_adapt_eff_sig = ESS(H_HMM_adapt_eff,0);
+        ESS_H_HMM_adapt_eff_40 = ESS(H_HMM_adapt_eff(:,2:2:T),40);
+        ESS_H_HMM_adapt_eff_100 = ESS(H_HMM_adapt_eff(:,2:2:T),100);
+        ESS_H_HMM_adapt_eff_1000 = ESS(H_HMM_adapt_eff(:,2:2:T),1000);
+        ESS_H_HMM_adapt_eff_sig = ESS(H_HMM_adapt_eff(:,2:2:T),0);
 
-        H_subset_HMM_adapt_eff = H_HMM_adapt_eff(:,(2:10)*100);
+        H_subset_HMM_adapt_eff = H_HMM_adapt_eff(:,(2:20)*100); 
         
         name = [path,'SV_results_param_HMM_adapt_eff_Nbin',num2str(N_bin),data_name,'.mat'];
         save(name,...

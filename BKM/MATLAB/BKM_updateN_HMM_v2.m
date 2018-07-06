@@ -1,4 +1,4 @@
-function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, priorN, N_max, logfact)    
+function [N,  accept, A_sum] = BKM_updateN_HMM_v2(fn_BKM_cov, N, theta, y, deltaN, priorN, N_max, logfact)    
 % Algorithm 1. Single-update Metropolis–Hastings algorithm 
 % using a uniform proposal distribution   
     T = size(N,2);
@@ -6,11 +6,10 @@ function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, 
     [phi1, phia, rho] = fn_BKM_cov(theta);    
     sigy = theta(9);
     
-    accept = 0;
-    A_sum = 0; 
-    
-    N(1) = binornd(priorN(1),priorN(2));
-    for t = 2:2            
+%     accept = 0;
+    accept = zeros(1,T+8);
+    A_sum = 0;    
+    for t = 1:2            
         % Keep a record of the current N value being updated
         Na_old = N(t);
         % Uniform RW for Na
@@ -50,7 +49,8 @@ function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, 
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
 %             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(t) = A;
         else  % Reject proposed move:
             % Na stays at current value:
             N(t) = Na_old;
@@ -66,11 +66,26 @@ function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, 
             % Calculate the log(acceptance probability):
             % Calculate the new likelihood value for the proposed move:
             % Calculate the numerator (num) and denominator (den) in turn:
-            num = BKM_loglik_N_HMM(y(t), N(t), N(t-1), N(t-2),...
-                  phia(t-1), phi1(t-2), rho(t-2), sigy, N_max, logfact);
-            den = BKM_loglik_N_HMM(y(t), Na_old, N(t-1), N(t-2),...
-                  phia(t-1), phi1(t-2), rho(t-2), sigy, N_max, logfact);
-
+            num = BKM_loglik_N_HMM_v2(N(t), N(t-1), N(t-2),...
+                  phia(t-1), phi1(t-2), rho(t-2), sigy, N_max, logfact) ... 
+                  -  0.5*( ((y(t)-N(t)).^2)/sigy);
+            den = BKM_loglik_N_HMM_v2(Na_old, N(t-1), N(t-2),...
+                  phia(t-1), phi1(t-2), rho(t-2), sigy, N_max, logfact) ...
+                  -  0.5*(((y(t)-Na_old).^2)/sigy); 
+                
+            if (t < T)
+                num = num + BKM_loglik_N_HMM_v2(N(t+1), N(t), N(t-1),...
+                      phia(t), phi1(t-1), rho(t-1), sigy, N_max, logfact);
+                den = den +  BKM_loglik_N_HMM_v2(N(t+1), Na_old, N(t-1),...
+                      phia(t), phi1(t-1), rho(t-1), sigy, N_max, logfact);
+            end
+            
+            if (t < T-1)
+                num = num + BKM_loglik_N_HMM_v2(N(t+2), N(t+1), N(t),...
+                      phia(t+1), phi1(t), rho(t), sigy, N_max, logfact);
+                den = den +  BKM_loglik_N_HMM_v2(N(t+2), N(t+1), Na_old,...
+                      phia(t+1), phi1(t), rho(t), sigy, N_max, logfact);
+            end
             % Proposal terms cancel since proposal distribution is symmetric.
             % All other prior terms cancel in the acceptance probability. 
             % Acceptance probability of MH step:
@@ -84,7 +99,8 @@ function [N,  accept, A_sum] = BKM_updateN_HMM(fn_BKM_cov, N, theta, y, deltaN, 
         if (rand <= A)  % Accept the proposed move:
             % Update the log(likelihood) value:
 %             oldlikhood = newlikhood;     
-            accept = accept+1;
+%             accept = accept+1;
+            accept(t) = A;
         else  % Reject proposed move:
             % Na stays at current value:
             N(t) = Na_old;

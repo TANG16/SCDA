@@ -1,12 +1,8 @@
 function loglik_ss = BKM_statespace_HMM(Na, theta, y, f, stdT, priorN, N_max, logfact)
-% loglik_y
     T = length(y);
     [phi1, phia, rho, ~] = BKM_covariates(theta,f,stdT);
-%     lam = N(2:(T-1)).*rho(2:(T-1)).*phi1(2:(T-1));
     sigy = theta(9);
-%     G = zeros(N_max+1, T);
-%     P = zeros(N_max+1, T);
-%     loglam = zeros(T-1,1);   
+    
     loglam = log(Na) + log(rho) + log(phi1);
     
 %     logfact = @(xx) sum(log(1:1:xx));

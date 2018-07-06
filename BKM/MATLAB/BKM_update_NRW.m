@@ -99,5 +99,5 @@ function [N, theta, accept, A_sum] = BKM_update_NRW(N, theta, prior, delta, y, m
     end  
     
     %% Gibbs update for sigma2
-    theta(D) = 1/gamrnd(prior.S(1)+(T-2)/2,1/(prior.S(2)+0.5*sum((y(3:T)-N(3:T)).^2)));  % priorS = [0.001,0.001]
+    theta(D) = 1/gamrnd(prior.S(1)+(T-2)/2,1/(prior.S(2)+0.5*sum((y(3:T)-N(2,3:T)).^2)));  % priorS = [0.001,0.001]
 end

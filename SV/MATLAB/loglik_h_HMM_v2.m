@@ -11,8 +11,6 @@ function loglik = loglik_h_HMM_v2(y, h, theta, bins, bin_midpoint)
     mu = theta(1);
     phi = theta(2);
     sigma2 = theta(3);
-    sigma = sqrt(sigma2);
-%     stdev_y = exp((mu+bin_midpoint)/2);  
     
     h0 = mu;  % unconditional mean
     

@@ -30,14 +30,16 @@ P1 <- (sigma^2)/(1-phi^2)
 
 
 ################# simultated data ####
-T <- 2000
+T <- 4000
 h_true <- rep(NaN,T)
 
 h_true[1] <- a1 + sqrt(P1)*rnorm(1)
 for (t in c(2:T)){
   h_true[t] = mu + phi*(h_true[t-1]-mu) + sigma*rnorm(1)
 }
+
 y <- sqrt(rho)*exp(h_true/2)*rt(T,nu)
+#y <- exp(h_true/2)*rt(T,nu)
 # plot(y,type='l')
 # lines(h_true, type='l', col='red')
 

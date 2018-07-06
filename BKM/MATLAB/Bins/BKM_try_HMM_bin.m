@@ -1,7 +1,10 @@
-function BKM_try_HMM_bin(N_bin, M, BurnIn)
+function Results = BKM_try_HMM_bin(N_bin, M, BurnIn, save_on)
     % clear all
     % close all
-
+    % N_bin = 100;
+    % M = 20000;
+    % BurnIn = 20000;
+    
     fprintf('*** BKM_HMM_bin M=%i, BurnIn=%i, N_bin = %i ***\n', M, BurnIn,N_bin);
 
     plot_on = false;
@@ -41,18 +44,31 @@ function BKM_try_HMM_bin(N_bin, M, BurnIn)
     priorN = prior.N;
 
     %%  Bins' midpoints  
+%     switch N_bin 
+%         case 30 % min = 0, max = 869
+%             bin_size = 29; 
+%         case 20 % min = 0, max = 859
+%             bin_size = 43; 
+%         case 10 % min = 0, max = 869
+%             bin_size = 87; 
+%     end
     switch N_bin 
-        case 30 % min = 0, max = 869
-            bin_size = 29; 
-        case 20 % min = 0, max = 859
-            bin_size = 43; 
-        case 10 % min = 0, max = 869
-            bin_size = 87; 
-    end
+        case 30 % min = 0, max = 689
+            bin_size = 23; 
+        case 20 % min = 0, max = 659
+            bin_size = 33; 
+        case 10 % min = 0, max = 669
+            bin_size = 67; 
+        case 100
+            bin_size = 7; 
+    end    
+%     N_max = 66 * 10;
+%     bin_size = N_max/N_bin + 1; 
     bin = 0.5*(bin_size*(2*(0:(N_bin-1))+1)-1)';
 
     logfact = @(xx) sum(log(1:1:xx));
     logfact = arrayfun(logfact,(0:7000)') ;
+%     logfact = arrayfun(logfact,(0:10000)') ;
 
     %% Set the proposals
     % for the parameters
@@ -74,11 +90,19 @@ function BKM_try_HMM_bin(N_bin, M, BurnIn)
     deltaT = delta.T;
 
     if (N_bin == 10)
-        delta.N = 60 + 0.5; 
+        delta.N = 90 + 0.5; 
+%         delta.N = 80 + 0.5; 
+%         delta.N = 60 + 0.5; 
     elseif (N_bin == 20)
-        delta.N = 70 + 0.5; 
-    else
-        delta.N = 40 + 0.5; 
+        delta.N = 100 + 0.5; 
+%         delta.N = 70 + 0.5; 
+    elseif (N_bin == 30)
+          delta.N = 100 + 0.5; 
+%           delta.N = 80 + 0.5; 
+%           delta.N = 60 + 0.5; 
+          %delta.N = 40 + 0.5; 
+    elseif (N_bin == 100)
+        delta.N = 10 + 0.5; 
     end
 
     oldlikhood = BKM_calclikhood_HMM_bin(Na, theta_init, y, m, f, stdT, prior.N, bin, logfact);
@@ -103,7 +127,8 @@ function BKM_try_HMM_bin(N_bin, M, BurnIn)
         if (mod(ii,1000)==0)
             fprintf('MH iter = %i\n',ii); toc;
         end
-        [N, theta, acc, a_sum] = BKM_update_HMM_bin(N, theta, prior, delta, y, m, f, stdT, bin, logfact);
+%         [N, theta, acc, a_sum] = BKM_update_HMM_bin(N, theta, prior, delta, y, m, f, stdT, bin, logfact);
+        [N, theta, acc, a_sum] = BKM_update_HMM_bin_v2(N, theta, prior, delta, y, m, f, stdT, bin, logfact);
         if (ii>0)
             NN(:,ii) = N;
             Theta(ii,:)= theta; 
@@ -115,9 +140,17 @@ function BKM_try_HMM_bin(N_bin, M, BurnIn)
     mean_A = mean_A/(T+D-1);
     mean_accept = mean(accept);
 
-
-    name = ['../Results/BurnIn_',num2str(BurnIn),'/BKM_bin_Nbin',num2str(N_bin),'.mat'];
-    save(name,'delta','prior','theta_init','Na','NN','Theta',...
-        'accept','mean_A','mean_accept','time_sampl','bin_size');
-
+    Results.NN = NN;
+    Results.Theta = Theta;
+    Results.accept = accept;
+    Results.mean_A = mean_A;
+    Results.time_sampl = time_sampl;
+    
+    if save_on
+%         name = ['../Results/BurnIn_',num2str(BurnIn),'/BKM_bin_Nbin',num2str(N_bin),'.mat'];
+%         name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_bin_Nbin',num2str(N_bin),'.mat'];
+        name = ['/home/aba228/Documents/BKM/BKM_bin_Nbin',num2str(N_bin),'_v2.mat'];
+        save(name,'delta','prior','theta_init','Na','NN','Theta',...
+            'accept','mean_A','mean_accept','time_sampl','bin_size');
+    end
 end

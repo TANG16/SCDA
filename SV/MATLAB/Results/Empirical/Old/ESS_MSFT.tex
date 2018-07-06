@@ -1,0 +1,43 @@
+{ \renewcommand{\arraystretch}{1.2} 
+\begin{table} 
+\center 
+\begin{tabular}{ccc cc cc} 
+\hline 
+ & ESS lag&& DA KSC & DA RW & HMM fix & HMM adapt \\ \hline  \hline
+ \multicolumn{2}{c}{time (s)}& & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\  \hline 
+\multicolumn{7}{c}{$\theta$} \\ \hline 
+\multirow{4}{*}{$\mu$}   & sig &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 40 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 100 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 1000 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & AR & & --  & 0.0000  & 0.0000  & 0.0000  \\ [1.3ex] 
+\multirow{4}{*}{$\phi$}   & sig &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 40 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 100 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 1000 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & AR & & --  & 0.0000  & 0.0000  & 0.0000  \\ [1.3ex] 
+\multirow{4}{*}{$\sigma^2$}   & sig &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 40 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 100 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & 1000 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+ & AR & & --  & 0.0000  & 0.0000  & 0.0000  \\ [1.3ex] 
+\hline 
+\multicolumn{7}{c}{$ \bm{h} $} \\ \hline 
+mean & sig &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+std & sig &  & [0.0000]  & [0.0000]  & [0.0000]  & [0.0000]  \\  [1ex]
+mean & 40 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+std & 40 &  & [0.0000]  & [0.0000]  & [0.0000]  & [0.0000]  \\  [1ex]
+mean & 100 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+std & 100 &  & [0.0000]  & [0.0000]  & [0.0000]  & [0.0000]  \\  [1ex]
+mean & 1000 &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\ 
+std & 1000 &  & [0.0000]  & [0.0000]  & [0.0000]  & [0.0000]  \\  [1ex]
+ & AR &  & 0.0000  & 0.0000  & 0.0000  & 0.0000  \\  [1ex]
+\hline 
+\multicolumn{7}{p{11cm}}{\footnotesize{sig: lag equal to the lowest order at which sample autocorrelation is not significant.}}  \\ 
+\multicolumn{7}{p{11cm}}{\footnotesize{AR: acceptance rate of the MH RW algorithm.}}  \\ 
+\multicolumn{7}{p{11cm}}{\footnotesize{mean/std: over the imputed states.}}  \\ 
+\end{tabular}
+ \caption{Effective sample sizes (ESS) at different lags  for $M=10000$ posterior draws after a burn-in of $10000$ for $T=2000$ observations of \textbf{MSFT} data.}
+\label{tab:ESS_MSFT}  
+\end{table}
+}

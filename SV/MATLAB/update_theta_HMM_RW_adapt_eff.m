@@ -43,7 +43,6 @@ function [theta, accept, oldloglik] = update_theta_HMM_RW_adapt_eff(y, h, theta,
             num = sum(newloglik) + newprior;
             den = sum(oldloglik) + oldprior;
 
-
             % All other prior terms (for other thetas) cancel in the acceptance probability.
             % Proposal terms cancel since proposal distribution is symmetric.
 
