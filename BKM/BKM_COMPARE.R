@@ -1,5 +1,5 @@
-ada=1000
-iter=10000
+ada=10000
+iter=100000
 th=1
 cha=1
 # load the full DA 
@@ -10,7 +10,23 @@ load("Results/BKM_HMM_approx_iter10000_ada1000_COMB_unifprior.RData")
 load("Results/BKM_HMM_approx_iter10000_ada1000_COMB_unifprior_norm.RData")
 
 
- 
+NSE_theta_DA = rep(0, times=9)
+for (i in (36+seq(1:9))){
+  temp = as.vector(as.matrix(output_DA[,i]))
+  NSE_theta_DA[i-36] = nse.nw(temp, lag.prewhite = 0)
+}
+
+NSE_Na_DA = rep(0, times=36)
+for (i in (seq(1:36))){
+  temp = as.vector(as.matrix(output_DA[,i]))
+  NSE_Na_DA[i] = nse.nw(temp, lag.prewhite = 0)
+}
+
+
+
+ESS_DA[1:36]/100000
+
+std_Na_DA = apply(matDA[,1:36], 2, sd)
 ## ESS  ##########################################
 # DA ##########################################
 

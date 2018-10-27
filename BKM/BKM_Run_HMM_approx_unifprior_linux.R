@@ -95,11 +95,13 @@ time_HMM_sample_5_169 <- temp
 ##########################################
 
 if (save_on) {
+  file_save = paste("C:/Users/ab507t/Desktop/BKM_HMM_approx_iter",toString(iter),"_ada",toString(ada),"_COMB_unifprior.RData",sep="")
+  
   save(output_HMM_29_29, output_HMM_15_55, output_HMM_5_169,
        time_HMM_sample_29_29, time_HMM_sample_15_55, time_HMM_sample_5_169,
        mod_29_29, mod_15_55, mod_5_169, 
        time_HMM_init_29_29, time_HMM_init_15_55, time_HMM_init_5_169,
-       file = paste("BKM_HMM_approx_iter",toString(iter),"_ada",toString(ada),"_COMB_unifprior.RData",sep=""))
+       file = file_save)
 }
 
 

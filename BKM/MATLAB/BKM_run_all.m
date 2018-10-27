@@ -51,7 +51,7 @@ if ~long
         end
     % end
 else
-    M = 120000; %50000; %10000;
+    M = 100000; %50000; %10000;
     save_on = true;
 
     BurnIn = 10000;

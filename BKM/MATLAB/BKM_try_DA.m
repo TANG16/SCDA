@@ -108,9 +108,9 @@ function Results = BKM_try_DA(M, BurnIn, save_on)% clear all
 %             fprintf('Sigma2 = %6.4f \n',theta(:,end));            
         end
 %         if strcmp(update_T,'NRW') 
-%             [N, theta, acc, a_sum] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+            [N, theta, acc, a_sum] = BKM_update_NRW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
 %             [N, theta, acc, a_sum] = BKM_update_NRW_v2(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
-            [N, theta, acc, a_sum] = BKM_update_NRW_debug(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
+%             [N, theta, acc, a_sum] = BKM_update_NRW_debug(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
 %         else
 %             [N, theta, acc, a_sum] = BKM_update_URW(N, theta, prior, delta, y, m, f, stdT, update_N, logfact);
 %         end
@@ -118,18 +118,23 @@ function Results = BKM_try_DA(M, BurnIn, save_on)% clear all
             NN(:,:,ii) = N;
             Theta(ii,:)= theta; 
             accept(ii,:) = acc; 
-            mean_A(ii) = a_sum;
+            mean_A(ii,:) = a_sum;
         end
     end
     time_sampl = toc;
-    % accept = accept/(2*T+D-1);
+    mean_accept = mean(accept);
     mean_A = mean_A/(2*T+D-1);
     
+    Na = squeeze(NN(2,:,:));
     Results.NN = NN;
     Results.Theta = Theta;
     Results.accept = accept;
     Results.mean_A = mean_A;
     Results.time_sampl = time_sampl;
+
+
+R_output = load('C:\Users\ab507t\Desktop\BKM_DA_output.mat');
+Na_mean_R = mean(R_output.matDA(:,1:36));
 
     if save_on
 %         name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_DA_',update_T,'_',update_N,'.mat'];

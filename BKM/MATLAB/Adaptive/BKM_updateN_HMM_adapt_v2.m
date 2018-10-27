@@ -1,4 +1,4 @@
-function [N,  accept, A_sum] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y, deltaN, priorN, mid, logfact)    
+function [N,  accept] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y, deltaN, priorN, mid, logfact)    
 % Algorithm 1. Single-update Metropolis–Hastings algorithm 
 % using a uniform proposal distribution   
     T = size(N,2);
@@ -8,12 +8,12 @@ function [N,  accept, A_sum] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y,
     
 %     accept = 0
     accept = zeros(1,T+8);
-    A_sum = 0;    
     for t = 1:2            
         % Keep a record of the current N value being updated
         Na_old = N(t);
         % Uniform RW for Na
-        N(t) = Na_old + round(deltaN(1) * (2*rand-1)) ; %deltaN=10.5!
+%         N(t) = Na_old + round(deltaN(1) * (2*rand-1)) ; %deltaN=10.5!
+        N(2,t) = binornd(priorN(2),priorN(3)); 
         if (N(t) > 0)
             %% Calculate the log(acceptance probability):
             % Calculate the new likelihood value for the proposed move:
@@ -43,7 +43,6 @@ function [N,  accept, A_sum] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y,
         else 
             A = 0;
         end
-        A_sum = A_sum + A;
         % To do the accept/reject step of the algorithm:        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:
@@ -95,7 +94,6 @@ function [N,  accept, A_sum] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y,
         else 
             A = 0;
         end
-        A_sum = A_sum + A;
         % To do the accept/reject step of the algorithm:        
         % Accept the move with probability A:
         if (rand <= A)  % Accept the proposed move:

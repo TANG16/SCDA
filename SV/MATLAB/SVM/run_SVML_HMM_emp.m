@@ -7,7 +7,7 @@ RandStream.setGlobalStream(s);
 
 plot_on = false;
 
-arg0 = 100; %200; %100; %2 ;% 100; % 2 -- IBM
+arg0 = 2; %100; %200; %100; %2 ;% 100; % 2 -- IBM
 arg1 = 1; % DA
 arg2 = 1; % fixed
 arg3 = 1; % adaptive
@@ -341,7 +341,7 @@ if (arg3 > 0)        % integrate out the odd h(t)'s and impute the even ones
             A_theta_HMM_adapt(ii,:) = A_theta;        
         end
     end
-%     time_HMM_adapt = toc;
+    time_HMM_adapt = toc;
 % 
 %     TIME_HMM_adapt = time_HMM_adapt;
     THETA_mean_HMM_adapt = mean(theta_HMM_adapt);

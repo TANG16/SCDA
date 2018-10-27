@@ -4,7 +4,7 @@ rm(list=ls())
 # Load required packages and fix the random seed
 library(rjags)
 library(coda)
-library(lattice)
+#library(lattice)
 set.seed(134522)
 
 save_on = FALSE
@@ -73,7 +73,9 @@ if (save_on) {
   if (scaled_on){
     save(output1, time_sample, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),"_scaled.RData",sep=""))
 }else {
-    save(output1, time_sample, file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),".RData",sep=""))
+  #file = paste("Results/BKM_iter",toString(iter),"_ada",toString(ada),".RData",sep="");
+  file_save = paste("C:/Users/ab507t/Desktop/BKM_iter",toString(iter),"_ada",toString(ada),".RData",sep="");
+    save(output1, time_sample, file = file_save )
   } 
 }
 

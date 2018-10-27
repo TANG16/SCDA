@@ -18,16 +18,26 @@ function Results = BKM_try_HMM_bin(N_bin, M, BurnIn, save_on)
         1391.27, 1507.60, 1541.44, 1631.21, 1628.60, 1609.33, 1801.68, 1809.08, 1754.74,...
         1779.48, 1699.13, 1681.39, 1610.46, 1918.45, 1717.07, 1415.69, 1229.02, 1082.02,...
         1096.61, 1045.84, 1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64]/sc);
-
-    alpha1 = 1;
-    alphaa = 2;
-    alphar = -2; 
-    alphal = -4;
-    beta1 =-2;
-    betaa = 0.1;
-    betar = -0.7;
-    betal = -0.3;
-    sigy = 1;
+%        alpha1        alphaa        alphal        alphar         beta1         betaa         betal         betar          sigy 
+%     0.5490783     1.5673245    -4.5771131    -1.1760594    -0.1907766    -0.2472439    -0.3636677    -0.3421766 30440.2276841 
+    alpha1 = 0.5490783;%1;
+    alphaa = 1.5673245 ; %2;
+    alphar = -1.1760594; %-2;
+    alphal = -4.5771131 ; %-4;
+    beta1 = -0.1907766; %-2;
+    betaa = -0.2472439 ; %0.1;
+    betar = -0.3421766; %-0.7;
+    betal = -0.3636677  ; %-0.3;
+    sigy = 30440;%1;
+%     alpha1 = 1;
+%     alphaa = 2;
+%     alphar = -2; 
+%     alphal = -4;
+%     beta1 =-2;
+%     betaa = 0.1;
+%     betar = -0.7;
+%     betal = -0.3;
+%     sigy = 1;
 
     params = {'alpha1', 'alphaa', 'alphar', 'alphal', ...
         'beta1', 'betaa', 'betar', 'betal',...

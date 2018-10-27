@@ -17,29 +17,17 @@ function Results = BKM_try_HMM(M, BurnIn, save_on)
         1096.61, 1045.84, 1137.03, 981.1, 647.67, 992.65, 968.62, 926.83, 952.96, 865.64]/sc);
 
 
-    alpha1 = 0.5;
-    alphaa = 1.5;
-    alphar = -1.2; 
-    alphal = -4.6;
-    beta1 = -0.16;
-    betaa = -0.20;
-    betar = -0.3;
-    betal = -0.4;
-    sigy = 3e+04;
-%%     
-%     alpha1 = 1;
-%     alphaa = 2;
-%     alphar = -2; 
-%     if (sc == 1)
-%         alphal = -4;
-%     else
-%         alphal = -1;
-%     end
-%     beta1 =-2;
-%     betaa = 0.1;
-%     betar = -0.7;
-%     betal = -0.3;
-%     sigy = 1;
+%        alpha1        alphaa        alphal        alphar         beta1         betaa         betal         betar          sigy 
+%     0.5490783     1.5673245    -4.5771131    -1.1760594    -0.1907766    -0.2472439    -0.3636677    -0.3421766 30440.2276841 
+    alpha1 = 0.5490783;%1;
+    alphaa = 1.5673245 ; %2;
+    alphar = -1.1760594; %-2;
+    alphal = -4.5771131 ; %-4;
+    beta1 = -0.1907766; %-2;
+    betaa = -0.2472439 ; %0.1;
+    betar = -0.3421766; %-0.7;
+    betal = -0.3636677  ; %-0.3;
+    sigy = 30440;%1;
 
     % alpha1 = 1;
     % alphaa = 2;

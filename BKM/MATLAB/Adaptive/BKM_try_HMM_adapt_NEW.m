@@ -29,16 +29,7 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
     betar = -0.3421766; %-0.7;
     betal = -0.3636677  ; %-0.3;
     sigy = 30440;%1;
-%     alpha1 = 0.5;
-%     alphaa = 2;
-%     alphar = -1; 
-%     alphal = -4; 
-%     beta1 = -0.2;
-%     betaa = -0.25;
-%     betar = -0.14;
-%     betal = -0.37;
-%     sigy = 1; 
-
+ 
     
     params = {'alpha1', 'alphaa', 'alphar', 'alphal', ...
         'beta1', 'betaa', 'betar', 'betal',...
@@ -48,12 +39,10 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
     [phi1, phia, rho, lambda] = BKM_covariates(theta_init,f,stdT);  
 
     D = size(theta_init,2);
-    prior.N = [2000/sc 0.5];
+    prior.N = [200/sc 2000/sc 0.5];
     prior.S = [0.001,0.001];
     prior.T_mu = 0*ones(D-1,1);
     prior.T_sigma2 = 100*ones(D-1,1);
-    priorN = prior.N;
-
 
     % Quanatiles
 %     N_q = 20; 
@@ -62,11 +51,9 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
     mid = norminv(qu_mid);  
 
     logfact_fun = @(xx) sum(log(1:1:xx));
-%     logfact = arrayfun(logfact_fun,0:7000) ;
     logfact = arrayfun(logfact_fun,0:10000) ;
     %% Set the proposals
     % for the parameters
-    update_T = 'NRW';  
 
     % step sizes 
     % given step size delta, std for URW is delta/sqrt(3), for NRW 1*delta
@@ -76,7 +63,6 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
     delta.T = [0.1 0.04 0.05 0.1 0.1 0.035 0.05 0.12];
     % delta.T = [0.04 0.04 0.05 0.02 0.03 0.02 0.03 0.02];
 
-    deltaT = delta.T;
     %     delta.N = 130 + 0.5;  
     % delta.N = 80 + 0.5;  %mean(mean_accept(1:T)) = 0.3952
     % delta.N = 90 + 0.5;  %mean(mean_accept(1:T)) = 0.3770
@@ -91,19 +77,14 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
         delta.N = 15 + 0.5;
     end
 
-    deltaN = delta.N;
-
     oldlikhood = BKM_calclikhood_HMM_adapt(Na, theta_init, y, m, f, stdT, prior.N, mid, logfact);
 
-%     M = 10000;
-%     BurnIn = 1000;
+
     N = Na;
     theta = theta_init;
-    % theta(9) = 30000;
     NN = zeros(T,M);
     Theta = zeros(M,9);
     accept = zeros(M,T+D-1);
-    mean_A = zeros(M,1);
 
     tic
     % profile on
@@ -114,31 +95,26 @@ function Results = BKM_try_HMM_adapt(N_q, M, BurnIn, save_on)
 
         if (mod(ii,1000)==0)
             fprintf('MH iter = %i\n',ii); toc;
-            fprintf('Sigma2 = %6.4f \n',theta(:,end));
         end
-%         [N, theta, acc, a_sum] = BKM_update_HMM_adapt(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
-        [N, theta, acc, a_sum] = BKM_update_HMM_adapt_v2(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
+        [N, theta, acc] = BKM_update_HMM_adapt_NEW(N, theta, prior, delta, y, m, f, stdT, mid, logfact);
         if (ii > 0)
             NN(:,ii) = N;
             Theta(ii,:)= theta; 
             accept(ii,:) = acc; 
-            mean_A(ii) = a_sum;
         end
     end
-    time_sampl = toc; 
-    mean_A = mean_A/(T+D-1);
-    mean_accept = mean(accept);
+    time_sampl = toc;  
     
     Results.NN = NN;
     Results.Theta = Theta;
     Results.accept = accept;
-    Results.mean_A = mean_A;
     Results.time_sampl = time_sampl;
     if save_on
 % %         name = ['../Results/BurnIn_',num2str(BurnIn),'/BKM_adapt_Nq',num2str(N_q),'.mat'];
 %         name = ['Results/BurnIn_',num2str(BurnIn),'/BKM_adapt_Nq',num2str(N_q),'.mat'];
-        name = ['/home/aba228/Documents/BKM/BKM_adapt_Nq',num2str(N_q),'_v2.mat'];
+%         name = ['/home/aba228/Documents/BKM/BKM_adapt_Nq',num2str(N_q),'_v2.mat'];
+        name = ['Results/BKM_adapt_Nq',num2str(N_q),'_v2.mat'];
         save(name,'delta','prior','theta_init','Na','NN','Theta',...
-            'accept','mean_A','mean_accept','time_sampl');
+            'accept','time_sampl');
     end
 end
