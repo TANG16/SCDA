@@ -1,4 +1,5 @@
-function loglik = BKM_loglik_N_HMM_adapt_v2(Na, Na_prev, Na_prev2, phia, phi1, rho, mid, logfact)
+function loglik = BKM_loglik_N_HMM_adapt_v2(Na, Na_prev, Na_prev2, ...
+    phia, phi1, rho, mid, logfact)
 % newloglik = BKM_loglik_N_HMM(N(t), N(t-1), phi1(t-1), phia(t-1), rho(t-1), N_bin);
 %   y = y(t)
 %   Na = N(1,t);

@@ -39,6 +39,8 @@ function loglik_ss = BKM_statespace_HMM_adapt_NEW(Na, theta, y, f, stdT, priorN,
         loglik = loglik + log(sum(P2));
     end
     
+%     midbin = (exp(loglam(T-1)) + sqrt(exp(loglam(T-1)))*mid); % N1(T)
+
     loglik_y = sum(- 0.5*(log(2*pi) + log(sigy) + ((y(3:T)-Na(3:T)).^2)/sigy));  
     loglik_ss = loglik + loglik_y;
 end

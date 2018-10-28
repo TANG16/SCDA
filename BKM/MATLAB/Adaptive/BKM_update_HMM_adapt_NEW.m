@@ -6,7 +6,7 @@ function [N, theta, accept] = BKM_update_HMM_adapt_NEW(N, theta, prior, delta, y
     D = size(theta,2); 
 
     fn_BKM_cov = @(xx) BKM_covariates(xx,f,stdT);
-    [N_new, accept] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y, delta.N, prior.N, mid, logfact);
+    [N_new, accept] = BKM_updateN_HMM_adapt_NEW(fn_BKM_cov, N, theta, y, delta.N, prior.N, mid, logfact);
     N = N_new;  
     oldlikhood = BKM_calclikhood_HMM_adapt_NEW(N, theta, y, m, f, stdT, prior.N, mid, logfact);
 

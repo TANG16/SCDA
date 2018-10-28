@@ -30,6 +30,9 @@ function loglik_ss = BKM_statespace_HMM_bin_NEW(Na, theta, y, f, stdT, priorN, b
         loglik = loglik + log(sum(G2.*P2)); % piecewise multiplication enough here
     end
     
+    G2 = exp(-exp(loglam(T-1)) + bin*loglam(T-1) - logfact(bin + 1));
+    loglik = loglik + log(sum(G2));         
+    
     loglik_y = sum(- 0.5*(log(2*pi) + log(sigy) + ((y(3:T)-Na(3:T)).^2)/sigy));  
     loglik_ss = loglik + loglik_y;
 end

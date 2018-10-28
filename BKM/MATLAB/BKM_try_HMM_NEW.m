@@ -99,9 +99,9 @@ Na_init(28:36)= [ 1174
     time_sampl = toc; 
     mean_accept = mean(accept);
     
-mean_accept_Na = mean_accept(1:T);
-mean(mean_accept_Na)
-    % name = 'BKM_HMM_results_sigma2.mat';
+mean_accept_Na = mean(mean_accept(:,3:T)); %    0.3253
+mean_accept(:,37:44)  %   0.3183    0.3278    0.2835    0.3036    0.2960    0.3084    0.3156    0.3022
+% name = 'BKM_HMM_results_sigma2.mat';
     % save(name,'sample','NN','accept','theta_init','prior','delta','time_sampl', 'accept', 'mean_A');
 
     % with poissrnd and binopdf 4.97 sec per draw

@@ -1,4 +1,5 @@
-function [N,  accept] = BKM_updateN_HMM_NEW(fn_BKM_cov, N, theta, y, deltaN, priorN, N_max, logfact)    
+function [N,  accept] = BKM_updateN_HMM_NEW(fn_BKM_cov, N, theta, y, ...
+                        deltaN, priorN, N_max, logfact)    
 % Algorithm 1. Single-update Metropolis–Hastings algorithm 
 % using a uniform proposal distribution   
     T = size(N,2);
@@ -15,7 +16,7 @@ function [N,  accept] = BKM_updateN_HMM_NEW(fn_BKM_cov, N, theta, y, deltaN, pri
 %         N(t) = Na_old + round(deltaN(1) * (2*rand-1)) ; %deltaN=10.5!
         N(t) = binornd(priorN(2),priorN(3));         
         if (N(t) > 0)
-            %% Calculate the log(acceptance probability):
+                %% Calculate the log(acceptance probability):
             % Calculate the new likelihood value for the proposed move:
             % Calculate the numerator (num) and denominator (den) in turn:
 %             num = log(binopdf(N(t),priorN(1),priorN(2)));

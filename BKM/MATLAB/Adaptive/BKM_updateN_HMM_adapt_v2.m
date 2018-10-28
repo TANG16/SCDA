@@ -50,7 +50,7 @@ function [N,  accept] = BKM_updateN_HMM_adapt_v2(fn_BKM_cov, N, theta, y, deltaN
 %             oldlikhood = newlikhood;     
 %             accept = accept+1;
             accept(t) = A;
-        else  % Reject proposed move:
+        else  % Reject proposed move: 
             % Na stays at current value:
             N(t) = Na_old;
         end        
